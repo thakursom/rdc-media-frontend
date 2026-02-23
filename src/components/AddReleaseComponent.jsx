@@ -47,7 +47,7 @@ function AddReleaseComponent() {
         previouslyReleased: 'No',
         chartRegistration: [],
         pricing: '',
-        selectedStores: [],
+        selectedStores: [], // Array of store IDs
         futureStores: 'Yes',
     });
 
@@ -59,6 +59,7 @@ function AddReleaseComponent() {
     const [genres, setGenres] = useState([]);
     const [subGenres, setSubGenres] = useState([]);
     const [languages, setLanguages] = useState([]);
+    const [stores, setStores] = useState([]);
     const [editingTrackId, setEditingTrackId] = useState(null);
     const [tempTrack, setTempTrack] = useState(null);
 
@@ -205,6 +206,12 @@ function AddReleaseComponent() {
             // Fetch Languages
             const langRes = await apiRequest("/languages", "GET", null, true);
             if (langRes.success) setLanguages(langRes?.data?.data || []);
+
+            // Fetch Stores
+            const storeRes = await apiRequest("/dsps", "GET", null, true);
+            if (storeRes.success && storeRes.data && storeRes.data.data) {
+                setStores(storeRes.data.data);
+            }
 
         } catch (err) {
             console.error("Failed to fetch initial data:", err);
@@ -719,6 +726,7 @@ function AddReleaseComponent() {
                             update={update}
                             errors={validationErrors}
                             showError={showError}
+                            stores={stores}
                         />
                         <div className="d-flex justify-content-between mt-5 px-5">
                             <button className="btn btn-outline-secondary" onClick={back}>
@@ -740,6 +748,7 @@ function AddReleaseComponent() {
                             genres={genres}
                             subGenres={subGenres}
                             languages={languages}
+                            stores={stores}
                         />
                     </>
                 )}

@@ -6,6 +6,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Login from "../pages/Auth/Login";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword";
+import Home from "../pages/Home";
 import Dashboard from "../pages/Dashboard";
 import Review from "../pages/Review";
 import Catalogue from "../pages/Catalogue";
@@ -37,7 +38,8 @@ function AppRouter() {
                         </PublicRoute>
                     }
                 >
-                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password/:token" element={<ResetPassword />} />
                 </Route>

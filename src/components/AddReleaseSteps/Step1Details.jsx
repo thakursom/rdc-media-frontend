@@ -419,7 +419,7 @@ const Step1Details = ({
                             <div className="alert small border-primary">
                                 <i className="fa-solid fa-circle-info me-2"></i>Not all genres are available on every store. When a genre you have selected does not exist on a specific store, we will select the closest alternative.
                                 The stores distribute will use this info when they categorize your release.
-                                You must select a primary genre, but a secondary genre is optional.
+                                You must select a genre, but a sub genre is optional.
                             </div>
                         </div>
                         <div className="col-md-4">

@@ -39,20 +39,13 @@ const Step2Tracks = ({
                 audio.play();
             } else {
                 audio.pause();
-                setPlayingTrackId(null); // Optional: clear state on pause if desired, or keep it to show pause icon
-                // actually, for UI consistentcy: if paused, we usually want to show 'play' icon, so setting ID to null is fine 
-                // OR we keep ID and check audio.paused. 
-                // Let's keep ID to null on pause for simplicity, so button reverts to Play icon.
+                setPlayingTrackId(null);
             }
         } else {
             // New track
             if (track.file) {
                 const url = URL.createObjectURL(track.file);
                 audio.src = url;
-                // Note: we might need to revoke previous URL if we stored it, but simple create here is okay for now.
-                // Better: track object might already have a preview URL if we did that, but currently it holds raw File.
-                // We should be careful about creating too many object URLs. 
-                // For now, let's just create it. 
                 audio.play();
                 setPlayingTrackId(track.id);
             } else {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Step4Stores = ({ form, update, errors, showError }) => {
+const Step4Stores = ({ form, update, errors, showError, stores }) => {
     return (
         <>
             <div className="main-sec-heading pb-5"><h2>Select your stores</h2></div>
@@ -26,39 +26,27 @@ const Step4Stores = ({ form, update, errors, showError }) => {
 
                         <h6 className='mb-3'>Select stores</h6>
                         <div className="row g-2 store-grid">
-                            {[
-                                'iTunes',
-                                'Apple Music',
-                                'Spotify',
-                                'Amazon',
-                                'YouTube Music',
-                                'Tidal',
-                                'Deezer',
-                                'Napster',
-                                'Pandora',
-                                'TikTok',
-                                // ... add more as needed
-                            ].map((store) => (
-                                <div key={store} className="col-4 col-md-3 col-lg-2">
+                            {stores.map((store) => (
+                                <div key={store.id} className="col-4 col-md-3 col-lg-2">
                                     <div className="form-check store-item">
                                         <input
                                             type="checkbox"
                                             className="form-check-input"
-                                            id={`store-${store}`}
-                                            checked={form.selectedStores.includes(store)}
+                                            id={`store-${store.id}`}
+                                            checked={form.selectedStores.includes(store.id)}
                                             onChange={(e) => {
                                                 if (e.target.checked) {
-                                                    update('selectedStores', [...form.selectedStores, store]);
+                                                    update('selectedStores', [...form.selectedStores, store.id]);
                                                 } else {
                                                     update(
                                                         'selectedStores',
-                                                        form.selectedStores.filter((s) => s !== store)
+                                                        form.selectedStores.filter((s) => s !== store.id)
                                                     );
                                                 }
                                             }}
                                         />
-                                        <label className="form-check-label small" htmlFor={`store-${store}`}>
-                                            {store}
+                                        <label className="form-check-label small" htmlFor={`store-${store.id}`}>
+                                            {store.name}
                                         </label>
                                     </div>
                                 </div>

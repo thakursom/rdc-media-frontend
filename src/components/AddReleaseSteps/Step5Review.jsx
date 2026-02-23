@@ -1,10 +1,18 @@
 import React from 'react';
 
-const Step5Review = ({ form, handleSubmit, genres, subGenres, languages }) => {
+const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores }) => {
     // Helper to find name by ID
     const getLanguageName = (id) => {
         const lang = languages?.find(l => l.id == id);
         return lang ? lang.name : id || '(not set)';
+    };
+
+    const getStoreNames = (selectedIds) => {
+        if (!selectedIds || selectedIds.length === 0) return 'None selected';
+        return selectedIds.map(id => {
+            const store = stores?.find(s => s.id === id);
+            return store ? store.name : id;
+        }).join(', ');
     };
 
     const getGenreName = (id) => {
@@ -78,7 +86,7 @@ const Step5Review = ({ form, handleSubmit, genres, subGenres, languages }) => {
                                     </tr>
                                     <tr>
                                         <th>Stores</th>
-                                        <td>{form.selectedStores.join(', ') || 'None selected'}</td>
+                                        <td>{getStoreNames(form.selectedStores)}</td>
                                     </tr>
                                 </tbody>
                             </table>
