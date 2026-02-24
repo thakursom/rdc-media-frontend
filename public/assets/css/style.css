@@ -4651,6 +4651,12 @@ select#upload-music {
     height: 45px !important;
 }
 
+td.view-artist-button {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 /* Add Artist section media query  */
 
 

@@ -7,22 +7,26 @@ import Login from "../pages/Auth/Login";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import Home from "../pages/Home";
-import Dashboard from "../pages/Dashboard";
-import Review from "../pages/Review";
-import Catalogue from "../pages/Catalogue";
-import AddRelease from "../pages/AddRelease";
-import AddBulkRelease from "../pages/AddBulkRelease";
-import ViewAllRelease from "../pages/ViewAllRelease";
-import SavedRelease from "../pages/SavedRelease";
-import RejectedRelease from "../pages/RejectedRelease";
-import AddLabel from "../pages/AddLabel";
-import ViewLabel from "../pages/ViewLabel";
-import AddArtist from "../pages/AddArtist";
-import ViewArtist from "../pages/ViewArtist";
-import AddNewsletter from "../pages/AddNewsletter";
-import ViewNewsletter from "../pages/ViewNewsletter";
-import ViewTicket from "../pages/ViewTicket";
-import ManageGenre from "../pages/ManageGenre";
+import Dashboard from "../pages/SuperAdmin/Dashboard";
+import Review from "../pages/SuperAdmin/Review";
+import Catalogue from "../pages/SuperAdmin/Catalogue";
+import AddRelease from "../pages/SuperAdmin/AddRelease";
+import AddBulkRelease from "../pages/SuperAdmin/AddBulkRelease";
+import ViewAllRelease from "../pages/SuperAdmin/ViewAllRelease";
+import SavedRelease from "../pages/SuperAdmin/SavedRelease";
+import RejectedRelease from "../pages/SuperAdmin/RejectedRelease";
+import AddLabel from "../pages/SuperAdmin/AddLabel";
+import ViewLabel from "../pages/SuperAdmin/ViewLabel";
+import AddArtist from "../pages/SuperAdmin/AddArtist";
+import ViewArtist from "../pages/SuperAdmin/ViewArtist";
+import AddNewsletter from "../pages/SuperAdmin/AddNewsletter";
+import ViewNewsletter from "../pages/SuperAdmin/ViewNewsletter";
+import ViewTicket from "../pages/SuperAdmin/ViewTicket";
+import ManageGenre from "../pages/SuperAdmin/ManageGenre";
+import ManageSubGenre from "../pages/SuperAdmin/ManageSubGenre";
+import ManageDSP from "../pages/SuperAdmin/ManageDSP";
+import ManageUser from "../pages/SuperAdmin/ManageUser";
+import AddUser from "../pages/SuperAdmin/AddUser";
 
 
 function AppRouter() {
@@ -64,11 +68,16 @@ function AppRouter() {
                     <Route path="/add-label" element={<AddLabel />} />
                     <Route path="/view-label" element={<ViewLabel />} />
                     <Route path="/add-artist" element={<AddArtist />} />
+                    <Route path="/edit-artist/:id" element={<AddArtist />} />
                     <Route path="/view-artist" element={<ViewArtist />} />
                     <Route path="/add-newsletter" element={<AddNewsletter />} />
                     <Route path="/view-newsletter" element={<ViewNewsletter />} />
                     <Route path="/view-ticket" element={<ViewTicket />} />
                     <Route path="/genre" element={<ManageGenre />} />
+                    <Route path="/sub-genre" element={<ManageSubGenre />} />
+                    <Route path="/dsp" element={<ManageDSP />} />
+                    <Route path="/users" element={<ManageUser />} />
+                    <Route path="/add-user" element={<AddUser />} />
                 </Route>
 
 
