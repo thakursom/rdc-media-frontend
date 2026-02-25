@@ -200,7 +200,7 @@ function AddReleaseComponent() {
             if (labelRes.success) setLabels(labelRes?.data?.labels || []);
 
             // Fetch Genres
-            const genreRes = await apiRequest("/genres?limit=1000", "GET", null, true);
+            const genreRes = await apiRequest("/release-genres?limit=1000", "GET", null, true);
             if (genreRes.success) setGenres(genreRes?.data?.data || []);
 
             // Fetch Languages
@@ -208,7 +208,7 @@ function AddReleaseComponent() {
             if (langRes.success) setLanguages(langRes?.data?.data || []);
 
             // Fetch Stores
-            const storeRes = await apiRequest("/dsps", "GET", null, true);
+            const storeRes = await apiRequest("/release-dsps", "GET", null, true);
             if (storeRes.success && storeRes.data && storeRes.data.data) {
                 setStores(storeRes.data.data);
             }
@@ -232,7 +232,7 @@ function AddReleaseComponent() {
             }
 
             try {
-                const response = await apiRequest(`/subgenres?genre_id=${form.primaryGenre}`, "GET", null, true);
+                const response = await apiRequest(`/release-subgenres?genre_id=${form.primaryGenre}`, "GET", null, true);
                 if (response.success) {
                     setSubGenres(response?.data?.data || []);
                 }

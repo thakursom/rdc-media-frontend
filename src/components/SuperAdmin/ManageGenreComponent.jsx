@@ -26,9 +26,9 @@ function ManageGenreComponent() {
 
     const formik = useFormik({
         initialValues: {
-            title: '',
-            description: '',
-            status: true
+            title: selectedGenre?.title || '',
+            description: selectedGenre?.description || '',
+            status: selectedGenre?.status !== undefined ? selectedGenre.status : true
         },
         validationSchema,
         enableReinitialize: true,
@@ -87,27 +87,7 @@ function ManageGenreComponent() {
 
     const handleOpenModal = (type, genre = null) => {
         setModalType(type);
-        if (type === 'edit' && genre) {
-            setSelectedGenre(genre);
-            formik.resetForm({
-                values: {
-                    title: genre.title || '',
-                    description: genre.description || '',
-                    status: genre.status !== undefined ? genre.status : true
-                }
-            });
-        } else if (type === 'delete' && genre) {
-            setSelectedGenre(genre);
-        } else {
-            setSelectedGenre(null);
-            formik.resetForm({
-                values: {
-                    title: '',
-                    description: '',
-                    status: true
-                }
-            });
-        }
+        setSelectedGenre(genre);
     };
 
     const handleCloseModal = () => {
@@ -162,6 +142,7 @@ function ManageGenreComponent() {
                         </div>
                         <div className="manage-genre-btn">
                             <button
+                                type="button"
                                 className="btn mangageGenre"
                                 onClick={() => handleOpenModal('add')}
                             >
@@ -210,6 +191,7 @@ function ManageGenreComponent() {
                                                 <td className="excel-button view-subLabels-btn manageGenre" id="subLabelsBtn">
                                                     <div className="manage-gen-btnBox">
                                                         <button
+                                                            type="button"
                                                             className="btn excel"
                                                             id="subLabelsBtn"
                                                             onClick={() => handleOpenModal('edit', genre)}
@@ -217,6 +199,7 @@ function ManageGenreComponent() {
                                                             Edit
                                                         </button>
                                                         <button
+                                                            type="button"
                                                             className="btn excel"
                                                             id="subLabelsDel"
                                                             onClick={() => handleOpenModal('delete', genre)}

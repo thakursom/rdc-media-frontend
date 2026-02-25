@@ -122,8 +122,9 @@ function ManageUserComponent() {
                             </form>
                             <button className="btn btn-success" onClick={handleExport} style={{ height: "38px" }}>Export</button>
                             <button
+                                type="button"
                                 className="btn mangageGenre"
-                                onClick={() => navigate("/add-user")}
+                                // onClick={() => navigate("/add-user")}
                                 style={{ height: "38px" }}
                             >
                                 <i className="fa-solid fa-plus" />
@@ -160,16 +161,18 @@ function ManageUserComponent() {
                                                     <td className="excel-button view-subLabels-btn manageGenre" id="subLabelsBtn">
                                                         <div className="manage-gen-btnBox">
                                                             <button
+                                                                type="button"
                                                                 className="btn excel"
                                                                 id="subLabelsBtn"
-                                                                onClick={() => navigate(`/add-user?id=${user.id}`)}
+                                                            // onClick={() => navigate(`/add-user?id=${user.id}`)}
                                                             >
                                                                 Edit
                                                             </button>
                                                             <button
+                                                                type="button"
                                                                 className="btn excel"
                                                                 id="subLabelsDel"
-                                                                onClick={() => handleOpenModal('delete', user)}
+                                                            // onClick={() => handleOpenModal('delete', user)}
                                                             >
                                                                 Delete
                                                             </button>

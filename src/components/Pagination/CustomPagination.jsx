@@ -41,6 +41,7 @@ function CustomPagination({
                 nextClassName="custom-page"
                 disabledClassName="custom-disabled"
                 forcePage={currentPage - 1}
+                hrefBuilder={() => "javascript:void(0)"}
             />
         </div>
     );

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { apiRequest } from "../../services/api";
+import { apiRequest, ROOT_URL } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../Loader/Loader";
 
@@ -93,8 +93,12 @@ function AddArtistComponent() {
     const fetchArtist = async () => {
         try {
             const response = await apiRequest(`/artist/${id}`, "GET", null, true);
+            console.log("DEBUG: Full response from /artist/:id", response);
             if (response.success && response.data && response.data.data) {
                 const artist = response.data.data;
+                console.log("DEBUG: Artist data object:", artist);
+                console.log("DEBUG: artist.artist_image_url:", artist.artist_image_url);
+                console.log("DEBUG: artist.artist_image:", artist.artist_image);
                 formik.setValues({
                     name: artist.name || '',
                     email: artist.email || '',
@@ -119,7 +123,14 @@ function AddArtistComponent() {
                     isrc: artist.isrc || ''
                 });
                 if (artist.artist_image_url) {
-                    setPreviewUrl(artist.artist_image_url);
+                    let fullImageUrl = artist.artist_image_url;
+                    if (fullImageUrl && !fullImageUrl.startsWith('http')) {
+                        fullImageUrl = `${ROOT_URL}${fullImageUrl.startsWith('/') ? '' : '/'}${fullImageUrl}`;
+                    }
+                    console.log("DEBUG: Setting previewUrl to:", fullImageUrl);
+                    setPreviewUrl(fullImageUrl);
+                } else {
+                    console.log("DEBUG: artist_image_url is missing or empty");
                 }
             } else {
                 toast.error("Failed to fetch artist details");
@@ -193,7 +204,12 @@ function AddArtistComponent() {
                 const { filename, url } = response.data.data;
                 formik.setFieldValue('artist_image', filename);
                 formik.setFieldValue('artist_image_url', url);
-                setPreviewUrl(url);
+
+                let fullImageUrl = url;
+                if (fullImageUrl && !fullImageUrl.startsWith('http')) {
+                    fullImageUrl = `${ROOT_URL}${fullImageUrl.startsWith('/') ? '' : '/'}${fullImageUrl}`;
+                }
+                setPreviewUrl(fullImageUrl);
                 toast.success("Image uploaded successfully");
             } else {
                 setPreviewUrl(null);
@@ -239,7 +255,9 @@ function AddArtistComponent() {
                             style={{
                                 cursor: 'pointer',
                                 position: 'relative',
+                                minHeight: '200px',
                                 padding: hasImage ? '0' : '',
+                                overflow: 'hidden',
                                 border: isDragging
                                     ? '2px dashed #4cd964'
                                     : (formik.touched.artist_image && formik.errors.artist_image)
@@ -263,14 +281,15 @@ function AddArtistComponent() {
                                     <h5>Uploading Image...</h5>
                                 </>
                             ) : hasImage ? (
-                                <div className="image-preview">
+                                <div className="image-preview" style={{ width: '100%', height: '200px' }}>
                                     <img
                                         src={previewUrl || formik.values.artist_image_url}
                                         alt="Artist Preview"
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#f8f9fa' }}
                                         onError={(e) => {
+                                            console.error("DEBUG: Image load error for URL:", e.target.src);
                                             e.target.onerror = null;
-                                            e.target.src = 'https://via.placeholder.com/120?text=No+Image';
+                                            e.target.src = 'https://via.placeholder.com/339x200?text=Image+Load+Failed';
                                         }}
                                     />
                                 </div>

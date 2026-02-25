@@ -25,9 +25,9 @@ function ManageDSPComponent() {
 
     const formik = useFormik({
         initialValues: {
-            name: '',
-            description: '',
-            status: 1
+            name: selectedDsp?.name || '',
+            description: selectedDsp?.description || '',
+            status: selectedDsp?.status ?? 1
         },
         validationSchema,
         enableReinitialize: true,
@@ -86,27 +86,7 @@ function ManageDSPComponent() {
 
     const handleOpenModal = (type, dsp = null) => {
         setModalType(type);
-        if (dsp) {
-            setSelectedDsp(dsp);
-            if (type !== 'delete') {
-                formik.resetForm({
-                    values: {
-                        name: dsp.name || '',
-                        description: dsp.description || '',
-                        status: dsp.status ?? 1
-                    }
-                });
-            }
-        } else {
-            setSelectedDsp(null);
-            formik.resetForm({
-                values: {
-                    name: '',
-                    description: '',
-                    status: 1
-                }
-            });
-        }
+        setSelectedDsp(dsp);
     };
 
     const handleCloseModal = () => {
@@ -158,6 +138,7 @@ function ManageDSPComponent() {
                         </div>
                         <div className="manage-genre-btn">
                             <button
+                                type="button"
                                 className="btn mangageGenre"
                                 onClick={() => handleOpenModal('add')}
                             >
@@ -205,6 +186,7 @@ function ManageDSPComponent() {
                                                 <td className="excel-button view-subLabels-btn manageGenre" id="subLabelsBtn">
                                                     <div className="manage-gen-btnBox">
                                                         <button
+                                                            type="button"
                                                             className="btn excel"
                                                             id="subLabelsBtn"
                                                             onClick={() => handleOpenModal('edit', dsp)}
@@ -212,6 +194,7 @@ function ManageDSPComponent() {
                                                             Edit
                                                         </button>
                                                         <button
+                                                            type="button"
                                                             className="btn excel"
                                                             id="subLabelsDel"
                                                             onClick={() => handleOpenModal('delete', dsp)}

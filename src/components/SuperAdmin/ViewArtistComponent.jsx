@@ -123,6 +123,7 @@ function ViewArtistComponent() {
                                 </div>
                             </form>
                             <button
+                                type="button"
                                 className="btn mangageGenre"
                                 onClick={() => navigate('/add-artist')}
                             >
@@ -182,12 +183,14 @@ function ViewArtistComponent() {
                                                 </td>
                                                 <td className="view-artist-button">
                                                     <button
+                                                        type="button"
                                                         className="btn edit"
                                                         onClick={() => navigate(`/edit-artist/${artist.id}`)}
                                                     >
                                                         Edit
                                                     </button>
                                                     <button
+                                                        type="button"
                                                         className="btn delete"
                                                         onClick={() => openDeleteModal(artist)}
                                                     >
