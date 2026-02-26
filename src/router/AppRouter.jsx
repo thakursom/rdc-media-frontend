@@ -27,6 +27,8 @@ import ManageSubGenre from "../pages/SuperAdmin/ManageSubGenre";
 import ManageDSP from "../pages/SuperAdmin/ManageDSP";
 import ManageUser from "../pages/SuperAdmin/ManageUser";
 import AddUser from "../pages/SuperAdmin/AddUser";
+import ManageCountry from "../pages/SuperAdmin/ManageCountry";
+import ManageUPC from "../pages/SuperAdmin/ManageUPC";
 
 
 function AppRouter() {
@@ -78,6 +80,8 @@ function AppRouter() {
                     <Route path="/dsp" element={<ManageDSP />} />
                     <Route path="/users" element={<ManageUser />} />
                     <Route path="/add-user" element={<AddUser />} />
+                    <Route path="/countries" element={<ManageCountry />} />
+                    <Route path="/upc" element={<ManageUPC />} />
                 </Route>
 
 

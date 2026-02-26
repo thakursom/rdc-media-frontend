@@ -206,9 +206,11 @@ function Navbar({ sidebarOpen, setSidebarOpen }) {
                         >
                             <li><NavLink to="/genre">Manage Genre</NavLink></li>
                             <li><NavLink to="/sub-genre">Manage Sub Genre</NavLink></li>
-                            <li><NavLink to="/permissions">Manage Permissions</NavLink></li>
+                            {/* <li><NavLink to="/permissions">Manage Permissions</NavLink></li> */}
                             <li><NavLink to="/users">Manage Users</NavLink></li>
                             <li><NavLink to="/dsp">Manage DSP's</NavLink></li>
+                            <li><NavLink to="/countries">Manage Countries</NavLink></li>
+                            <li><NavLink to="/upc">Manage UPC</NavLink></li>
                         </ul>
                     </li>
 

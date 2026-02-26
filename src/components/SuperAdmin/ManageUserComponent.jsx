@@ -164,7 +164,7 @@ function ManageUserComponent() {
                                                                 type="button"
                                                                 className="btn excel"
                                                                 id="subLabelsBtn"
-                                                            // onClick={() => navigate(`/add-user?id=${user.id}`)}
+                                                                onClick={() => navigate(`/add-user?id=${user.id}`)}
                                                             >
                                                                 Edit
                                                             </button>
@@ -172,7 +172,7 @@ function ManageUserComponent() {
                                                                 type="button"
                                                                 className="btn excel"
                                                                 id="subLabelsDel"
-                                                            // onClick={() => handleOpenModal('delete', user)}
+                                                                onClick={() => handleOpenModal('delete', user)}
                                                             >
                                                                 Delete
                                                             </button>
