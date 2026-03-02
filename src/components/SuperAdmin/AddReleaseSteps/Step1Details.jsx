@@ -43,7 +43,7 @@ const Step1Details = ({
 
                     <div className="row">
                         {/* UPC */}
-                        <div className="col-md-4 mb-4">
+                        <div className="col-md-8 mb-4">
                             <label className="form-label required">UPC</label>
                             <div className="input-group">
                                 <select
@@ -81,7 +81,7 @@ const Step1Details = ({
                         </div>
 
                         {/* ISRC – same pattern */}
-                        <div className="col-md-4 mb-4">
+                        {/* <div className="col-md-4 mb-4">
                             <label className="form-label required">ISRC</label>
                             <div className="input-group">
                                 <select
@@ -115,7 +115,7 @@ const Step1Details = ({
                                 />
                             </div>
                             {showError('isrc')}
-                        </div>
+                        </div> */}
                     </div>
                     {/* Copyright Year + Holder */}
                     <div className="col-md-4 mb-4">

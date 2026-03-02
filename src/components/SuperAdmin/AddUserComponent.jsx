@@ -176,12 +176,10 @@ function AddUserComponent() {
                                             onBlur={formik.handleBlur}
                                         >
                                             <option value="">-- Choose Role --</option>
-                                            <option value="Admin">Admin</option>
-                                            <option value="Manager">Manager</option>
                                             <option value="Super Admin">Super Admin</option>
+                                            <option value="Manager">Manager</option>
                                             <option value="User">User</option>
-                                            <option value="Label">Label</option>
-                                            <option value="Sub-label">Sub-label</option>
+                                            <option value="Sub User">Sub User</option>
                                         </select>
                                         {formik.touched.role && formik.errors.role && (
                                             <small className="text-danger">{formik.errors.role}</small>

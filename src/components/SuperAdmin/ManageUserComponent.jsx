@@ -124,7 +124,7 @@ function ManageUserComponent() {
                             <button
                                 type="button"
                                 className="btn mangageGenre"
-                                // onClick={() => navigate("/add-user")}
+                                onClick={() => navigate("/add-user")}
                                 style={{ height: "38px" }}
                             >
                                 <i className="fa-solid fa-plus" />
