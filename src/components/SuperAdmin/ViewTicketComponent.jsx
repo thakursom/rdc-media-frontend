@@ -7,7 +7,7 @@ function ViewTicketComponent() {
                 <div className="Audio-main-sec">
                     <div className="view-release">
                         <div className="view-release-heading">
-                            <h6>View Ticket</h6>
+                            <h6 className='clPurple'>View Ticket</h6>
                         </div>
                     </div>
                     <form className="view-ticket-form">

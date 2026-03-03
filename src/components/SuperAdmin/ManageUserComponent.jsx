@@ -103,7 +103,7 @@ function ManageUserComponent() {
                 <div className="Audio-main-sec">
                     <div className="view-release">
                         <div className="view-release-heading">
-                            <h6>Manage User</h6>
+                            <h6 className='clPurple'>Manage User</h6>
                         </div>
                         <div className="manage-genre-btn d-flex gap-2 align-items-center">
                             <form className="search-form d-flex gap-2" onSubmit={handleSearch}>
@@ -115,15 +115,15 @@ function ManageUserComponent() {
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     style={{ width: "250px", height: "38px" }}
                                 />
-                                <button type="submit" className="btn btn-info text-white" style={{ height: "38px" }}>Search</button>
+                                <button type="submit" className="mainBtn bgPurple clWhite" style={{ height: "38px" }}>Search</button>
                                 {searchTerm && (
-                                    <button type="button" className="btn btn-secondary" onClick={handleClearSearch} style={{ height: "38px" }}>Clear</button>
+                                    <button type="button" className="mainBtn bgGray clWhite" onClick={handleClearSearch} style={{ height: "38px" }}>Clear</button>
                                 )}
                             </form>
-                            <button className="btn btn-success" onClick={handleExport} style={{ height: "38px" }}>Export</button>
+                            <button className="mainBtn bgPurple clWhite" onClick={handleExport} style={{ height: "38px" }}>Export</button>
                             <button
                                 type="button"
-                                className="btn mangageGenre"
+                                className="mainBtn bgPurple clWhite"
                                 onClick={() => navigate("/add-user")}
                                 style={{ height: "38px" }}
                             >
@@ -162,7 +162,7 @@ function ManageUserComponent() {
                                                         <div className="manage-gen-btnBox">
                                                             <button
                                                                 type="button"
-                                                                className="btn excel"
+                                                                className="mainBtn bgPurple clWhite"
                                                                 id="subLabelsBtn"
                                                                 onClick={() => navigate(`/add-user?id=${user.id}`)}
                                                             >
@@ -170,7 +170,7 @@ function ManageUserComponent() {
                                                             </button>
                                                             <button
                                                                 type="button"
-                                                                className="btn excel"
+                                                                className="mainBtn bgRed clWhite"
                                                                 id="subLabelsDel"
                                                                 onClick={() => handleOpenModal('delete', user)}
                                                             >
@@ -216,10 +216,10 @@ function ManageUserComponent() {
                                 <p>Are you sure you want to delete the user <strong>{selectedUser?.name}</strong>? This action cannot be undone.</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                                <button type="button" className="mainBtn bgGray clWhite" onClick={handleCloseModal}>Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn btn-danger"
+                                    className="mainBtn bgRed clWhite"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
                                 >

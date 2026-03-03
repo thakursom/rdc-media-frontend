@@ -230,7 +230,7 @@ function ManageUPCComponent() {
                 <div className="Audio-main-sec">
                     <div className="view-release" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
                         <div className="view-release-heading my-0">
-                            <h6 style={{ color: '#2db3a0', margin: 0 }}>View UPC</h6>
+                            <h6 className='clPurple'>View UPC</h6>
                         </div>
 
                         {/* Search and Filters Strip */}
@@ -259,21 +259,19 @@ function ManageUPCComponent() {
                                 <option value="0">Disabled</option>
                             </select>
 
-                            <button type="button" className="btn text-white" style={{ backgroundColor: '#2db3a0' }} onClick={handleSearch}>
+                            <button type="button" className="mainBtn bgPurple clWhite" onClick={handleSearch}>
                                 Search
                             </button>
-                            <button type="button" className="btn text-white" style={{ backgroundColor: '#6c757d' }} onClick={handleReset}>
+                            <button type="button" className="mainBtn bgGray clWhite" onClick={handleReset}>
                                 Reset
                             </button>
-
-                            <button type="button" className="btn text-white" style={{ backgroundColor: '#2db3a0' }} onClick={handleExportExcel}>
+                            <button type="button" className="mainBtn bgPurple clWhite" onClick={handleExportExcel}>
                                 <i className="fa-regular fa-file-excel me-1"></i> Export Excel
                             </button>
 
                             <button
                                 type="button"
-                                className="btn text-white"
-                                style={{ backgroundColor: '#2db3a0' }}
+                                className="mainBtn bgPurple clWhite"
                                 onClick={() => handleOpenModal('upload')}
                             >
                                 +Add New UPC
@@ -320,7 +318,7 @@ function ManageUPCComponent() {
                                                     <div className="manage-gen-btnBox">
                                                         <button
                                                             type="button"
-                                                            className="btn excel"
+                                                            className="mainBtn bgPurple clWhite"
                                                             id="subLabelsBtn"
                                                             onClick={() => handleOpenModal('edit', item)}
                                                         >
@@ -328,9 +326,9 @@ function ManageUPCComponent() {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            className="btn excel"
+                                                            className="mainBtn bgRed clWhite"
                                                             id="subLabelsDel"
-                                                        // onClick={() => handleOpenModal('delete', item)}
+                                                            onClick={() => handleOpenModal('delete', item)}
                                                         >
                                                             Delete
                                                         </button>
@@ -387,8 +385,8 @@ function ManageUPCComponent() {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
-                                    <button type="submit" className="btn bgGreen clWhite" disabled={isUploading || !selectedFile}>
+                                    <button type="button" className="mainBtn bgGray clWhite" onClick={handleCloseModal}>Cancel</button>
+                                    <button type="submit" className="mainBtn bgPurple clWhite" disabled={isUploading || !selectedFile}>
                                         {isUploading ? 'Uploading...' : 'Upload File'}
                                     </button>
                                 </div>
@@ -441,8 +439,8 @@ function ManageUPCComponent() {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
-                                    <button type="submit" className="btn bgGreen clWhite" disabled={formik.isSubmitting}>
+                                    <button type="button" className="mainBtn bgGray clWhite" onClick={handleCloseModal}>Cancel</button>
+                                    <button type="submit" className="mainBtn bgPurple clWhite" disabled={formik.isSubmitting}>
                                         {formik.isSubmitting ? 'Saving...' : 'Save Changes'}
                                     </button>
                                 </div>
@@ -465,10 +463,10 @@ function ManageUPCComponent() {
                                 <p>Are you sure you want to delete the UPC <strong>{selectedUPC?.upc}</strong>?</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                                <button type="button" className="mainBtn bgGray clWhite" onClick={handleCloseModal}>Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn btn-danger"
+                                    className="mainBtn bgRed clWhite"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
                                 >

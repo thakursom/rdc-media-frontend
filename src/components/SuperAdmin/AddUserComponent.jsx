@@ -107,7 +107,7 @@ function AddUserComponent() {
             <div className="add-subLabel-sec">
                 <div className="add-subLab">
                     <div className="add-subLabel-heading">
-                        <h6>{isEdit ? "Edit User" : "Add User"}</h6>
+                        <h6 className='clPurple'>{isEdit ? "Edit User" : "Add User"}</h6>
                     </div>
                 </div>
                 <div className="add-subLabel-mainbox">
@@ -238,7 +238,7 @@ function AddUserComponent() {
                                     <div className="form-group add-sublab-group">
                                         <button
                                             type="submit"
-                                            className="btn request-btn"
+                                            className="mainBtn bgPurple clWhite"
                                             id="requestBtn"
                                             disabled={formik.isSubmitting}
                                         >

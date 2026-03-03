@@ -48,9 +48,9 @@
 }
 
 .custom-active a {
-    background-color: #35bdaa !important;
-    border-color: #35bdaa !important;
-    color: #fff !important;
+    background-color: var(--bgPurple) !important;
+    border-color: var(--bgPurple) !important;
+    color: var(--clWhite) !important;
 }
 
 .custom-disabled a {

@@ -98,7 +98,7 @@ function ViewArtistComponent() {
                 <div className="view-release-sec scroll-x-hidden">
                     <div className="view-release">
                         <div className="view-release-heading">
-                            <h6>View Artist</h6>
+                            <h6 className='clPurple'>View Artist</h6>
                         </div>
                         <div className="manage-genre-btn d-flex align-items-center">
                             <form className="me-3 d-flex" onSubmit={handleSearch}>
@@ -117,14 +117,14 @@ function ViewArtistComponent() {
                                             }
                                         }}
                                     />
-                                    <button className="btn bgGreen clWhite" type="submit">
+                                    <button className="btn bgPurple clWhite" type="submit">
                                         <i className="fa-solid fa-magnifying-glass"></i>
                                     </button>
                                 </div>
                             </form>
                             <button
                                 type="button"
-                                className="btn mangageGenre"
+                                className="mainBtn bgPurple clWhite"
                                 onClick={() => navigate('/add-artist')}
                             >
                                 <i className="fa-solid fa-plus" />
@@ -172,26 +172,26 @@ function ViewArtistComponent() {
                                                         </a>
                                                     )}
                                                 </td>
-                                                <td>
+                                                <td className='linksBtn'>
                                                     <div className="d-flex flex-wrap gap-2">
-                                                        {artist.sound_cloud && <a href={artist.sound_cloud} title="SoundCloud" target="_blank" rel="noreferrer"><i className="fa-brands fa-soundcloud text-orange"></i></a>}
-                                                        {artist.twitter && <a href={artist.twitter} title="Twitter" target="_blank" rel="noreferrer"><i className="fa-brands fa-twitter text-info"></i></a>}
-                                                        {artist.facebook && <a href={artist.facebook} title="Facebook" target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook text-primary"></i></a>}
-                                                        {artist.instagram && <a href={artist.instagram} title="Instagram" target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram text-danger"></i></a>}
-                                                        {artist.youtube && <a href={artist.youtube} title="YouTube" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube text-danger"></i></a>}
+                                                        {artist.sound_cloud && <a href={artist.sound_cloud} className='soundCloud' title="SoundCloud" target="_blank" rel="noreferrer"><i className="fa-brands fa-soundcloud text-orange"></i></a>}
+                                                        {artist.twitter && <a href={artist.twitter} className='twitter' title="Twitter" target="_blank" rel="noreferrer"><i className="fa-brands fa-twitter text-info"></i></a>}
+                                                        {artist.facebook && <a href={artist.facebook} className='facebook' title="Facebook" target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook text-primary"></i></a>}
+                                                        {artist.instagram && <a href={artist.instagram} className='instagram' title="Instagram" target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram text-danger"></i></a>}
+                                                        {artist.youtube && <a href={artist.youtube} className='youtube' title="YouTube" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube text-danger"></i></a>}
                                                     </div>
                                                 </td>
                                                 <td className="view-artist-button">
                                                     <button
                                                         type="button"
-                                                        className="btn edit"
+                                                        className="mainBtn bgPurple clWhite"
                                                         onClick={() => navigate(`/edit-artist/${artist.id}`)}
                                                     >
                                                         Edit
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        className="btn delete"
+                                                        className="mainBtn bgRed clWhite"
                                                         onClick={() => openDeleteModal(artist)}
                                                     >
                                                         Delete
@@ -234,10 +234,10 @@ function ViewArtistComponent() {
                                 <p>Are you sure you want to delete the artist <strong>{selectedArtist?.name}</strong>? This action cannot be undone.</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={closeDeleteModal}>Cancel</button>
+                                <button type="button" className="mainBtn bgGray clWhite" onClick={closeDeleteModal}>Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn btn-danger"
+                                    className="mainBtn bgRed clWhite"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
                                 >

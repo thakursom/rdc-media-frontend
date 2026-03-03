@@ -9,10 +9,40 @@
 }
 
 :root {
+    --bgPurple: #0065ab;
+    --clPurple: #0065ab;
     --bgGreen: #35bdaa;
     --clGreen: #35bdaa;
     --bgWhite: #fff;
     --clWhite: #fff;
+    --bgGray: #6c757d;
+    --clGray: #6c757d;
+    --bgRed: #dc3545;
+    --clRed: #dc3545;
+}
+
+.bgRed {
+    background: var(--bgRed) !important;
+}
+
+.clRed {
+    color: var(--clRed) !important;
+}
+
+.bgGray {
+    background: var(--bgGray) !important;
+}
+
+.clGray {
+    color: var(--clGray) !important;
+}
+
+.bgPurple {
+    background: var(--bgPurple) !important;
+}
+
+.clPurple {
+    color: var(--clPurple) !important;
 }
 
 .bgGreen {
@@ -32,6 +62,15 @@
 }
 
 
+.mainBtn {
+    display: inline-block;
+    border: none;
+    outline: none !important;
+    cursor: pointer !important;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 3px;
+}
 
 body {
     height: 100vh;
@@ -486,7 +525,7 @@ label.error {
     width: 25px;
     height: 3px;
     margin: 1px auto;
-    background-color: #35bdaa;
+    background-color: var(--bgPurple);
 }
 
 .hamburger .bar:nth-child(1) {
@@ -2269,7 +2308,7 @@ ul.sidemenu li {
 .chose-file-sec .chose-mainbox .file-icon {
     width: 52px;
     height: 44px;
-    background-color: #ae77f8;
+    background-color: var(--bgPurple);
     border-radius: 6px;
     display: flex;
     justify-content: center;
@@ -2279,7 +2318,7 @@ ul.sidemenu li {
 .chose-file-sec .chose-mainbox i {
     font-size: 20px;
     font-weight: 600;
-    color: #fff;
+    color: var(--clWhite);
 }
 
 #tab1:checked~.tab-content #content1 {
@@ -3305,7 +3344,7 @@ select {
 }
 
 .form-check-input:checked[type=checkbox] {
-    border: 1px solid #35bdaa !important;
+    border: 1px solid var(--bgPurple) !important;
 }
 
 .addition-form-check .form-check label {
@@ -4397,7 +4436,7 @@ td.add-track-button .edit {
 .artist-file-sec .choose-artist-mainbox {
     width: 100%;
     max-width: 339px;
-    border: 1px dashed #ae77f8;
+    border: 1px dashed var(--bgPurple);
     padding: 50px 0px;
     display: flex;
     flex-direction: column;
@@ -4411,7 +4450,7 @@ td.add-track-button .edit {
 .artist-file-sec .choose-artist-mainbox .file-icon {
     width: 50px;
     height: 40px;
-    background-color: #ae77f8;
+    background-color: var(--bgPurple);
     border-radius: 6px;
     display: flex;
     justify-content: center;
@@ -4570,9 +4609,9 @@ td.add-track-button .edit {
 }
 
 .form-check-input:checked[type=checkbox] {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='rgb(53, 189, 170)'  stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
-    background-color: #ebfdfa;
-    border: 1px solid #0d6efd;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230065ab' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    background-color: var(--bgPurple);
+    border: 1px solid var(--bgPurple);
 }
 
 .form-check-input[type="checkbox"]:hover {
@@ -5123,6 +5162,13 @@ td.audio-btn-td {
     padding: 9px 13px !important;
 }
 
+a.soundCloud {
+    background: linear-gradient(to right,
+            #fe8c00, #f83600);
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
 
 
 
@@ -6279,6 +6325,72 @@ select:focus-visible {
 }
 
 
+/* ########### pagintion ############ */
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 0 15px;
+    font-family: inherit;
+}
+
+.rows-per-page {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rows-select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    outline: none;
+    cursor: pointer;
+}
+
+.custom-pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 5px;
+}
+
+.custom-page {
+    cursor: pointer;
+}
+
+.custom-page a {
+    display: block;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.custom-page a:hover {
+    background-color: #f0f0f0;
+}
+
+.custom-active a {
+    background-color: var(--bgPurple) !important;
+    border-color: var(--bgPurple) !important;
+    color: var(--clWhite) !important;
+}
+
+.custom-disabled a {
+    color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+
+
 /* ############## view Ticket page media quries ################  */
 
 @media (max-width:576px) {
@@ -6293,20 +6405,6 @@ select:focus-visible {
 
 /* ################## manage Genre page ###############  */
 
-
-.manage-genre-btn button {
-    display: inline-block;
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 100%;
-    color: #fff;
-    background-color: #35bdaa;
-    border-radius: 6px;
-}
 
 .manage-genre-btn button:hover {
     color: #fff;

@@ -134,12 +134,12 @@ function ManageDSPComponent() {
                 <div className="Audio-main-sec">
                     <div className="view-release">
                         <div className="view-release-heading">
-                            <h6>Manage DSPs</h6>
+                            <h6 className='clPurple'>Manage DSPs</h6>
                         </div>
                         <div className="manage-genre-btn">
                             <button
                                 type="button"
-                                className="btn mangageGenre"
+                                className="mainBtn bgPurple clWhite"
                                 onClick={() => handleOpenModal('add')}
                             >
                                 <i className="fa-solid fa-plus" />
@@ -187,7 +187,7 @@ function ManageDSPComponent() {
                                                     <div className="manage-gen-btnBox">
                                                         <button
                                                             type="button"
-                                                            className="btn excel"
+                                                            className="mainBtn bgPurple clWhite"
                                                             id="subLabelsBtn"
                                                             onClick={() => handleOpenModal('edit', dsp)}
                                                         >
@@ -195,7 +195,7 @@ function ManageDSPComponent() {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            className="btn excel"
+                                                            className="mainBtn bgRed clWhite"
                                                             id="subLabelsDel"
                                                             onClick={() => handleOpenModal('delete', dsp)}
                                                         >
@@ -267,8 +267,8 @@ function ManageDSPComponent() {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
-                                    <button type="submit" className="btn bgGreen clWhite" disabled={formik.isSubmitting}>
+                                    <button type="button" className="mainBtn bgGray clWhite" onClick={handleCloseModal}>Cancel</button>
+                                    <button type="submit" className="mainBtn bgPurple clWhite" disabled={formik.isSubmitting}>
                                         {formik.isSubmitting ? 'Saving...' : 'Save Changes'}
                                     </button>
                                 </div>
@@ -291,10 +291,10 @@ function ManageDSPComponent() {
                                 <p>Are you sure you want to delete the DSP <strong>{selectedDsp?.name}</strong>? This action cannot be undone.</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                                <button type="button" className="mainBtn bgGray clWhite" onClick={handleCloseModal}>Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn btn-danger"
+                                    className="mainBtn bgRed clWhite"
                                     onClick={handleDelete}
                                 >
                                     Delete DSP

@@ -241,7 +241,7 @@ function AddArtistComponent() {
             <section className="right-sidebar" id="sidebarRight">
                 <div className="add-artist-sec">
                     <div className="artist-sec-heading">
-                        <h6>{isEdit ? 'Edit Artist' : 'Add Artist'}</h6>
+                        <h6 className='clPurple'>{isEdit ? 'Edit Artist' : 'Add Artist'}</h6>
                     </div>
 
                     {/* Image Upload Box */}
@@ -691,14 +691,14 @@ function AddArtistComponent() {
                             <div className="artist-btn-main mt-5">
                                 <button
                                     type="submit"
-                                    className="btn bgGreen clWhite px-5 py-2"
+                                    className="mainBtn bgPurple clWhite px-5 py-2"
                                     disabled={formik.isSubmitting || isUploading}
                                 >
                                     {formik.isSubmitting ? 'Saving...' : (isEdit ? 'Update Artist' : 'Save Artist')}
                                 </button>
                                 <button
                                     type="button"
-                                    className="btn btn-secondary ms-3 px-5 py-2"
+                                    className="mainBtn bgGray clWhite ms-3 px-5 py-2"
                                     onClick={() => navigate('/view-artist')}
                                     disabled={formik.isSubmitting}
                                 >
