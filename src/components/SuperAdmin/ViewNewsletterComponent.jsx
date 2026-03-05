@@ -37,7 +37,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -59,7 +59,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -81,7 +81,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -103,7 +103,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -125,7 +125,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -147,7 +147,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -169,7 +169,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>
@@ -191,7 +191,7 @@ function ViewNewsletterComponent() {
                                         </div>
                                     </td>
                                     <td className="excel-button pre-save-btn">
-                                        <button className="btn excel" id="playlist-promo">
+                                        <button className="mainBtn bgPurple clWhite" id="playlist-promo">
                                             View More
                                         </button>
                                     </td>

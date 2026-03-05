@@ -1,6 +1,108 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { apiRequest } from "../../services/api";
+import { toast } from "react-toastify";
+import CustomPagination from "../Pagination/CustomPagination";
+import Loader from "../Loader/Loader";
 
 function ViewAllReleaseComponent() {
+    const [releases, setReleases] = useState([]);
+    console.log("releases", releases);
+    const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [pagination, setPagination] = useState({
+        totalDocs: 0,
+        totalPages: 0,
+        currentPage: 1,
+        limit: 10
+    });
+
+    useEffect(() => {
+        fetchReleases(pagination.currentPage, searchTerm);
+    }, [pagination.currentPage]);
+
+    const fetchReleases = async (page = 1, search = "", currentLimit = pagination.limit) => {
+        setLoading(true);
+        try {
+            const endpoint = `/releases?page=${page}&limit=${currentLimit}${search ? `&search=${search}` : ""}`;
+            const response = await apiRequest(endpoint, "GET", null, true);
+            if (response.success) {
+                setReleases(response?.data?.data?.releases || []);
+                if (response?.data?.data?.pagination) {
+                    setPagination(response.data.data.pagination);
+                }
+            } else {
+                toast.error(response?.data?.message || "Failed to fetch releases");
+            }
+        } catch (error) {
+            console.error("Fetch releases error:", error);
+            toast.error("An error occurred while fetching releases");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        fetchReleases(1, searchTerm);
+    };
+
+    const handlePageChange = (page) => {
+        setPagination(prev => ({ ...prev, currentPage: page }));
+    };
+
+    const handlePerPageChange = (newLimit) => {
+        setPagination(prev => ({ ...prev, limit: newLimit, currentPage: 1 }));
+        fetchReleases(1, searchTerm, newLimit);
+    };
+
+    const handleDownloadMeta = (release) => {
+        try {
+            const dataStr = JSON.stringify(release, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${release.release_title || 'metadata'}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            toast.success("Metadata download started");
+        } catch (error) {
+            console.error("Download meta error:", error);
+            toast.error("Failed to download metadata");
+        }
+    };
+
+    const handleDownloadAudio = (release) => {
+        if (!release.tracks || release.tracks.length === 0) {
+            toast.warn("No tracks found for this release");
+            return;
+        }
+
+        const tracksWithAudio = release.tracks.filter(t => t.audio_path);
+        if (tracksWithAudio.length === 0) {
+            toast.warn("No audio files available for download");
+            return;
+        }
+
+        toast.info(`Starting download for ${tracksWithAudio.length} tracks...`);
+
+        tracksWithAudio.forEach((track, index) => {
+            // Use setTimeout to avoid browser blocking multiple concurrent downloads
+            setTimeout(() => {
+                const link = document.createElement("a");
+                link.href = track.audio_path;
+                link.target = "_blank";
+                link.download = track.title || `track-${index + 1}`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }, index * 1000);
+        });
+    };
+
     return (
         <>
             <section className="right-sidebar" id="sidebarRight">
@@ -10,21 +112,30 @@ function ViewAllReleaseComponent() {
                             <h6>View Releases</h6>
                         </div>
                         <div className="view-all-release-search">
-                            <form>
-                                <div className="form-group">
+                            <form onSubmit={handleSearch}>
+                                <div className="input-group">
                                     <input
                                         type="text"
                                         className="form-control"
                                         id="view_release-search"
-                                        placeholder="Search by releases"
+                                        placeholder="Search by title/artist/label"
+                                        value={searchTerm}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setSearchTerm(val);
+                                            if (val === '') {
+                                                setPagination(prev => ({ ...prev, currentPage: 1 }));
+                                                fetchReleases(1, '');
+                                            }
+                                        }}
                                     />
-                                    <div className="view-search-icon">
+                                    <button className="btn bgPurple clWhite" type="submit" style={{ borderRadius: '0 6px 6px 0' }}>
                                         <i className="fa-solid fa-magnifying-glass" />
-                                    </div>
+                                    </button>
                                 </div>
                             </form>
                             <button
-                                className="btn vewReleaseBtn"
+                                className="mainBtn bgPurple clWhite"
                                 data-bs-toggle="modal"
                                 data-bs-target="#advanceFilter"
                             >
@@ -500,381 +611,116 @@ function ViewAllReleaseComponent() {
                         </div>
                     </div>
                     <div className="viewReleases-main-sec">
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Title / Artist</th>
-                                    <th>Label</th>
-                                    <th>Releas Data/Hour/Time/Zone </th>
-                                    <th># Of track</th>
-                                    <th>UPC / Catalogue Number</th>
-                                    <th>Promotion</th>
-                                    <th>Delievered Territories &amp; Store</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Single</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/statusOk.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Album</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/status.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Single</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/statusOk.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Album</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/status.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Single</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/statusOk.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Single</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/statusOk.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Album</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/statusOk.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="text-color-dark">
-                                        <span>Album</span>
-                                    </td>
-                                    <td>
-                                        <div className="status-ok">
-                                            <img src="../assets/Img/statusOk.png" alt="Not found" />
-                                        </div>
-                                    </td>
-                                    <td className="Title-artist-td">
-                                        <h6>The Girl</h6>
-                                        <p>Smith Jones</p>
-                                    </td>
-                                    <td>Lalan Music</td>
-                                    <td>11-02-2025/2hours/5:45/PM</td>
-                                    <td>21 track</td>
-                                    <td>
-                                        <p className="upc-td">
-                                            UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
-                                        <p className="cat-td">
-                                            Cat# :<span className="cat-count">$454</span>{" "}
-                                        </p>
-                                    </td>
-                                    <td className="promote-td">Promote</td>
-                                    <td className="icon-td">
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/earth.png" alt="Not found" />
-                                            </div>
-                                            <p>240 terrs.</p>
-                                        </div>
-                                        <div className="deliever-store-main">
-                                            <div className="iconMain">
-                                                <img src="../assets/Img/file.png" alt="Not found" />
-                                            </div>
-                                            <p>0 Store.</p>
-                                        </div>
-                                    </td>
-                                    <td className="download-content-btn">
-                                        <button className="btn download-meta">Download Meta</button>
-                                        <button className="btn download-audio">Download Audio</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        {loading && (
+                            <div className="text-center py-5">
+                                <Loader message="Fetching releases..." variant="success" />
+                            </div>
+                        )}
+                        {!loading && (
+                            <>
+                                <table className="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Title / Artist</th>
+                                            <th>Label</th>
+                                            <th>Release Date</th>
+                                            <th># Of tracks</th>
+                                            <th>UPC / Catalogue Number</th>
+                                            {/* <th>Promotion</th> */}
+                                            <th>Delivered Territories & Store</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {releases.length > 0 ? (
+                                            releases.map((release, index) => (
+                                                <tr key={release.id || release._id}>
+                                                    <td className="text-color-dark">
+                                                        <span>{release.release_type === 1 ? 'Single' : 'Album'}</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="status-ok">
+                                                            <img
+                                                                src={release.status === 1 ? "../assets/Img/statusOk.png" : "../assets/Img/status.png"}
+                                                                alt={release.status === 1 ? "Approved" : "Pending"}
+                                                                style={{ width: '20px', height: '20px' }}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td className="Title-artist-td">
+                                                        <h6>{release.release_title}</h6>
+                                                        <p>{release.primary_artist?.name || '-'}</p>
+                                                    </td>
+                                                    <td>{release.label?.name || '-'}</td>
+                                                    <td>{release.release_date ? new Date(release.release_date).toLocaleDateString() : '-'}</td>
+                                                    <td>{release.tracks?.length || 0} track{release.tracks?.length !== 1 ? 's' : ''}</td>
+                                                    <td>
+                                                        <p className="upc-td">
+                                                            UPC :<span className="counts">{release.upc || '-'}</span>{" "}
+                                                        </p>
+                                                        <p className="cat-td">
+                                                            Cat# :<span className="cat-count">{release.catalogue_number || '-'}</span>{" "}
+                                                        </p>
+                                                    </td>
+                                                    {/* <td className="promote-td">Promote</td> */}
+                                                    <td className="icon-td">
+                                                        <div className="deliever-store-main">
+                                                            <div className="iconMain">
+                                                                <img src="../assets/Img/earth.png" alt="Region" />
+                                                            </div>
+                                                            <p>{release.territories?.length || 240} terrs.</p>
+                                                        </div>
+                                                        <div className="deliever-store-main">
+                                                            <div className="iconMain">
+                                                                <img src="../assets/Img/file.png" alt="Stores" />
+                                                            </div>
+                                                            <p>{release.stores?.length || 0} Store.</p>
+                                                        </div>
+                                                    </td>
+                                                    <td className="download-content-btn">
+                                                        <button
+                                                            className="mainBtn bgPurple clWhite m-2"
+                                                            onClick={() => handleDownloadMeta(release)}
+                                                        >
+                                                            Download Meta
+                                                        </button>
+                                                        <button
+                                                            className="mainBtn bgPurple clWhite m-2"
+                                                            onClick={() => handleDownloadAudio(release)}
+                                                        >
+                                                            Download Audio
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="10" className="text-center py-4">No releases found</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+
+                                {pagination.totalPages > 1 && (
+                                    <div className="pagination-container mt-4">
+                                        <CustomPagination
+                                            pageCount={pagination.totalPages}
+                                            onPageChange={handlePageChange}
+                                            currentPage={pagination.currentPage}
+                                            perPage={pagination.limit}
+                                            onPerPageChange={handlePerPageChange}
+                                        />
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             </section>
-
         </>
-    )
+    );
 }
 
-export default ViewAllReleaseComponent
+export default ViewAllReleaseComponent;

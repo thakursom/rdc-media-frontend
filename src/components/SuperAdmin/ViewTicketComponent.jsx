@@ -40,7 +40,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketNew">
+                                        <button className="mainBtn bgPurple clWhite" id="ticketNew">
                                             New
                                         </button>
                                     </td>
@@ -57,7 +57,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketNew">
+                                        <button className="mainBtn bgPurple clWhite" id="ticketNew">
                                             New
                                         </button>
                                     </td>
@@ -74,7 +74,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketNew">
+                                        <button className="mainBtn bgPurple clWhite" id="ticketNew">
                                             New
                                         </button>
                                     </td>
@@ -91,7 +91,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketComplete">
+                                        <button className="mainBtn bgGreen clWhite" id="ticketComplete">
                                             Complete
                                         </button>
                                     </td>
@@ -108,7 +108,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketComplete">
+                                        <button className="mainBtn bgGreen clWhite" id="ticketComplete">
                                             Complete
                                         </button>
                                     </td>
@@ -125,7 +125,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketComplete">
+                                        <button className="mainBtn bgGreen clWhite" id="ticketComplete">
                                             Complete
                                         </button>
                                     </td>
@@ -142,7 +142,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketProgress">
+                                        <button className="mainBtn bgSlateGray clWhite" id="ticketProgress">
                                             Progress
                                         </button>
                                     </td>
@@ -159,7 +159,7 @@ function ViewTicketComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button view-ticket-btn">
-                                        <button className="btn excel" id="ticketProgress">
+                                        <button className="mainBtn bgSlateGray clWhite" id="ticketProgress">
                                             Progress
                                         </button>
                                     </td>

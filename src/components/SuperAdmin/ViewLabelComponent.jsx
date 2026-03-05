@@ -91,7 +91,7 @@ function ViewLabelComponent() {
                         <div className="manage-genre-btn">
                             <button
                                 type="button"
-                                className="btn mangageGenre"
+                                className="mainBtn bgPurple clWhite"
                                 onClick={() => navigate('/add-label')}
                             >
                                 <i className="fa-solid fa-plus" />
@@ -125,7 +125,7 @@ function ViewLabelComponent() {
                                                     <div className="manage-gen-btnBox">
                                                         <button
                                                             type="button"
-                                                            className="btn excel"
+                                                            className="mainBtn bgPurple clWhite"
                                                             id="subLabelsBtn"
                                                             onClick={() => handleEdit(label.id || label._id)}
                                                         >
@@ -133,7 +133,7 @@ function ViewLabelComponent() {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            className="btn excel"
+                                                            className="mainBtn bgRed clWhite"
                                                             id="subLabelsDel"
                                                             onClick={() => confirmDelete(label)}
                                                         >
@@ -179,10 +179,10 @@ function ViewLabelComponent() {
                                 <p>Are you sure you want to delete the label <strong>{labelToDelete.name}</strong>?</p>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setLabelToDelete(null)}>Cancel</button>
+                                <button type="button" className="mainBtn bgGray clWhite" onClick={() => setLabelToDelete(null)}>Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn btn-danger"
+                                    className="mainBtn bgRed clWhite"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
                                 >

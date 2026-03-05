@@ -11,7 +11,7 @@ function SavedReleaseComponent() {
                         </div>
                         <div className="view-all-release-search">
                             <form>
-                                <div className="form-group">
+                                <div className="form-group m-0">
                                     <input
                                         type="text"
                                         className="form-control"
@@ -24,7 +24,7 @@ function SavedReleaseComponent() {
                                 </div>
                             </form>
                             <button
-                                className="btn vewReleaseBtn"
+                                className="mainBtn bgPurple clWhite"
                                 data-bs-toggle="modal"
                                 data-bs-target="#saveFilter"
                             >
@@ -486,10 +486,10 @@ function SavedReleaseComponent() {
                                                 </div>
                                             </div>
                                             <div className="filter-buttons">
-                                                <button className="btn cancel" id="cancelFilter">
+                                                <button className="mainBtn bgRed clWhite" id="cancelFilter">
                                                     Cancel
                                                 </button>
-                                                <button className="btn apply" id="applyFilter">
+                                                <button className="mainBtn bgPurple clWhite" id="applyFilter">
                                                     Apply Filters
                                                 </button>
                                             </div>
@@ -527,13 +527,13 @@ function SavedReleaseComponent() {
                                     <td>
                                         <p className="upc-td">
                                             UPC :<span className="counts">456546464</span>{" "}
-                                        </p>
+                                        </p>btn cancel
                                         <p className="cat-td">
                                             Cat# :<span className="cat-count">$454</span>{" "}
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -558,7 +558,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -583,7 +583,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -608,7 +608,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -633,7 +633,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -658,7 +658,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -683,7 +683,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>
@@ -708,7 +708,7 @@ function SavedReleaseComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="saved-release">
+                                        <button className="mainBtn bgPurple clWhite" id="saved-release">
                                             Continue
                                         </button>
                                     </td>

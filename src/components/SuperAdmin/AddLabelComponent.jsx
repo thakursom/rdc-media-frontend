@@ -162,7 +162,7 @@ function AddLabelComponent() {
                                     <div className="form-group add-sublab-group">
                                         <button
                                             type="submit"
-                                            className="btn request-btn"
+                                            className="mainBtn bgPurple clWhite"
                                             id="requestBtn"
                                             disabled={formik.isSubmitting}
                                         >

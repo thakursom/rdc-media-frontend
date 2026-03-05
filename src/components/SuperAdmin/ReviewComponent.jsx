@@ -44,7 +44,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -69,7 +69,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -94,7 +94,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -119,7 +119,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -144,7 +144,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -169,7 +169,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -194,7 +194,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>
@@ -219,7 +219,7 @@ function ReviewComponent() {
                                         </p>
                                     </td>
                                     <td className="excel-button btn-continue">
-                                        <button className="btn excel" id="view">
+                                        <button className="mainBtn bgPurple clWhite" id="view">
                                             <a href="./viewReleases.html">View</a>
                                         </button>
                                     </td>

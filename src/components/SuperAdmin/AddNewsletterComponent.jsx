@@ -41,7 +41,7 @@ function AddNewsletterComponent() {
                             <div className="form-group add-NewsLetter-button">
                                 <button
                                     type="submit"
-                                    className="btn newsLetter"
+                                    className="mainBtn bgPurple clWhite"
                                     id="newsLetterSubmit"
                                 >
                                     Submit

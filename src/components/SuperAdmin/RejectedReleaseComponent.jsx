@@ -45,7 +45,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -70,7 +70,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -102,7 +102,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -127,7 +127,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -159,7 +159,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -184,7 +184,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -216,7 +216,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -241,7 +241,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -273,7 +273,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -298,7 +298,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -330,7 +330,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -355,7 +355,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -387,7 +387,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -412,7 +412,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>
@@ -444,7 +444,7 @@ function RejectedReleaseComponent() {
                                     </td>
                                     <td className="excel-button btn-continue">
                                         <button
-                                            className="btn excel"
+                                            className="mainBtn bgPurple clWhite"
                                             id="rejected-release"
                                             data-bs-toggle="modal"
                                             data-bs-target="#exampleModal"
@@ -469,7 +469,7 @@ function RejectedReleaseComponent() {
                                                                 nostrud exercitation
                                                             </p>
                                                             <div className="correction-btn">
-                                                                <button className="btn makeCorrect">
+                                                                <button className="mainBtn bgPurple clWhite">
                                                                     Make Correction
                                                                 </button>
                                                             </div>

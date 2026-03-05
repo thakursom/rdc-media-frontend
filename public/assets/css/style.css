@@ -19,6 +19,18 @@
     --clGray: #6c757d;
     --bgRed: #dc3545;
     --clRed: #dc3545;
+    --bgGreen: #28A745;
+    --clGreen: #28A745;
+    --bgSlateGray: #6C757D;
+    --clSlateGray: #6C757D;
+}
+
+.bgSlateGray {
+    background: var(--bgSlateGray) !important;
+}
+
+.clSlateGray {
+    color: var(--clSlateGray) !important;
 }
 
 .bgRed {
@@ -835,11 +847,11 @@ canvas#myChart {
 
 .streams h6 {
     font-size: 16px;
-    color: #35bdaa;
+    color: var(--clPurple);
 }
 
 .streams .value1 {
-    color: #CC8B26;
+    color: var(--clGreen);
     font-size: 11px;
 }
 
@@ -849,7 +861,7 @@ canvas#myChart {
 }
 
 .content:nth-child(5) .artist-data h6 {
-    color: #AE77F8;
+    color: var(--clPurple);
 }
 
 .three-dot {
@@ -909,7 +921,7 @@ canvas#myChart {
 
 .releases-main-content .content p {
     font-size: 14px;
-    color: #Ae77f8;
+    color: var(--clPurple);
 }
 
 .releases-main-content .content h6 {
@@ -992,7 +1004,7 @@ canvas#myChart {
 }
 
 .main-content:nth-child(3) h6 {
-    color: #35bdaa;
+    color: var(--clPurple);
     font-weight: 600;
 }
 
@@ -1040,7 +1052,7 @@ canvas#myChart {
 }
 
 .teritory-deta h6 {
-    color: #35bdaa;
+    color: var(--clPurple);
     font-size: 11px;
     margin-top: 3px;
 }
@@ -1182,7 +1194,7 @@ canvas#myChart {
 }
 
 .label-artist h5 {
-    color: #35bdaa;
+    color: var(--clPurple);
     font-size: 12px;
     font-weight: 500;
     line-height: 21px;
@@ -3692,7 +3704,7 @@ canvas#progressChart {
 .view-release-heading h6 {
     font-size: 16px;
     font-weight: 500;
-    color: #35bdaa;
+    color: var(--clPurple);
 }
 
 .view-release {
@@ -3732,24 +3744,13 @@ canvas#progressChart {
     right: 0;
     width: 40px;
     height: 36px;
-    background-color: #35bdaa;
+    background-color: var(--clPurple);
     color: #fff;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.view-all-release-search .vewReleaseBtn {
-    border: none;
-    outline: none;
-    background: #35bdaa;
-    color: #fff;
-    cursor: pointer;
-    font-size: 15px;
-    padding: 7px 10px;
-    border-radius: 6px;
 }
 
 .vewReleaseBtn i {
@@ -3911,7 +3912,7 @@ canvas#progressChart {
 }
 
 .account-info-heading {
-    background-color: #35bdaa;
+    background-color: var(--bgPurple);
     color: #fff;
     padding: 15px 20px;
     border-top-left-radius: 6px;
@@ -3941,7 +3942,7 @@ canvas#progressChart {
 }
 
 .period-sec-heading {
-    background-color: #35bdaa;
+    background-color: var(--bgPurple);
     color: #fff;
     padding: 15px 20px;
     border-top-left-radius: 6px;
@@ -3968,7 +3969,7 @@ canvas#progressChart {
 }
 
 .source-info-heading {
-    background-color: #35bdaa;
+    background-color: var(--bgPurple);
     color: #fff;
     padding: 15px 20px;
     border-top-left-radius: 6px;
@@ -4009,32 +4010,6 @@ canvas#progressChart {
     gap: 0 10px;
     margin-top: 40px;
 }
-
-.filter-buttons button {
-    display: inline-block;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 7px 15px;
-    font-size: 14px;
-    line-height: 100%;
-    font-weight: 500;
-    border-radius: 6px;
-}
-
-.filter-buttons button.cancel {
-    background-color: #fff;
-    border: 1px solid #35bdaa;
-    color: #35bdaa;
-}
-
-.filter-buttons button.apply {
-    border: 1px solid #35bdaa;
-    background-color: #35bdaa;
-    color: #fff;
-}
-
-
 
 .viewReleases-main-sec::-webkit-scrollbar {
     display: none;
@@ -4083,7 +4058,7 @@ td.add-track-button .edit {
 .Title-artist-td h6 {
     font-size: 14px;
     font-weight: 500;
-    color: #ae77f8;
+    color: var(--clPurple);
     margin-bottom: 3px;
 }
 
@@ -4134,24 +4109,6 @@ td.add-track-button .edit {
 .deliever-store-main p {
     margin: 0;
     font-size: 12px !important;
-}
-
-.download-content-btn button {
-    display: inline-block;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    width: 150px;
-    padding: 10px 15px;
-    color: #fff;
-    background-color: #35bdaa;
-    font-size: 14px;
-    line-height: 100%;
-    font-weight: 500;
-}
-
-.download-content-btn button:hover {
-    color: #fff;
 }
 
 
@@ -4730,7 +4687,7 @@ td.view-artist-button {
 .bulk-sec-heading h6 {
     font-size: 16px;
     font-weight: 500;
-    color: #35bdaa;
+    color: var(--clPurple);
 }
 
 .bulk-rel-guidlines {
@@ -4762,7 +4719,7 @@ td.view-artist-button {
 }
 
 .bulk-file-sec .choose-bulk-mainbox {
-    border: 2px dotted #AE77F8;
+    border: 2px dotted var(--bgPurple);
     padding: 35px 20px;
     display: flex;
     flex-direction: column;
@@ -4785,7 +4742,7 @@ td.view-artist-button {
 .bulk-file-sec .choose-bulk-mainbox .file-icon {
     width: 50px;
     height: 40px;
-    background-color: #ae77f8;
+    background-color: var(--clPurple);
     border-radius: 6px;
     display: flex;
     justify-content: center;
@@ -4842,7 +4799,7 @@ td.view-artist-button {
 }
 
 .metadata-menu li span {
-    color: #35bdaa;
+    color: var(--clPurple);
 }
 
 .metadata-menu li a:hover {
@@ -4924,7 +4881,7 @@ td.audio-btn-td {
     margin-top: 8px;
 }
 
-.excel-button button.excel {
+/* .excel-button button.excel {
     display: inline-block;
     border: none;
     outline: none;
@@ -4937,7 +4894,7 @@ td.audio-btn-td {
     color: #fff;
     margin: 15px 0;
     border-radius: 6px !important;
-}
+} */
 
 .audio-sec-btn {
     margin: 10px 0;
@@ -5045,19 +5002,6 @@ td.audio-btn-td {
     margin-top: 25px;
 }
 
-.correction-data .makeCorrect {
-    display: inline-block;
-    border: none;
-    outline: none;
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 100%;
-    background-color: #35bdaa;
-    color: #fff;
-    cursor: pointer;
-    border-radius: 6px;
-}
 
 
 
@@ -5383,7 +5327,7 @@ td.view-ticket-pra {
 
 .add-subLabel-heading h6 {
     font-size: 16px;
-    color: #35bdaa;
+    color: var(--clPurple);
     font-weight: 500;
     line-height: 100%;
     text-align: center;
@@ -6196,7 +6140,7 @@ button.playBtn {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 1px dashed #ae77f8;
+    border: 1px dashed var(--clPurple);
     padding: 30px 60px 40px 60px;
     gap: 12px 0;
 }
@@ -6204,7 +6148,7 @@ button.playBtn {
 .addNewsLetter .file-icon {
     width: 52px;
     height: 44px;
-    background-color: #ae77f8;
+    background-color: var(--bgPurple);
     border-radius: 6px;
     display: flex;
     justify-content: center;
