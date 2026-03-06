@@ -22,6 +22,7 @@ import ViewArtist from "../pages/SuperAdmin/ViewArtist";
 import AddNewsletter from "../pages/SuperAdmin/AddNewsletter";
 import ViewNewsletter from "../pages/SuperAdmin/ViewNewsletter";
 import ViewTicket from "../pages/SuperAdmin/ViewTicket";
+import AddTicket from "../pages/SuperAdmin/AddTicket";
 import ManageGenre from "../pages/SuperAdmin/ManageGenre";
 import ManageSubGenre from "../pages/SuperAdmin/ManageSubGenre";
 import ManageDSP from "../pages/SuperAdmin/ManageDSP";
@@ -73,8 +74,11 @@ function AppRouter() {
                     <Route path="/edit-artist/:id" element={<AddArtist />} />
                     <Route path="/view-artist" element={<ViewArtist />} />
                     <Route path="/add-newsletter" element={<AddNewsletter />} />
+                    <Route path="/edit-newsletter/:id" element={<AddNewsletter />} />
                     <Route path="/view-newsletter" element={<ViewNewsletter />} />
                     <Route path="/view-ticket" element={<ViewTicket />} />
+                    <Route path="/add-ticket" element={<AddTicket />} />
+                    <Route path="/add-ticket/:id" element={<AddTicket />} />
                     <Route path="/genre" element={<ManageGenre />} />
                     <Route path="/sub-genre" element={<ManageSubGenre />} />
                     <Route path="/dsp" element={<ManageDSP />} />

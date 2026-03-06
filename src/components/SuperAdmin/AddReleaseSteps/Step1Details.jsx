@@ -219,7 +219,7 @@ const Step1Details = ({
                             </select>
 
                             <button
-                                className="btn btn-outline-secondary ms-4 create-rel-form-btn"
+                                className="ms-2 create-rel-form-btn mainBtn bgPurple clWhite"
                                 onClick={() => {
                                     setModalType("artist");
                                     setModalInput("");
@@ -340,7 +340,7 @@ const Step1Details = ({
                                         }}
                                     />
                                     <button
-                                        className="btn bgGreen clWhite btn-sm px-4"
+                                        className="mainBtn bgPurple clWhite"
                                         onClick={() => document.getElementById('artworkUpload').click()}
                                         type="button"
                                     >

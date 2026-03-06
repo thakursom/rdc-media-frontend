@@ -6,7 +6,6 @@ import Loader from "../Loader/Loader";
 
 function ViewAllReleaseComponent() {
     const [releases, setReleases] = useState([]);
-    console.log("releases", releases);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [pagination, setPagination] = useState({
@@ -16,14 +15,50 @@ function ViewAllReleaseComponent() {
         limit: 10
     });
 
-    useEffect(() => {
-        fetchReleases(pagination.currentPage, searchTerm);
-    }, [pagination.currentPage]);
+    const [filters, setFilters] = useState({
+        releaseTypes: [],
+        statuses: [],
+        label: "",
+        artist: "",
+        user: "",
+        preDefined: "",
+        periodFrom: "",
+        periodTo: "",
+        sources: [],
+        sortBy: "creation_date",
+        sortOrder: "desc"
+    });
 
-    const fetchReleases = async (page = 1, search = "", currentLimit = pagination.limit) => {
+    const [tempFilters, setTempFilters] = useState({ ...filters });
+
+    useEffect(() => {
+        fetchReleases(pagination.currentPage, searchTerm, pagination.limit, filters);
+    }, [pagination.currentPage, searchTerm, filters]);
+
+    const fetchReleases = async (page = 1, search = "", currentLimit = pagination.limit, currentFilters = filters) => {
         setLoading(true);
         try {
-            const endpoint = `/releases?page=${page}&limit=${currentLimit}${search ? `&search=${search}` : ""}`;
+            let endpoint = `/releases?page=${page}&limit=${currentLimit}`;
+            if (search) endpoint += `&search=${encodeURIComponent(search)}`;
+
+            // Append advanced filters
+            if (currentFilters.releaseTypes.length > 0) {
+                currentFilters.releaseTypes.forEach(t => endpoint += `&releaseTypes=${t}`);
+            }
+            if (currentFilters.statuses.length > 0) {
+                currentFilters.statuses.forEach(s => endpoint += `&statuses=${s}`);
+            }
+            if (currentFilters.label) endpoint += `&label=${encodeURIComponent(currentFilters.label)}`;
+            if (currentFilters.artist) endpoint += `&artist=${encodeURIComponent(currentFilters.artist)}`;
+            if (currentFilters.user) endpoint += `&user=${encodeURIComponent(currentFilters.user)}`;
+            if (currentFilters.periodFrom) endpoint += `&startDate=${currentFilters.periodFrom}`;
+            if (currentFilters.periodTo) endpoint += `&endDate=${currentFilters.periodTo}`;
+            if (currentFilters.sources.length > 0) {
+                currentFilters.sources.forEach(s => endpoint += `&source=${s}`);
+            }
+            if (currentFilters.sortBy) endpoint += `&sortBy=${currentFilters.sortBy}`;
+            if (currentFilters.sortOrder) endpoint += `&sortOrder=${currentFilters.sortOrder}`;
+
             const response = await apiRequest(endpoint, "GET", null, true);
             if (response.success) {
                 setReleases(response?.data?.data?.releases || []);
@@ -54,6 +89,49 @@ function ViewAllReleaseComponent() {
     const handlePerPageChange = (newLimit) => {
         setPagination(prev => ({ ...prev, limit: newLimit, currentPage: 1 }));
         fetchReleases(1, searchTerm, newLimit);
+    };
+
+    const handleFilterChange = (field, value, isCheckbox = false) => {
+        if (isCheckbox) {
+            setTempFilters(prev => {
+                const currentList = prev[field] || [];
+                if (currentList.includes(value)) {
+                    return { ...prev, [field]: currentList.filter(item => item !== value) };
+                } else {
+                    return { ...prev, [field]: [...currentList, value] };
+                }
+            });
+        } else {
+            setTempFilters(prev => ({ ...prev, [field]: value }));
+        }
+    };
+
+    const handleApplyFilters = () => {
+        setFilters({ ...tempFilters });
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        // Close modal (Bootstrap 5 way)
+        const modalElement = document.getElementById('advanceFilter');
+        const modal = window.bootstrap?.Modal?.getInstance(modalElement);
+        if (modal) modal.hide();
+    };
+
+    const handleResetFilters = () => {
+        const resetFilters = {
+            releaseTypes: [],
+            statuses: [],
+            label: "",
+            artist: "",
+            user: "",
+            preDefined: "",
+            periodFrom: "",
+            periodTo: "",
+            sources: [],
+            sortBy: "creation_date",
+            sortOrder: "desc"
+        };
+        setTempFilters(resetFilters);
+        setFilters(resetFilters);
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
     };
 
     const handleDownloadMeta = (release) => {
@@ -138,9 +216,11 @@ function ViewAllReleaseComponent() {
                                 className="mainBtn bgPurple clWhite"
                                 data-bs-toggle="modal"
                                 data-bs-target="#advanceFilter"
+                                onClick={() => setTempFilters({ ...filters })}
+                                type="button"
                             >
                                 <i className="fa-solid fa-plus" />
-                                Advancesd
+                                Advanced
                             </button>
                             <div
                                 className="modal fade advance-filter-modal"
@@ -175,96 +255,30 @@ function ViewAllReleaseComponent() {
                                                             <div className="product-mainbox">
                                                                 <div className="product-mainbox-content">
                                                                     <div className="product-list-heading">
-                                                                        <h6>Status</h6>
+                                                                        <h6>Product Type</h6>
                                                                     </div>
                                                                     <div className="product-list-check form-check">
                                                                         <input
                                                                             className="form-check-input pro"
                                                                             type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="music"
+                                                                            id="typeSingle"
+                                                                            checked={tempFilters.releaseTypes.includes('single')}
+                                                                            onChange={() => handleFilterChange('releaseTypes', 'single', true)}
                                                                         />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="music"
-                                                                        >
-                                                                            <span>Music</span>
+                                                                        <label className="form-check-label" htmlFor="typeSingle">
+                                                                            <span>Single</span>
                                                                         </label>
                                                                     </div>
                                                                     <div className="product-list-check form-check">
                                                                         <input
                                                                             className="form-check-input pro"
                                                                             type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="ringtone"
+                                                                            id="typeAlbum"
+                                                                            checked={tempFilters.releaseTypes.includes('album')}
+                                                                            onChange={() => handleFilterChange('releaseTypes', 'album', true)}
                                                                         />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="ringtone"
-                                                                        >
-                                                                            <span>Ringtone</span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="product-list-check form-check">
-                                                                        <input
-                                                                            className="form-check-input pro"
-                                                                            type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="musicVideo"
-                                                                        />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="musicVideo"
-                                                                        >
-                                                                            <span>Music Video</span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="product-list-check form-check">
-                                                                        <input
-                                                                            className="form-check-input pro"
-                                                                            type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="packshot"
-                                                                        />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="packshot"
-                                                                        >
-                                                                            <span>Packshot Video</span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="product-list-check form-check">
-                                                                        <input
-                                                                            className="form-check-input pro"
-                                                                            type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="entain"
-                                                                        />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="entain"
-                                                                        >
-                                                                            <span>Entertainment Video</span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="product-list-check form-check">
-                                                                        <input
-                                                                            className="form-check-input pro"
-                                                                            type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="gaming"
-                                                                        />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="gaming"
-                                                                        >
-                                                                            <span>Gaming Video</span>
+                                                                        <label className="form-check-label" htmlFor="typeAlbum">
+                                                                            <span>Album</span>
                                                                         </label>
                                                                     </div>
                                                                 </div>
@@ -273,9 +287,11 @@ function ViewAllReleaseComponent() {
                                                                         Label
                                                                     </label>
                                                                     <input
-                                                                        className="font-control"
+                                                                        className="form-control"
                                                                         type="text"
                                                                         id="label"
+                                                                        value={tempFilters.label}
+                                                                        onChange={(e) => handleFilterChange('label', e.target.value)}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -290,50 +306,35 @@ function ViewAllReleaseComponent() {
                                                                         <input
                                                                             className="form-check-input pro"
                                                                             type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="delivered"
+                                                                            id="product-published"
+                                                                            checked={tempFilters.statuses.includes('approved')}
+                                                                            onChange={() => handleFilterChange('statuses', 'approved', true)}
                                                                         />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="delivered"
-                                                                        >
-                                                                            <span>Delivered</span>
+                                                                        <label className="form-check-label" htmlFor="product-published">
+                                                                            <span>Approved</span>
                                                                         </label>
                                                                     </div>
                                                                     <div className="product-list-check form-check">
                                                                         <input
                                                                             className="form-check-input pro"
                                                                             type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
                                                                             id="product-review"
+                                                                            checked={tempFilters.statuses.includes('processing')}
+                                                                            onChange={() => handleFilterChange('statuses', 'processing', true)}
                                                                         />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="product-review"
-                                                                        >
-                                                                            <span>
-                                                                                {" "}
-                                                                                This product is being reviewed by our content
-                                                                                compliance team. In case of compliance issues
-                                                                                with stores guidelines, we will contact you
-                                                                                for resolution.{" "}
-                                                                            </span>{" "}
+                                                                        <label className="form-check-label" htmlFor="product-review">
+                                                                            <span>Processing</span>
                                                                         </label>
                                                                     </div>
                                                                     <div className="product-list-check form-check">
                                                                         <input
                                                                             className="form-check-input pro"
                                                                             type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
                                                                             id="correction"
+                                                                            checked={tempFilters.statuses.includes('correction')}
+                                                                            onChange={() => handleFilterChange('statuses', 'correction', true)}
                                                                         />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="correction"
-                                                                        >
+                                                                        <label className="form-check-label" htmlFor="correction">
                                                                             <span>Correction Requested</span>
                                                                         </label>
                                                                     </div>
@@ -341,30 +342,12 @@ function ViewAllReleaseComponent() {
                                                                         <input
                                                                             className="form-check-input pro"
                                                                             type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
                                                                             id="draft"
+                                                                            checked={tempFilters.statuses.includes('draft')}
+                                                                            onChange={() => handleFilterChange('statuses', 'draft', true)}
                                                                         />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="draft"
-                                                                        >
+                                                                        <label className="form-check-label" htmlFor="draft">
                                                                             <span>Draft</span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="product-list-check form-check">
-                                                                        <input
-                                                                            className="form-check-input pro"
-                                                                            type="checkbox"
-                                                                            name="ar-cheack"
-                                                                            defaultValue=""
-                                                                            id="unsellable"
-                                                                        />
-                                                                        <label
-                                                                            className="form-check-label"
-                                                                            htmlFor="unsellable"
-                                                                        >
-                                                                            <span>Unsellable</span>
                                                                         </label>
                                                                     </div>
                                                                 </div>
@@ -373,9 +356,11 @@ function ViewAllReleaseComponent() {
                                                                         Artist
                                                                     </label>
                                                                     <input
-                                                                        className="font-control"
+                                                                        className="form-control"
                                                                         type="text"
                                                                         id="artist"
+                                                                        value={tempFilters.artist}
+                                                                        onChange={(e) => handleFilterChange('artist', e.target.value)}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -398,6 +383,8 @@ function ViewAllReleaseComponent() {
                                                                     className="form-control"
                                                                     type="text"
                                                                     id="user"
+                                                                    value={tempFilters.user}
+                                                                    onChange={(e) => handleFilterChange('user', e.target.value)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -419,6 +406,8 @@ function ViewAllReleaseComponent() {
                                                                     className="form-control"
                                                                     type="text"
                                                                     id="preDefined"
+                                                                    value={tempFilters.preDefined}
+                                                                    onChange={(e) => handleFilterChange('preDefined', e.target.value)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -432,8 +421,10 @@ function ViewAllReleaseComponent() {
                                                                 </label>
                                                                 <input
                                                                     className="form-control"
-                                                                    type="text"
+                                                                    type="date"
                                                                     id="periodFrom"
+                                                                    value={tempFilters.periodFrom}
+                                                                    onChange={(e) => handleFilterChange('periodFrom', e.target.value)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -444,8 +435,10 @@ function ViewAllReleaseComponent() {
                                                                 </label>
                                                                 <input
                                                                     className="form-control"
-                                                                    type="text"
+                                                                    type="date"
                                                                     id="periodTo"
+                                                                    value={tempFilters.periodTo}
+                                                                    onChange={(e) => handleFilterChange('periodTo', e.target.value)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -453,7 +446,7 @@ function ViewAllReleaseComponent() {
                                                 </form>
                                             </div>
                                             <div className="row">
-                                                <div className="col-md-6">
+                                                <div className="col-md-4">
                                                     <div className="source-info">
                                                         <div className="source-info-heading">
                                                             <h6>Source</h6>
@@ -464,14 +457,11 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="checkbox"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
                                                                         id="digital"
+                                                                        checked={tempFilters.sources.includes('digital')}
+                                                                        onChange={() => handleFilterChange('sources', 'digital', true)}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label"
-                                                                        htmlFor="digital"
-                                                                    >
+                                                                    <label className="form-check-label" htmlFor="digital">
                                                                         <span>Believe Digital</span>
                                                                     </label>
                                                                 </div>
@@ -479,14 +469,11 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="checkbox"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
                                                                         id="transfer"
+                                                                        checked={tempFilters.sources.includes('transfer')}
+                                                                        onChange={() => handleFilterChange('sources', 'transfer', true)}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label"
-                                                                        htmlFor="transfer"
-                                                                    >
+                                                                    <label className="form-check-label" htmlFor="transfer">
                                                                         <span>Catalog Transfer</span>
                                                                     </label>
                                                                 </div>
@@ -494,14 +481,11 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="checkbox"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
                                                                         id="upload"
+                                                                        checked={tempFilters.sources.includes('upload')}
+                                                                        onChange={() => handleFilterChange('sources', 'upload', true)}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label"
-                                                                        htmlFor="upload"
-                                                                    >
+                                                                    <label className="form-check-label" htmlFor="upload">
                                                                         <span>Direct upload on Youtube</span>
                                                                     </label>
                                                                 </div>
@@ -509,7 +493,7 @@ function ViewAllReleaseComponent() {
                                                         </form>
                                                     </div>
                                                 </div>
-                                                <div className="col-md-6">
+                                                <div className="col-md-4">
                                                     <div className="source-info">
                                                         <div className="source-info-heading">
                                                             <h6>Sort By</h6>
@@ -520,14 +504,12 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="radio"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
-                                                                        id="digital"
+                                                                        name="sortBy"
+                                                                        id="sortTitle"
+                                                                        checked={tempFilters.sortBy === 'release_title'}
+                                                                        onChange={() => handleFilterChange('sortBy', 'release_title')}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label pro-label"
-                                                                        htmlFor="digital"
-                                                                    >
+                                                                    <label className="form-check-label pro-label" htmlFor="sortTitle">
                                                                         Release Title
                                                                     </label>
                                                                 </div>
@@ -535,14 +517,12 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="radio"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
-                                                                        id="transfer"
+                                                                        name="sortBy"
+                                                                        id="sortArtist"
+                                                                        checked={tempFilters.sortBy === 'artist'}
+                                                                        onChange={() => handleFilterChange('sortBy', 'artist')}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label pro-label"
-                                                                        htmlFor="transfer"
-                                                                    >
+                                                                    <label className="form-check-label pro-label" htmlFor="sortArtist">
                                                                         <span>Artist</span>
                                                                     </label>
                                                                 </div>
@@ -550,14 +530,12 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="radio"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
-                                                                        id="upload"
+                                                                        name="sortBy"
+                                                                        id="sortLabel"
+                                                                        checked={tempFilters.sortBy === 'label'}
+                                                                        onChange={() => handleFilterChange('sortBy', 'label')}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label pro-label"
-                                                                        htmlFor="upload"
-                                                                    >
+                                                                    <label className="form-check-label pro-label" htmlFor="sortLabel">
                                                                         <span>Label</span>
                                                                     </label>
                                                                 </div>
@@ -565,14 +543,12 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="radio"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
-                                                                        id="upload"
+                                                                        name="sortBy"
+                                                                        id="sortCreation"
+                                                                        checked={tempFilters.sortBy === 'creation_date'}
+                                                                        onChange={() => handleFilterChange('sortBy', 'creation_date')}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label pro-label"
-                                                                        htmlFor="upload"
-                                                                    >
+                                                                    <label className="form-check-label pro-label" htmlFor="sortCreation">
                                                                         <span>Creation Date</span>
                                                                     </label>
                                                                 </div>
@@ -580,15 +556,50 @@ function ViewAllReleaseComponent() {
                                                                     <input
                                                                         className="form-check-input pro"
                                                                         type="radio"
-                                                                        name="ar-cheack"
-                                                                        defaultValue=""
-                                                                        id="upload"
+                                                                        name="sortBy"
+                                                                        id="sortRelease"
+                                                                        checked={tempFilters.sortBy === 'release_date'}
+                                                                        onChange={() => handleFilterChange('sortBy', 'release_date')}
                                                                     />
-                                                                    <label
-                                                                        className="form-check-label pro-label"
-                                                                        htmlFor="upload"
-                                                                    >
+                                                                    <label className="form-check-label pro-label" htmlFor="sortRelease">
                                                                         <span>Release Date</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <div className="source-info">
+                                                        <div className="source-info-heading">
+                                                            <h6>Order</h6>
+                                                        </div>
+                                                        <form className="product-list source-list">
+                                                            <div className="product-mainbox-content">
+                                                                <div className="product-radio form-check">
+                                                                    <input
+                                                                        className="form-check-input pro"
+                                                                        type="radio"
+                                                                        name="sortOrder"
+                                                                        id="sortDesc"
+                                                                        checked={tempFilters.sortOrder === 'desc'}
+                                                                        onChange={() => handleFilterChange('sortOrder', 'desc')}
+                                                                    />
+                                                                    <label className="form-check-label pro-label" htmlFor="sortDesc">
+                                                                        <span>Descending</span>
+                                                                    </label>
+                                                                </div>
+                                                                <div className="product-radio form-check">
+                                                                    <input
+                                                                        className="form-check-input pro"
+                                                                        type="radio"
+                                                                        name="sortOrder"
+                                                                        id="sortAsc"
+                                                                        checked={tempFilters.sortOrder === 'asc'}
+                                                                        onChange={() => handleFilterChange('sortOrder', 'asc')}
+                                                                    />
+                                                                    <label className="form-check-label pro-label" htmlFor="sortAsc">
+                                                                        <span>Ascending</span>
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -597,10 +608,10 @@ function ViewAllReleaseComponent() {
                                                 </div>
                                             </div>
                                             <div className="filter-buttons">
-                                                <button className="btn cancel" id="cancelFilter">
-                                                    Cancel
+                                                <button className="mainBtn bgRed clWhite" type="button" onClick={handleResetFilters}>
+                                                    Reset
                                                 </button>
-                                                <button className="btn apply" id="applyFilter">
+                                                <button className="mainBtn bgPurple clWhite" type="button" onClick={handleApplyFilters}>
                                                     Apply Filters
                                                 </button>
                                             </div>

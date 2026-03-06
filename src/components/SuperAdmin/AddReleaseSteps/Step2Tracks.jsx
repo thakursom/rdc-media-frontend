@@ -130,7 +130,7 @@ const Step2Tracks = ({
                                     handleTrackUpload(e.dataTransfer.files);
                                 }}
                             >
-                                <i className="fas fa-music fa-4x clGreen mb-3"></i>
+                                <i className="fas fa-music fa-4x clPurple mb-3"></i>
                                 <h5>Drag files here or</h5>
                                 <input
                                     type="file"
@@ -141,7 +141,7 @@ const Step2Tracks = ({
                                     onChange={e => handleTrackUpload(e.target.files)}
                                 />
                                 <button
-                                    className="btn bgGreen clWhite mt-2 px-4"
+                                    className="mainBtn bgPurple clWhite mt-2 px-4"
                                     onClick={() => document.getElementById('trackUpload').click()}
                                 >
                                     Select files
@@ -249,7 +249,7 @@ const Step2Tracks = ({
                                                                 </td>
                                                                 <td>
                                                                     <button
-                                                                        className="btn btn-sm btn-outline-primary me-2"
+                                                                        className="mainBtn bgPurple clWhite me-2"
                                                                         onClick={() => {
                                                                             const trackToEdit = form.tracks.find(t => t.id === track.id);
 
@@ -325,7 +325,7 @@ const Step2Tracks = ({
                                                             onChange={handleAudioReplace}
                                                         />
                                                         <button
-                                                            className="btn btn-sm btn-outline-secondary"
+                                                            className="mainBtn bgPurple clWhite"
                                                             onClick={() => document.getElementById('replaceAudioInput').click()}
                                                         >
                                                             <i className="fas fa-sync-alt me-1"></i> Replace audio file
@@ -691,7 +691,7 @@ const Step2Tracks = ({
                                                 {/* Buttons at bottom */}
                                                 <div className="d-flex justify-content-between mt-5">
                                                     <button
-                                                        className="btn bgGreen clWhite px-5 ms-auto"
+                                                        className="mainBtn bgPurple clWhite ms-auto"
                                                         onClick={() => {
                                                             setForm(prev => ({
                                                                 ...prev,

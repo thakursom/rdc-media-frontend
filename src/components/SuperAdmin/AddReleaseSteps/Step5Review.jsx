@@ -137,7 +137,7 @@ const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores 
                     </div>
 
                     <div className="d-flex justify-content-end mt-5">
-                        <button className="btn bgGreen clWhite btn-lg px-5" onClick={handleSubmit}>
+                        <button className="mainBtn bgPurple clWhite" onClick={handleSubmit}>
                             Complete Release
                         </button>
                     </div>

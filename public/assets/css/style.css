@@ -215,7 +215,6 @@ body {
 
 .modal-dialog {
     max-width: 100% !important;
-    height: 100% !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -3798,7 +3797,7 @@ canvas#progressChart {
 .advance-filter-modal .modal-header .btn-close {
     width: 20px !important;
     height: 20px !important;
-    background: #35bdaa;
+    background: var(--bgPurple);
     color: #fff;
     opacity: 100%;
     padding: 0;
@@ -3816,7 +3815,7 @@ canvas#progressChart {
 }
 
 .product-info-heading {
-    background-color: #35bdaa;
+    background-color: var(--bgPurple);
     color: #fff;
     padding: 15px 20px;
     border-top-left-radius: 6px;
@@ -5072,11 +5071,11 @@ td.audio-btn-td {
 /* ############ View Artist ############## */
 
 .view-artist-button {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: 5px 0;
+    gap: 10px;
 }
 
 .view-artist-button button {
@@ -5770,6 +5769,7 @@ button#view a {
 .main-sec-heading h2 {
     font-size: 48px;
     font-weight: 700;
+    color: var(--clPurple);
 }
 
 .card-header h5 {

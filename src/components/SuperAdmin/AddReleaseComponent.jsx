@@ -196,8 +196,8 @@ function AddReleaseComponent() {
             if (artistRes.success) setArtists(artistRes?.data?.artists || []);
 
             // Fetch Labels
-            const labelRes = await apiRequest("/labels", "GET", null, true);
-            if (labelRes.success) setLabels(labelRes?.data?.labels || []);
+            const labelRes = await apiRequest("/all-labels", "GET", null, true);
+            if (labelRes.success) setLabels(labelRes?.data?.data || []);
 
             // Fetch Genres
             const genreRes = await apiRequest("/release-genres?limit=1000", "GET", null, true);
@@ -562,7 +562,9 @@ function AddReleaseComponent() {
             if (result.success) {
                 toast.success(successMessage);
                 if (modalType === "label") {
-                    update("label", modalInput.trim());
+                    const newLabel = result?.data?.data || { name: modalInput.trim(), id: Date.now() }; // Fallback with ID if needed
+                    setLabels(prev => [...prev, newLabel]);
+                    update("label", newLabel.id || newLabel._id);
                 } else if (modalType === "artist") {
                     const newArtist = result?.data?.artist || { name: modalInput.trim() };
                     setArtists(prev => [...prev, newArtist]);
@@ -666,7 +668,7 @@ function AddReleaseComponent() {
                         />
                         {/* Navigation */}
                         <div className="d-flex justify-content-between mt-5 px-5">
-                            <button className="btn bgGreen clWhite ms-auto" onClick={next}>
+                            <button className="mainBtn bgPurple clWhite ms-auto" onClick={next}>
                                 Next
                             </button>
                         </div>
@@ -694,8 +696,8 @@ function AddReleaseComponent() {
                         />
                         {/* Navigation */}
                         <div className="d-flex justify-content-between mt-5 px-5">
-                            <button className="btn btn-outline-secondary" onClick={back}>Back</button>
-                            <button className="btn bgGreen clWhite" onClick={next}>Next</button>
+                            <button className="mainBtn bgGray clWhite" onClick={back}>Back</button>
+                            <button className="mainBtn bgPurple clWhite" onClick={next}>Next</button>
                         </div>
                     </>
                 )}
@@ -709,10 +711,10 @@ function AddReleaseComponent() {
                             showError={showError}
                         />
                         <div className="d-flex justify-content-between mt-5 px-5">
-                            <button className="btn btn-outline-secondary" onClick={back}>
+                            <button className="mainBtn bgGray clWhite" onClick={back}>
                                 Back
                             </button>
-                            <button className="btn bgGreen clWhite" onClick={next}>
+                            <button className="mainBtn bgPurple clWhite" onClick={next}>
                                 Next
                             </button>
                         </div>
@@ -730,10 +732,10 @@ function AddReleaseComponent() {
                             stores={stores}
                         />
                         <div className="d-flex justify-content-between mt-5 px-5">
-                            <button className="btn btn-outline-secondary" onClick={back}>
+                            <button className="mainBtn bgGray clWhite" onClick={back}>
                                 Back
                             </button>
-                            <button className="btn bgGreen clWhite" onClick={next}>
+                            <button className="mainBtn bgPurple clWhite" onClick={next}>
                                 Next
                             </button>
                         </div>
@@ -792,7 +794,7 @@ function AddReleaseComponent() {
 
                             <div className="modal-footer">
                                 <button
-                                    className="btn btn-secondary"
+                                    className="mainBtn bgGray clWhite"
                                     onClick={() => {
                                         setModalType(null);
                                         setModalInput("");
@@ -803,7 +805,7 @@ function AddReleaseComponent() {
                                 </button>
 
                                 <button
-                                    className="btn bgGreen clWhite"
+                                    className="btn bgPurple clWhite"
                                     disabled={isCreating || !modalInput.trim()}
                                     onClick={handleCreateEntity}
                                 >
