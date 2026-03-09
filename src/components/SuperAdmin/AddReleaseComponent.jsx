@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { apiRequest } from "../../services/api";
 import { toast } from "react-toastify";
 import * as Yup from 'yup';
@@ -10,12 +11,15 @@ import Step4Stores from './AddReleaseSteps/Step4Stores';
 import Step5Review from './AddReleaseSteps/Step5Review';
 
 function AddReleaseComponent() {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const currentYear = new Date().getFullYear();
     const years = Array(currentYear - 1949).fill().map((_, i) => currentYear - i);
 
     const [step, setStep] = useState(1);
     const [form, setForm] = useState({
         title: '',
+        releaseType: 1,
         copyrightYear: currentYear,
         copyrightHolder: '',
         productionYear: currentYear,
@@ -70,9 +74,9 @@ function AddReleaseComponent() {
         primaryGenre: Yup.string().required("Primary genre is required"),
         releaseArtists: Yup.array()
             .test('has-artist', 'At least one artist is required', val => val && val.some(artist => artist.trim() !== '')),
-        upc: Yup.string().when('upcMode', {
+        upc: Yup.string().trim().when('upcMode', {
             is: 'Manual',
-            then: (schema) => schema.required("UPC required in manual mode").matches(/^\d{14}$/, "UPC must be exactly 14 digits"),
+            then: (schema) => schema.required("UPC required in manual mode").matches(/^[A-Z0-9]{8,15}$/, "Please enter a valid UPC/EAN (8-15 alphanumeric characters)"),
             otherwise: (schema) => schema.nullable(),
         }),
         isrc: Yup.string().when('isrcMode', {
@@ -82,7 +86,11 @@ function AddReleaseComponent() {
         }),
         artworkFile: Yup.mixed()
             .nullable()
-            .required("Cover artwork is required")
+            .test("is-required", "Cover artwork is required", function (value) {
+                // If we have an ID (edit mode) or an existing preview, it's not strictly required as a new file
+                if (id || this.parent.artworkPreview) return true;
+                return !!value;
+            })
             .test("fileType", "Only JPG or JPEG files are allowed",
                 value => !value || (value && value.type.match(/image\/jpe?g/)))
             .test("fileSize", "File size must be less than 10MB",
@@ -90,7 +98,7 @@ function AddReleaseComponent() {
     });
 
     const step2Schema = Yup.object({
-        tracks: Yup.array().min(1, "At least one track is required").required("Tracks are required"),
+        // tracks: Yup.array().min(1, "At least one track is required").required("Tracks are required"),
         // explicitConfirmation: Yup.boolean().oneOf(["Yes", "No"], "Please select an option"),
         // ownRightsConfirmation: Yup.boolean().oneOf(["Yes", "No"], "Please select an option"),
         // noOtherArtistName: Yup.boolean().oneOf(["Yes", "No"], "Please select an option"),
@@ -101,7 +109,13 @@ function AddReleaseComponent() {
         releaseDate: Yup.date()
             .nullable()
             .required("Release date is required")
-            .min(new Date(), "Release date cannot be in the past")
+            .test("not-past", "Release date cannot be in the past", function (value) {
+                if (id) return true; // Allow past dates in edit mode
+                if (!value) return false;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return value >= today;
+            })
             .typeError("Please select a valid date"),
 
         countryRestrictions: Yup.string()
@@ -188,7 +202,7 @@ function AddReleaseComponent() {
     ];
 
     const fetchData = async () => {
-        if (step !== 1) return;
+        if (step !== 1 && step !== 5) return;
 
         try {
             // Fetch Artists
@@ -222,6 +236,77 @@ function AddReleaseComponent() {
     useEffect(() => {
         fetchData();
     }, [step]);
+
+    // Fetch single release data if id exists (Edit mode)
+    useEffect(() => {
+        const fetchReleaseData = async () => {
+            if (!id) return;
+
+            try {
+                const response = await apiRequest(`/releases/${id}`, "GET", null, true);
+                if (response.success && response.data?.data) {
+                    const release = response.data.data;
+                    setForm({
+                        title: release.title || '',
+                        releaseType: release.release_type || 1,
+                        copyrightYear: release.c_line_year || currentYear,
+                        copyrightHolder: release.c_line || '',
+                        productionYear: release.p_line_year || currentYear,
+                        productionHolder: release.p_line || '',
+                        label: release.label_id || 0,
+                        releaseArtists: Array.isArray(release.display_artist) ? release.display_artist : [release.display_artist || ''],
+                        isFirstRelease: release.is_first !== undefined ? !!release.is_first : (release.is_first_release !== undefined ? !!release.is_first_release : null),
+                        isVariousArtists: !!(release.is_various !== undefined ? release.is_various : release.is_various_artists),
+                        artworkPreview: release.artwork_path || null,
+                        artworkFile: null,
+                        primaryGenre: release.genre_id || '',
+                        secondaryGenre: release.subgenre_id || '',
+                        language: release.language_id || '',
+                        upcMode: release.upc_number ? 'Manual' : 'Auto',
+                        upc: release.upc_number || '',
+                        isrcMode: release.isrc ? 'Manual' : 'Auto',
+                        isrc: release.isrc || '',
+                        tracks: (release.tracks || []).map(t => ({
+                            id: t.id,
+                            title: t.title,
+                            version: t.mix_version || '',
+                            artists: Array.isArray(t.display_artist) ? t.display_artist : [t.display_artist || ''],
+                            isrc: t.isrc_number || '',
+                            isrcMode: t.isrc_number ? 'Manual' : 'Auto',
+                            explicit: !!t.explicit,
+                            duration: t.duration || 0,
+                            composer: t.composer || '',
+                            producer: t.producer || '',
+                            lyricist: t.lyricist || '',
+                            lyrics: t.lyrics_text || '',
+                            audio_path: t.audio_path,
+                            status: 'ready'
+                        })),
+                        copyrightDocs: null,
+                        explicitConfirmation: true,
+                        ownRightsConfirmation: true,
+                        noOtherArtistName: true,
+                        noOtherAlbumTitle: true,
+                        hasCopyrightDocs: !!release.copyright_docs,
+                        releaseDate: release.release_date ? new Date(release.release_date).toISOString().split('T')[0] : '',
+                        priorityDistribution: !!(release.is_priority),
+                        releaseTime: release.release_time || '00:00',
+                        countryRestrictions: release.country_restrictions || 'No',
+                        previouslyReleased: release.previously_released || 'No',
+                        chartRegistration: release.chart_registration || [],
+                        pricing: release.pricing || '',
+                        selectedStores: Array.isArray(release.store_ids) ? release.store_ids : [],
+                        futureStores: release.future_stores || 'Yes',
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to fetch release data:", err);
+                toast.error("Error loading release details");
+            }
+        };
+
+        fetchReleaseData();
+    }, [id]);
 
     // Fetch SubGenres when primaryGenre changes
     useEffect(() => {
@@ -468,62 +553,70 @@ function AddReleaseComponent() {
                 artworkFile: undefined,
                 artworkPreview: undefined,
                 copyrightDocs: undefined,
-                tracks: tracksWithFlags
+                tracks: tracksWithFlags,
+                create_type: tracksWithFlags.length > 0 ? "Pending" : "Saved"
             };
 
             formData.append('data', JSON.stringify(releaseData));
 
-            const result = await apiRequest("/create-release", "POST", formData, true);
+            const endpoint = id ? `/update-release/${id}` : "/create-release";
+            const method = id ? "PUT" : "POST";
+
+            const result = await apiRequest(endpoint, method, formData, true);
 
             if (result.success) {
-                toast.success("Release created successfully!");
+                toast.success(id ? "Release updated successfully!" : "Release created successfully!");
 
-                setStep(1);
+                if (!id) {
+                    setStep(1);
+                    setForm({
+                        title: '',
+                        copyrightYear: '',
+                        copyrightHolder: '',
+                        productionYear: '',
+                        productionHolder: '',
+                        label: '',
+                        releaseArtists: [''],
+                        isFirstRelease: null,
+                        isVariousArtists: false,
+                        artworkFile: null,
+                        artworkPreview: null,
+                        primaryGenre: '',
+                        secondaryGenre: '',
+                        language: '',
+                        upcMode: 'Auto',
+                        isrcMode: 'Auto',
+                        upc: '',
+                        isrc: '',
+                        tracks: [],
+                        copyrightDocs: null,
+                        explicitConfirmation: false,
+                        ownRightsConfirmation: false,
+                        noOtherArtistName: false,
+                        noOtherAlbumTitle: false,
+                        hasCopyrightDocs: false,
+                        releaseDate: '',
+                        priorityDistribution: false,
+                        releaseTime: '',
+                        countryRestrictions: '',
+                        previouslyReleased: '',
+                        chartRegistration: [],
+                        pricing: '',
+                        selectedStores: [],
+                        futureStores: '',
+                    });
 
-                setForm({
-                    title: '',
-                    copyrightYear: '',
-                    copyrightHolder: '',
-                    productionYear: '',
-                    productionHolder: '',
-                    label: '',
-                    releaseArtists: [''],
-                    isFirstRelease: null,
-                    isVariousArtists: false,
-                    artworkFile: null,
-                    artworkPreview: null,
-                    primaryGenre: '',
-                    secondaryGenre: '',
-                    language: '',
-                    upcMode: 'Auto',
-                    isrcMode: 'Auto',
-                    upc: '',
-                    isrc: '',
-                    tracks: [],
-                    copyrightDocs: null,
-                    explicitConfirmation: false,
-                    ownRightsConfirmation: false,
-                    noOtherArtistName: false,
-                    noOtherAlbumTitle: false,
-                    hasCopyrightDocs: false,
-                    releaseDate: '',
-                    priorityDistribution: false,
-                    releaseTime: '',
-                    countryRestrictions: '',
-                    previouslyReleased: '',
-                    chartRegistration: [],
-                    pricing: '',
-                    selectedStores: [],
-                    futureStores: '',
-                });
-
-                if (form.artworkPreview) {
-                    URL.revokeObjectURL(form.artworkPreview);
+                    if (form.artworkPreview) {
+                        URL.revokeObjectURL(form.artworkPreview);
+                    }
+                } else {
+                    // If editing, navigate back or refresh?
+                    // navigate(-1); 
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                toast.error(result?.data?.message || "Failed to create release");
+                toast.error(result?.data?.message || `Failed to ${id ? 'update' : 'create'} release`);
             }
         } catch (err) {
             console.error('Release creation failed:', err);

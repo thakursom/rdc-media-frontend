@@ -17,12 +17,12 @@ const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores 
 
     const getGenreName = (id) => {
         const g = genres?.find(g => g.id == id);
-        return g ? g.name : id || '(not set)';
+        return g ? g.title : id || '(not set)';
     };
 
     const getSubGenreName = (id) => {
         const sg = subGenres?.find(s => s.id == id);
-        return sg ? sg.name : id || '-';
+        return sg ? sg.title : id || '-';
     };
 
     return (

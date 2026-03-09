@@ -38,7 +38,7 @@ function ViewAllReleaseComponent() {
     const fetchReleases = async (page = 1, search = "", currentLimit = pagination.limit, currentFilters = filters) => {
         setLoading(true);
         try {
-            let endpoint = `/releases?page=${page}&limit=${currentLimit}`;
+            let endpoint = `/releases?page=${page}&limit=${currentLimit}&create_type=Approved,complete,completed,Complete,Completed,APPROVED,COMPLETE,COMPLETED`;
             if (search) endpoint += `&search=${encodeURIComponent(search)}`;
 
             // Append advanced filters
@@ -714,20 +714,19 @@ function ViewAllReleaseComponent() {
                                     </tbody>
                                 </table>
 
-                                {pagination.totalPages > 1 && (
-                                    <div className="pagination-container mt-4">
-                                        <CustomPagination
-                                            pageCount={pagination.totalPages}
-                                            onPageChange={handlePageChange}
-                                            currentPage={pagination.currentPage}
-                                            perPage={pagination.limit}
-                                            onPerPageChange={handlePerPageChange}
-                                        />
-                                    </div>
-                                )}
                             </>
                         )}
                     </div>
+
+                    {!loading && pagination.totalPages > 0 && (
+                        <CustomPagination
+                            pageCount={pagination.totalPages}
+                            onPageChange={handlePageChange}
+                            currentPage={pagination.currentPage}
+                            perPage={pagination.limit}
+                            onPerPageChange={handlePerPageChange}
+                        />
+                    )}
                 </div>
             </section>
         </>
