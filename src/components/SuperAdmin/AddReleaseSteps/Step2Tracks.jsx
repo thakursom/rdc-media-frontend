@@ -1,5 +1,5 @@
 import React from 'react';
-import { toast } from "react-toastify";
+import { ROOT_URL } from '../../../services/api';
 
 const Step2Tracks = ({
     form,
@@ -46,6 +46,14 @@ const Step2Tracks = ({
             if (track.file) {
                 const url = URL.createObjectURL(track.file);
                 audio.src = url;
+                audio.play();
+                setPlayingTrackId(track.id);
+            } else if (track.audio_path) {
+                // If it's a server-side path (Bulk Upload case)
+                const fullUrl = track.audio_path.startsWith('http')
+                    ? track.audio_path
+                    : `${ROOT_URL}${track.audio_path}`;
+                audio.src = fullUrl;
                 audio.play();
                 setPlayingTrackId(track.id);
             } else {

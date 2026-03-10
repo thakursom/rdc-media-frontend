@@ -6404,3 +6404,22 @@ select:focus-visible {
         display: flex;
     }
 }
+/* Bulk Release Styles */
+.bulk-releases-section { padding: 30px 0; }
+.bulk-sec-heading { border-bottom: 1px solid #eee; margin-bottom: 30px; padding-bottom: 10px; }
+.bulk-sec-heading h6 { font-size: 18px; color: #35bdaa; font-weight: 600; }
+.bulk-file-card, .bulk-metadata-card, .template-status-card { background: #fff; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.bulk-rel-guidlines h6 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+.bulk-rel-guidlines p { font-size: 13px; color: #666; margin-bottom: 5px; }
+.choose-bulk-mainbox { border: 2px dashed #ddd; border-radius: 8px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
+.choose-bulk-mainbox:hover { border-color: #0065ab; background: #f8fbff; }
+.choose-bulk-mainbox .file-icon { font-size: 24px; color: #fff; background: #b194f4; width: 40px; height: 40px; border-radius: 5px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
+.choose-bulk-mainbox h5 { font-size: 14px; color: #333; font-weight: 500; }
+.metadata-head h6 { font-size: 15px; font-weight: 600; margin-bottom: 20px; }
+.metadata-menu { display: flex; flex-direction: column; gap: 10px; }
+.metadata-menu li { background: #f9f9f9; padding: 12px 15px; border-radius: 5px; }
+.metadata-menu li a { display: flex; justify-content: space-between; font-size: 14px; color: #333; }
+.metadata-menu li a span { color: #35bdaa; font-weight: 600; cursor: pointer; }
+.template-status-card { display: flex; flex-direction: column; gap: 15px; }
+.template-status-card p { font-size: 14px; font-weight: 500; margin: 0; }
+.btn-download-status { background: #35bdaa; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; width: fit-content; text-decoration: none; display: inline-block; }

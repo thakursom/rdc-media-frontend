@@ -104,7 +104,14 @@ function ReviewComponent() {
         setLoading(true);
         try {
             const promises = selectedReleases.map(id => {
-                const payload = { status: "1", create_type: 'Approved', admin_remarks: "Bulk Approved" };
+                const release = releases.find(r => (r.id === id || r._id === id));
+                const hasTracks = release && release.tracks && release.tracks.length > 0;
+
+                const payload = {
+                    status: "1",
+                    create_type: hasTracks ? 'Approved' : 'Saved',
+                    admin_remarks: "Bulk Approved"
+                };
                 return apiRequest(`/update-release-status/${id}`, "PUT", payload, true);
             });
             await Promise.all(promises);

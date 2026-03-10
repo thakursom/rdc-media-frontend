@@ -64,7 +64,7 @@ function Navbar({ sidebarOpen, setSidebarOpen }) {
                             }}
                         >
                             <li><NavLink to="/review">Review</NavLink></li>
-                            <li><NavLink to="/catalogue">Catalogue Overview</NavLink></li>
+                            {/* <li><NavLink to="/catalogue">Catalogue Overview</NavLink></li> */}
                             <li><NavLink to="/add-releases">Add Releases</NavLink></li>
                             <li><NavLink to="/bulk-release">Add Bulk Releases</NavLink></li>
                             <li><NavLink to="/view-release">View All Releases</NavLink></li>

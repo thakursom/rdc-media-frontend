@@ -41,9 +41,10 @@ function ReviewSingleReleaseComponent() {
     const handleApprove = async () => {
         setUpdating(true);
         try {
+            const hasTracks = release && release.tracks && release.tracks.length > 0;
             const payload = {
                 status: "1",
-                create_type: 'Approved',
+                create_type: hasTracks ? 'Approved' : 'Saved',
                 admin_remarks: approveComment
             };
             const response = await apiRequest(`/update-release-status/${id}`, "PUT", payload, true);
@@ -70,12 +71,18 @@ function ReviewSingleReleaseComponent() {
         }
         setUpdating(true);
         try {
-            const payload = {
-                status: "2",
-                create_type: 'Rejected',
-                admin_remarks: rejectData.reason // assuming admin_remarks for rejection reason
-            };
-            const response = await apiRequest(`/update-release-status/${id}`, "PUT", payload, true);
+            const formData = new FormData();
+            formData.append('status', '2');
+            formData.append('create_type', 'Rejected');
+            formData.append('rejection_type', rejectData.type);
+            formData.append('admin_remarks', rejectData.reason);
+            formData.append('rejection_reason', rejectData.reason);
+
+            if (rejectData.file) {
+                formData.append('rejection_file', rejectData.file);
+            }
+
+            const response = await apiRequest(`/update-release-status/${id}`, "PUT", formData, true);
 
             if (response.success) {
                 toast.success('Release Rejected successfully');
@@ -278,6 +285,8 @@ function ReviewSingleReleaseComponent() {
                                                                 <span className="text-secondary me-3" style={{ fontSize: '12px' }}>Remixer: <span className="text-dark opacity-50">{track.remixer || 'Not Provided'}</span></span>
                                                                 <span className="text-secondary me-3" style={{ fontSize: '12px' }}>Artists: <span className="text-dark opacity-50">{track.artist || release.primary_artist?.name || '-'}</span></span>
                                                                 <span className="text-secondary" style={{ fontSize: '12px' }}>Composer: <span className="text-dark opacity-50">{track.composer || '-'}</span></span>
+                                                                <span className="text-secondary ms-3" style={{ fontSize: '12px' }}>Producer: <span className="text-dark opacity-50">{track.producer || '-'}</span></span>
+                                                                <span className="text-secondary ms-3" style={{ fontSize: '12px' }}>Lyricist: <span className="text-dark opacity-50">{track.lyricist || '-'}</span></span>
                                                             </div>
                                                             <div>
                                                                 <h6 className="clPurple mb-1" style={{ fontSize: '13px', fontWeight: 'bold' }}>Information</h6>

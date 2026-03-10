@@ -13,6 +13,7 @@ import Catalogue from "../pages/SuperAdmin/Catalogue";
 import AddRelease from "../pages/SuperAdmin/AddRelease";
 import AddBulkRelease from "../pages/SuperAdmin/AddBulkRelease";
 import ViewAllRelease from "../pages/SuperAdmin/ViewAllRelease";
+import ViewSingleRelease from "../pages/SuperAdmin/ViewSingleRelease";
 import SavedRelease from "../pages/SuperAdmin/SavedRelease";
 import RejectedRelease from "../pages/SuperAdmin/RejectedRelease";
 import ReviewSingleRelease from "../pages/SuperAdmin/ReviewSingleRelease";
@@ -68,6 +69,7 @@ function AppRouter() {
                     <Route path="/edit-release/:id" element={<AddRelease />} />
                     <Route path="/bulk-release" element={<AddBulkRelease />} />
                     <Route path="/view-release" element={<ViewAllRelease />} />
+                    <Route path="/view-release/:id" element={<ViewSingleRelease />} />
                     <Route path="/review-release/:id" element={<ReviewSingleRelease />} />
                     <Route path="/saved-release" element={<SavedRelease />} />
                     <Route path="/rejected-release" element={<RejectedRelease />} />

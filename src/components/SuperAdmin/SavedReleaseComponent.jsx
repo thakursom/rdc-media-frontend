@@ -27,7 +27,7 @@ function SavedReleaseComponent() {
             let endpoint = `/releases?page=${page}&limit=${currentLimit}`;
             if (search) endpoint += `&search=${encodeURIComponent(search)}`;
 
-            // Assuming the API supports create_type filtering
+            // Filter by create_type 'Saved' exclusively
             endpoint += `&create_type=Saved`;
 
             const response = await apiRequest(endpoint, "GET", null, true);
@@ -67,37 +67,12 @@ function SavedReleaseComponent() {
     return (
         <>
             <section className="right-sidebar" id="sidebarRight">
-                <div className="view-release-sec">
-                    <div className="view-release">
-                        <div className="view-release-heading">
-                            <h6>Saved Releases</h6>
-                        </div>
-                        <div className="view-all-release-search">
-                            <form onSubmit={handleSearch}>
-                                <div className="input-group">
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="view_release-search"
-                                        placeholder="Search by releases"
-                                        value={searchTerm}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            setSearchTerm(val);
-                                            if (val === '') {
-                                                setPagination(prev => ({ ...prev, currentPage: 1 }));
-                                                fetchReleases(1, '');
-                                            }
-                                        }}
-                                    />
-                                    <button className="btn bgPurple clWhite" type="submit" style={{ borderRadius: '0 6px 6px 0' }}>
-                                        <i className="fa-solid fa-magnifying-glass" />
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                <div className="view-release-sec bg-white p-4" style={{ borderRadius: '10px', boxShadow: '0 0 10px rgba(0,0,0,0.05)' }}>
+                    <div className="mb-4 pb-2">
+                        <h6 className="mb-0 fw-bold clPurple" style={{ fontSize: '18px' }}>Saved Release</h6>
                     </div>
-                    <div className="viewReleases-main-sec saved-release">
+
+                    <div className="table-responsive">
                         {loading && (
                             <div className="text-center py-5">
                                 <Loader message="Fetching saved releases..." variant="success" />
@@ -105,45 +80,56 @@ function SavedReleaseComponent() {
                         )}
                         {!loading && (
                             <>
-                                <table className="table table-bordered">
+                                <table className="table bg-white align-middle" style={{ border: '1px solid #eee' }}>
                                     <thead>
-                                        <tr>
-                                            <th>Type</th>
-                                            <th>Title / Artist</th>
-                                            <th>Label</th>
-                                            <th>Release Date</th>
-                                            <th># Of tracks</th>
-                                            <th>UPC / Catalogue Number</th>
-                                            <th />
+                                        <tr style={{ color: '#555', fontSize: '13px', borderBottom: '2px solid #eee' }}>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">Type <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">Title <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">Artist <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">Label <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">Release Date <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end"># Of Tracks <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">UPC / Catalogue <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px', color: '#ccc' }}></i></th>
+                                            <th className="px-3 py-3 fw-medium border-0 border-end">Comment</th>
+                                            <th className="px-3 py-3 fw-medium border-0">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {releases.length > 0 ? (
                                             releases.map((release) => (
-                                                <tr key={release.id || release._id}>
-                                                    <td className="text-color-dark">
+                                                <tr key={release.id || release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
+                                                    <td className="px-3 py-3 border-0 text-dark">
                                                         <span>{release.release_type === 1 ? 'Single' : 'Album'}</span>
                                                     </td>
-                                                    <td className="Title-artist-td">
-                                                        <h6>{release.release_title || 'Untitled'}</h6>
-                                                        <p>{release.primary_artist?.name || '-'}</p>
+                                                    <td className="px-3 py-3 border-0 text-dark clPurple fw-medium">
+                                                        {release.release_title || 'Untitled'}
                                                     </td>
-                                                    <td>{release.label?.name || '-'}</td>
-                                                    <td>{release.release_date ? new Date(release.release_date).toLocaleDateString() : '-'}</td>
-                                                    <td>{release.tracks?.length || 0} track{release.tracks?.length !== 1 ? 's' : ''}</td>
-                                                    <td>
-                                                        <p className="upc-td">
-                                                            UPC :<span className="counts">{release.upc || '-'}</span>{" "}
-                                                        </p>
-                                                        <p className="cat-td">
-                                                            Cat# :<span className="cat-count">{release.catalogue_number || '-'}</span>{" "}
-                                                        </p>
+                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                        {release.primary_artist?.name || '-'}
                                                     </td>
-                                                    <td className="excel-button btn-continue">
+                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                        {release.label?.name || '-'}
+                                                    </td>
+                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                        {release.release_date ? new Date(release.release_date).toLocaleDateString() : '-'}
+                                                    </td>
+                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                        {release.tracks?.length || 0}
+                                                    </td>
+                                                    <td className="px-3 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>
+                                                        <div>{release.upc || '-'}</div>
+                                                        <div className="text-muted mt-1">{release.catalogue_number || '-'}</div>
+                                                    </td>
+                                                    <td className="px-3 py-3 border-0 text-secondary" style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                        <span title={release.admin_remarks || '-'}>
+                                                            {release.admin_remarks || '-'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-3 py-3 border-0">
                                                         <button
-                                                            className="mainBtn bgPurple clWhite"
-                                                            id="saved-release"
-                                                            onClick={() => navigate(`/edit-release/${release.id}`)}
+                                                            className="btn bgPurple clWhite px-3 py-1"
+                                                            style={{ fontSize: '12px', borderRadius: '4px' }}
+                                                            onClick={() => navigate(`/edit-release/${release.id || release._id}`)}
                                                         >
                                                             Continue
                                                         </button>
@@ -152,29 +138,30 @@ function SavedReleaseComponent() {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="7" className="text-center py-4">No saved releases found</td>
+                                                <td colSpan="9" className="text-center py-4 text-muted border-0">No saved releases found</td>
                                             </tr>
                                         )}
                                     </tbody>
                                 </table>
-
                             </>
                         )}
                     </div>
 
-                    {!loading && pagination.totalPages > 0 && (
-                        <CustomPagination
-                            pageCount={pagination.totalPages}
-                            onPageChange={handlePageChange}
-                            currentPage={pagination.currentPage}
-                            perPage={pagination.limit}
-                            onPerPageChange={handlePerPageChange}
-                        />
-                    )}
                 </div>
+
+                {!loading && pagination.totalPages > 0 && (
+                    <CustomPagination
+                        pageCount={pagination.totalPages}
+                        onPageChange={handlePageChange}
+                        currentPage={pagination.currentPage}
+                        perPage={pagination.limit}
+                        onPerPageChange={handlePerPageChange}
+                    />
+                )}
             </section>
         </>
     )
 }
 
 export default SavedReleaseComponent
+
