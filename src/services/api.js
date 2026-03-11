@@ -1,11 +1,12 @@
 export const BASE_URL = import.meta.env.VITE_API_URL;
 export const ROOT_URL = BASE_URL.replace("/api", "");
 
-let authToken = null;
+let authToken = localStorage.getItem("token");
 
 // Call this after login
 export const setToken = (token) => {
     authToken = token;
+    localStorage.setItem("token", token);
 };
 
 // Call this on logout

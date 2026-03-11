@@ -32,6 +32,7 @@ import ManageUser from "../pages/SuperAdmin/ManageUser";
 import AddUser from "../pages/SuperAdmin/AddUser";
 import ManageCountry from "../pages/SuperAdmin/ManageCountry";
 import ManageUPC from "../pages/SuperAdmin/ManageUPC";
+import TwoFactorSetupPage from "../pages/Auth/TwoFactorSetupPage";
 
 
 function AppRouter() {
@@ -103,6 +104,7 @@ function AppRouter() {
                     }
                 >
                     {/* <Route path="/change-password" element={<ChangePassword />} /> */}
+                    <Route path="/2fa-setup" element={<TwoFactorSetupPage />} />
                 </Route>
 
                 {/* 404 */}

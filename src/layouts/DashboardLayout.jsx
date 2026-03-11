@@ -53,6 +53,11 @@ function DashboardLayout() {
                         <img src="../assets/Img/profile.jpg" alt="Not found" />
                         <ul className="dropdown-menu">
                             <li>
+                                <button className="dropdown-item" onClick={() => navigate("/2fa-setup")}>
+                                    2FA Settings
+                                </button>
+                            </li>
+                            <li>
                                 <button className="dropdown-item" onClick={handleLogout}>
                                     Logout
                                 </button>

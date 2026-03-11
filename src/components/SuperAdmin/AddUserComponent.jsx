@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { apiRequest } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../Loader/Loader";
+import Select from "react-select";
 
 function AddUserComponent() {
     const [searchParams] = useSearchParams();
@@ -13,6 +14,22 @@ function AddUserComponent() {
 
     const [loading, setLoading] = useState(isEdit);
     const navigate = useNavigate();
+    const [users, setUsers] = useState([]);
+
+    // Fetch users for dropdown
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await apiRequest(`/users?role=User&limit=1000`, "GET", null, true);
+                if (response.success && response.data?.data) {
+                    setUsers(response.data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+        fetchUsers();
+    }, []);
 
     // Dynamic validation schema depending on add/edit mode
     const validationSchema = Yup.object({
@@ -29,6 +46,11 @@ function AddUserComponent() {
                 .oneOf([Yup.ref("password"), null], "Passwords must match")
                 .required("Confirm password is required"),
         third_party_username: Yup.string(),
+        parent_id: Yup.string().when("role", {
+            is: "Sub User",
+            then: (schema) => schema.required("User is required for Sub User role"),
+            otherwise: (schema) => schema.notRequired()
+        }),
     });
 
     const formik = useFormik({
@@ -39,7 +61,8 @@ function AddUserComponent() {
             password: "",
             confirmPassword: "",
             role: "",
-            third_party_username: ""
+            third_party_username: "",
+            parent_id: ""
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -81,6 +104,7 @@ function AddUserComponent() {
                                 phone: user.phone || "",
                                 role: user.role || "",
                                 third_party_username: user.third_party_username || "",
+                                parent_id: user.parent_id || "",
                                 password: "********",
                                 confirmPassword: "********"
                             });
@@ -112,7 +136,7 @@ function AddUserComponent() {
                 </div>
                 <div className="add-subLabel-mainbox">
                     <div className="add-subLabel-box">
-                        <form onSubmit={formik.handleSubmit} className="add-subLabels-form">
+                        <form onSubmit={formik.handleSubmit} className="add-subLabels-form" id="add-subLabels-form">
                             <div className="row">
                                 <div className="col-md-6">
                                     <div className="form-group add-sublab-group">
@@ -233,6 +257,37 @@ function AddUserComponent() {
                                         />
                                     </div>
                                 </div>
+
+                                {formik.values.role === "Sub User" && (
+                                    <div className="col-md-6">
+                                        <div className="form-group add-sublab-group">
+                                            <label className="form-label required">Assign User</label>
+                                            <Select
+                                                options={users.map(u => ({ value: u.id, label: u.name }))}
+                                                value={users.map(u => ({ value: u.id, label: u.name })).find(u => u.value === formik.values.parent_id) || null}
+                                                onChange={(val) => formik.setFieldValue("parent_id", val ? val.value : "")}
+                                                onBlur={() => formik.setFieldTouched("parent_id", true)}
+                                                placeholder="-- Choose User --"
+                                                className={formik.touched.parent_id && formik.errors.parent_id ? 'is-invalid' : ''}
+                                                classNamePrefix="react-select"
+                                                styles={{
+                                                    control: (base) => ({
+                                                        ...base,
+                                                        border: '1px solid #ced4da',
+                                                        borderRadius: '0.375rem',
+                                                        boxShadow: 'none',
+                                                        '&:hover': {
+                                                            border: '1px solid #86b7fe'
+                                                        }
+                                                    })
+                                                }}
+                                            />
+                                            {formik.touched.parent_id && formik.errors.parent_id && (
+                                                <small className="text-danger">{formik.errors.parent_id}</small>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="col-12 mt-3">
                                     <div className="form-group add-sublab-group">

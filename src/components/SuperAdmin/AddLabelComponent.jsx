@@ -17,18 +17,22 @@ function AddLabelComponent() {
     const navigate = useNavigate();
     const countryOptions = React.useMemo(() => countryList().getData(), []);
 
+    const [users, setUsers] = useState([]);
+
     // Validation schema for Labels
     const validationSchema = Yup.object({
         name: Yup.string().trim().required("Name is required"),
         email: Yup.string().email("Invalid email format"),
-        country: Yup.string().required("Country is required")
+        country: Yup.string().required("Country is required"),
+        user_id: Yup.mixed().required("User is required")
     });
 
     const formik = useFormik({
         initialValues: {
             name: "",
             email: "",
-            country: "India"
+            country: "India",
+            user_id: ""
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -55,6 +59,12 @@ function AddLabelComponent() {
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
+                // Fetch users with role User
+                const usersResponse = await apiRequest(`/users?role=User&limit=1000`, "GET", null, true);
+                if (usersResponse.success && usersResponse.data?.data) {
+                    setUsers(usersResponse.data.data);
+                }
+
                 if (isEdit) {
                     const response = await apiRequest(`/all-labels?limit=1000`, "GET", null, true);
                     if (response.success && response.data?.data) {
@@ -63,7 +73,8 @@ function AddLabelComponent() {
                             formik.setValues({
                                 name: label.name || "",
                                 email: label.email || "",
-                                country: label.country || ""
+                                country: label.country || "",
+                                user_id: label.user_id || ""
                             });
                         } else {
                             toast.error("Label not found in list");
@@ -96,7 +107,7 @@ function AddLabelComponent() {
                 </div>
                 <div className="add-subLabel-mainbox">
                     <div className="add-subLabel-box">
-                        <form onSubmit={formik.handleSubmit} className="add-subLabels-form">
+                        <form onSubmit={formik.handleSubmit} className="add-subLabels-form" id="add-subLabels-form">
                             <div className="row">
                                 <div className="col-md-6">
                                     <div className="form-group add-sublab-group">
@@ -138,7 +149,26 @@ function AddLabelComponent() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="col-md-12">
+                                <div className="col-md-6">
+                                    <div className="form-group add-sublab-group">
+                                        <label className="form-label required" htmlFor="user_id">
+                                            User
+                                        </label>
+                                        <Select
+                                            options={users.map(u => ({ value: u.id, label: u.name }))}
+                                            value={users.map(u => ({ value: u.id, label: u.name })).find(u => u.value === formik.values.user_id) || null}
+                                            onChange={(val) => formik.setFieldValue("user_id", val ? val.value : "")}
+                                            onBlur={() => formik.setFieldTouched("user_id", true)}
+                                            placeholder="-- Choose User --"
+                                            className={formik.touched.user_id && formik.errors.user_id ? 'is-invalid' : ''}
+                                            classNamePrefix="react-select"
+                                        />
+                                        {formik.touched.user_id && formik.errors.user_id && (
+                                            <small className="text-danger">{formik.errors.user_id}</small>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="col-md-6">
                                     <div className="form-group add-sublab-group">
                                         <label className="form-label required" htmlFor="country">
                                             Country

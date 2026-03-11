@@ -5353,6 +5353,20 @@ td.view-ticket-pra {
     margin-bottom: 13px;
 }
 
+form#add-subLabels-form input {
+    height: initial;
+}
+
+#two-fa-modal .modal-content {
+    padding: 0;
+}
+
+#two-fa-modal .modal-header {
+    padding: 15px 20px;
+    border-bottom: none;
+}
+
+
 .add-subLabels-form .form-group select:focus {
     box-shadow: none;
 }
@@ -6404,22 +6418,434 @@ select:focus-visible {
         display: flex;
     }
 }
+
 /* Bulk Release Styles */
-.bulk-releases-section { padding: 30px 0; }
-.bulk-sec-heading { border-bottom: 1px solid #eee; margin-bottom: 30px; padding-bottom: 10px; }
-.bulk-sec-heading h6 { font-size: 18px; color: #35bdaa; font-weight: 600; }
-.bulk-file-card, .bulk-metadata-card, .template-status-card { background: #fff; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-.bulk-rel-guidlines h6 { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
-.bulk-rel-guidlines p { font-size: 13px; color: #666; margin-bottom: 5px; }
-.choose-bulk-mainbox { border: 2px dashed #ddd; border-radius: 8px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
-.choose-bulk-mainbox:hover { border-color: #0065ab; background: #f8fbff; }
-.choose-bulk-mainbox .file-icon { font-size: 24px; color: #fff; background: #b194f4; width: 40px; height: 40px; border-radius: 5px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
-.choose-bulk-mainbox h5 { font-size: 14px; color: #333; font-weight: 500; }
-.metadata-head h6 { font-size: 15px; font-weight: 600; margin-bottom: 20px; }
-.metadata-menu { display: flex; flex-direction: column; gap: 10px; }
-.metadata-menu li { background: #f9f9f9; padding: 12px 15px; border-radius: 5px; }
-.metadata-menu li a { display: flex; justify-content: space-between; font-size: 14px; color: #333; }
-.metadata-menu li a span { color: #35bdaa; font-weight: 600; cursor: pointer; }
-.template-status-card { display: flex; flex-direction: column; gap: 15px; }
-.template-status-card p { font-size: 14px; font-weight: 500; margin: 0; }
-.btn-download-status { background: #35bdaa; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; width: fit-content; text-decoration: none; display: inline-block; }
+.bulk-releases-section {
+    padding: 30px 0;
+}
+
+.bulk-sec-heading {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+.bulk-sec-heading h6 {
+    font-size: 18px;
+    color: #35bdaa;
+    font-weight: 600;
+}
+
+.bulk-file-card,
+.bulk-metadata-card,
+.template-status-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.bulk-rel-guidlines h6 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.bulk-rel-guidlines p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.choose-bulk-mainbox {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.choose-bulk-mainbox:hover {
+    border-color: #0065ab;
+    background: #f8fbff;
+}
+
+.choose-bulk-mainbox .file-icon {
+    font-size: 24px;
+    color: #fff;
+    background: #b194f4;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.choose-bulk-mainbox h5 {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.metadata-head h6 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.metadata-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metadata-menu li {
+    background: #f9f9f9;
+    padding: 12px 15px;
+    border-radius: 5px;
+}
+
+.metadata-menu li a {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #333;
+}
+
+.metadata-menu li a span {
+    color: #35bdaa;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.template-status-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.template-status-card p {
+    font-size: 14px;
+    font-weight: 500;
+    width: fit-content;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* ############## view Ticket page media quries ################  */
+
+@media (max-width:576px) {
+
+    .view-ticket-group select {
+        width: 100%;
+    }
+
+}
+
+
+
+/* ################## manage Genre page ###############  */
+
+
+.manage-genre-btn button:hover {
+    color: #fff;
+}
+
+.manage-genre-btn button i {
+    margin-right: 5px;
+}
+
+.manageGenre {
+    display: table-cell !important;
+    text-align: start !important;
+}
+
+.genreStatus input[type="checkbox"] {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+    border: 1px solid #d9d9d9 !important;
+}
+
+.genreStatus .form-check {
+    padding-left: 0 !important;
+}
+
+.genreStatus label {
+    position: relative;
+    top: 3px;
+    margin-left: 10px;
+}
+
+.gen-status td {
+    margin-left: 20px !important;
+}
+
+
+
+/* ################## manage Genre page media quries ###############  */
+
+
+@media (max-width:1240px) {
+    .manageGenre {
+        display: table-cell !important;
+        text-align: center !important;
+    }
+
+    .genreStatus .form-check {
+        display: flex;
+    }
+
+    .manageGenre .manage-gen-btnBox {
+        display: flex;
+    }
+}
+
+/* Bulk Release Styles */
+.bulk-releases-section {
+    padding: 30px 0;
+}
+
+.bulk-sec-heading {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+.bulk-sec-heading h6 {
+    font-size: 18px;
+    color: #35bdaa;
+    font-weight: 600;
+}
+
+.bulk-file-card,
+.bulk-metadata-card,
+.template-status-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.bulk-rel-guidlines h6 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.bulk-rel-guidlines p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.choose-bulk-mainbox {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.choose-bulk-mainbox:hover {
+    border-color: #0065ab;
+    background: #f8fbff;
+}
+
+.choose-bulk-mainbox .file-icon {
+    font-size: 24px;
+    color: #fff;
+    background: #b194f4;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.choose-bulk-mainbox h5 {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.metadata-head h6 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.metadata-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metadata-menu li {
+    background: #f9f9f9;
+    padding: 12px 15px;
+    border-radius: 5px;
+}
+
+.metadata-menu li a {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #333;
+}
+
+.metadata-menu li a span {
+    color: #35bdaa;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.template-status-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.template-status-card p {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.btn-download-status {
+    background: #35bdaa;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    width: fit-content;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* 2FA UI Enhancements */
+.two-factor-setup-card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.two-factor-setup-card .card-header {
+    background: linear-gradient(135deg, #0065ab 0%, #004a7c 100%) !important;
+    color: white !important;
+    border-bottom: none;
+}
+
+.two-factor-status-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.two-factor-status-enabled {
+    color: #28a745;
+    text-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
+}
+
+.two-factor-status-disabled {
+    color: #6c757d;
+}
+
+.qr-code-wrapper {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    border: 1px solid #eee;
+}
+
+.secret-key-box {
+    background: #f8f9fa;
+    border: 1px dashed #0065ab;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: #0065ab;
+    word-break: break-all;
+}
+
+.otp-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.otp-input {
+    width: 100%;
+    max-width: 300px;
+    height: 60px;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    text-align: center;
+    letter-spacing: 10px;
+    padding-left: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #1a2a44 !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.otp-input:focus {
+    border-color: #0065ab !important;
+    box-shadow: 0 0 0 4px rgba(0, 101, 171, 0.1) !important;
+}
+
+.btn-2fa-primary {
+    background: #0065ab;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-2fa-primary:hover {
+    background: #004a7c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 101, 171, 0.2);
+}
+
+.login-2fa-container {
+    animation: fadeIn 0.5s ease;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-2fa-container .fa-shield {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

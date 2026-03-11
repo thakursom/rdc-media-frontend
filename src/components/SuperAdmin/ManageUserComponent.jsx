@@ -92,6 +92,36 @@ function ManageUserComponent() {
         }
     };
 
+    const toggleApprove = async (user) => {
+        try {
+            const response = await apiRequest(`/toggle-approve/${user.id || user._id}`, "PUT", null, true);
+            if (response.success) {
+                toast.success(response.message);
+                fetchUsers(pagination.currentPage, pagination.limit, searchTerm);
+            } else {
+                toast.error(response.message || "Failed to update approval status");
+            }
+        } catch (error) {
+            console.error("Error toggling approval:", error);
+            toast.error("An error occurred");
+        }
+    };
+
+    const toggleLock = async (user) => {
+        try {
+            const response = await apiRequest(`/toggle-lock/${user.id || user._id}`, "PUT", null, true);
+            if (response.success) {
+                toast.success(response.message);
+                fetchUsers(pagination.currentPage, pagination.limit, searchTerm);
+            } else {
+                toast.error(response.message || "Failed to update lock status");
+            }
+        } catch (error) {
+            console.error("Error toggling lock:", error);
+            toast.error("An error occurred");
+        }
+    };
+
     const handleExport = () => {
         // Placeholder for export functionality
         toast.info("Export functionality coming soon");
@@ -113,19 +143,17 @@ function ManageUserComponent() {
                                     placeholder="Search by name or email"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    style={{ width: "250px", height: "38px" }}
                                 />
-                                <button type="submit" className="mainBtn bgPurple clWhite" style={{ height: "38px" }}>Search</button>
+                                <button type="submit" className="mainBtn bgPurple clWhite">Search</button>
                                 {searchTerm && (
-                                    <button type="button" className="mainBtn bgGray clWhite" onClick={handleClearSearch} style={{ height: "38px" }}>Clear</button>
+                                    <button type="button" className="mainBtn bgGray clWhite" onClick={handleClearSearch}>Clear</button>
                                 )}
                             </form>
-                            <button className="mainBtn bgPurple clWhite" onClick={handleExport} style={{ height: "38px" }}>Export</button>
+                            <button className="mainBtn bgPurple clWhite" onClick={handleExport}>Export</button>
                             <button
                                 type="button"
                                 className="mainBtn bgPurple clWhite"
                                 onClick={() => navigate("/add-user")}
-                                style={{ height: "38px" }}
                             >
                                 <i className="fa-solid fa-plus" />
                                 Add New
@@ -138,14 +166,16 @@ function ManageUserComponent() {
                             <Loader message="Fetching users..." variant="success" />
                         ) : (
                             <div className="table-responsive">
-                                <table className="table table-bordered">
+                                <table className="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>SN</th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Roles</th>
-                                            <th>Third Party Username</th>
+                                            <th>Third Party</th>
+                                            <th>Status</th>
+                                            <th>Security</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -154,16 +184,39 @@ function ManageUserComponent() {
                                             users.map((user, index) => (
                                                 <tr key={user.id || user._id}>
                                                     <td>{(pagination.currentPage - 1) * pagination.limit + index + 1}</td>
-                                                    <td>{user.name}</td>
+                                                    <td dangerouslySetInnerHTML={{ __html: user.name }}></td>
                                                     <td>{user.email}</td>
                                                     <td>{user.role}</td>
                                                     <td>{user.third_party_username || "-"}</td>
+                                                    <td>
+                                                        <span className={`badge rounded-pill ${user.isApproved === 1 ? 'bg-success' : 'bg-warning text-dark'}`} style={{ fontSize: '11px', padding: '5px 10px' }}>
+                                                            {user.isApproved === 1 ? 'Approved' : 'Pending'}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className={`badge rounded-pill ${user.isLocked === 1 ? 'bg-info' : 'bg-danger'}`} style={{ fontSize: '11px', padding: '5px 10px' }}>
+                                                            {user.isLocked === 1 ? 'Active' : 'Locked'}
+                                                        </span>
+                                                    </td>
                                                     <td className="excel-button view-subLabels-btn manageGenre" id="subLabelsBtn">
-                                                        <div className="manage-gen-btnBox">
+                                                        <div className="manage-gen-btnBox d-flex gap-2 flex-wrap">
+                                                            <button
+                                                                type="button"
+                                                                className={`mainBtn ${user.isApproved === 1 ? 'bgGray' : 'bgPurple'} clWhite`}
+                                                                onClick={() => toggleApprove(user)}
+                                                            >
+                                                                {user.isApproved === 1 ? 'Reject' : 'Approve'}
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={`mainBtn ${user.isLocked === 1 ? 'bg-danger' : 'bgPurple'} clWhite`}
+                                                                onClick={() => toggleLock(user)}
+                                                            >
+                                                                {user.isLocked === 1 ? 'Lock' : 'Unlock'}
+                                                            </button>
                                                             <button
                                                                 type="button"
                                                                 className="mainBtn bgPurple clWhite"
-                                                                id="subLabelsBtn"
                                                                 onClick={() => navigate(`/add-user?id=${user.id}`)}
                                                             >
                                                                 Edit
@@ -171,7 +224,6 @@ function ManageUserComponent() {
                                                             <button
                                                                 type="button"
                                                                 className="mainBtn bgRed clWhite"
-                                                                id="subLabelsDel"
                                                                 onClick={() => handleOpenModal('delete', user)}
                                                             >
                                                                 Delete
@@ -182,7 +234,7 @@ function ManageUserComponent() {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="6" className="text-center">No users found</td>
+                                                <td colSpan="8" className="text-center">No users found</td>
                                             </tr>
                                         )}
                                     </tbody>

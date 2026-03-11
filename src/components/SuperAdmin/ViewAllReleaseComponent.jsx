@@ -705,7 +705,7 @@ function ViewAllReleaseComponent() {
                                                             <td style={{ fontSize: '14px' }}>{release.label?.name || '-'}</td>
                                                             <td style={{ fontSize: '14px' }}>{release.release_date ? new Date(release.release_date).toLocaleDateString('en-CA') : '-'}</td>
                                                             <td style={{ fontSize: '14px', color: '#888' }}>-</td>
-                                                            <td style={{ fontSize: '14px', color: '#888' }}>-</td>
+                                                            <td style={{ fontSize: '14px', color: '#888' }}>{release.createdAt ? new Date(release.createdAt).toLocaleDateString('en-CA') : '-'}</td>
                                                             <td style={{ fontSize: '14px' }}>{release.tracks?.length || 0}</td>
                                                             <td style={{ fontSize: '14px', color: '#888' }}>{release.upc || '-'}</td>
                                                             <td>
@@ -735,7 +735,7 @@ function ViewAllReleaseComponent() {
                                                                         <table className="table table-sm table-borderless mb-0">
                                                                             <thead>
                                                                                 <tr style={{ fontSize: '13px', color: '#333', borderBottom: '2px solid #eee' }}>
-                                                                                    <th className="fw-medium pb-2">Title</th>
+                                                                                    <th className="fw-medium pb-2">Track Title</th>
                                                                                     <th className="fw-medium pb-2">Artists</th>
                                                                                     <th className="fw-medium pb-2">Composer</th>
                                                                                     <th className="fw-medium pb-2">Producer</th>
