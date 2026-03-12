@@ -92,7 +92,7 @@ function ViewSingleReleaseComponent() {
                 {/* Header Section */}
                 <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                     <h5 className="mb-0 fw-bold clPurple" style={{ fontSize: '18px' }}>Views</h5>
-                    <button className="btn bgPurple clWhite px-4 py-1" style={{ borderRadius: '4px' }} onClick={() => navigate('/view-release')}>Back</button>
+                    <button className="mainBtn bgPurple clWhite" onClick={() => navigate('/view-release')}>Back</button>
                 </div>
 
                 {/* Main Release Card */}
@@ -181,8 +181,8 @@ function ViewSingleReleaseComponent() {
                             </div>
 
                             <div className="d-flex gap-3 mt-2">
-                                <button className="btn bgPurple clWhite px-4 fw-medium shadow-sm" style={{ fontSize: '14px', borderRadius: '4px' }} onClick={() => navigate(`/edit-release/${release.id}`)}>Edit</button>
-                                <button className="btn bgPurple clWhite px-4 fw-medium shadow-sm" style={{ fontSize: '14px', borderRadius: '4px' }} onClick={handleDownloadMeta}>Download Meta</button>
+                                <button className="mainBtn bgPurple clWhite" onClick={() => navigate(`/edit-release/${release.id}`)}>Edit</button>
+                                <button className="mainBtn bgPurple clWhite" onClick={handleDownloadMeta}>Download Meta</button>
                             </div>
                         </div>
                     </div>
@@ -231,7 +231,7 @@ function ViewSingleReleaseComponent() {
                                                     <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.artist || track.author || release.primary_artist?.name || '-'}</td>
                                                     <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.duration || '0:00'}</td>
                                                     <td className="px-2 py-3 border-0 text-center">
-                                                        <button className="btn btn-sm bgPurple clWhite px-3 py-1 fw-bold" style={{ fontSize: '11px', borderRadius: '4px' }}>
+                                                        <button className="mainBtn bgPurple clWhite">
                                                             <i className="fa-solid fa-bullhorn me-1"></i> Promote
                                                         </button>
                                                     </td>

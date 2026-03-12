@@ -691,14 +691,14 @@ function AddArtistComponent() {
                             <div className="artist-btn-main mt-5">
                                 <button
                                     type="submit"
-                                    className="mainBtn bgPurple clWhite px-5 py-2"
+                                    className="mainBtn bgPurple clWhite "
                                     disabled={formik.isSubmitting || isUploading}
                                 >
                                     {formik.isSubmitting ? 'Saving...' : (isEdit ? 'Update Artist' : 'Save Artist')}
                                 </button>
                                 <button
                                     type="button"
-                                    className="mainBtn bgGray clWhite ms-3 px-5 py-2"
+                                    className="mainBtn bgGray clWhite ms-3 "
                                     onClick={() => navigate('/view-artist')}
                                     disabled={formik.isSubmitting}
                                 >

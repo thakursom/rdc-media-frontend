@@ -83,7 +83,7 @@ function AddBulkReleaseComponent() {
             <section className="right-sidebar" id="sidebarRight">
                 <div className="bulk-releases-section">
                     <div className="bulk-sec-heading d-flex justify-content-between align-items-center mb-3">
-                        <h6 style={{ color: '#31aaa1', fontSize: '15px' }}>Add Bulk Releases</h6>
+                        <h6 style={{ color: 'var(--bgPurple)', fontSize: '15px' }}>Add Bulk Releases</h6>
                     </div>
 
                     <div className="bulk-file-card border-0 shadow-sm mt-3" style={{ background: '#fff', padding: '25px', borderRadius: '8px' }}>
@@ -102,8 +102,8 @@ function AddBulkReleaseComponent() {
                                     onClick={handleUploadClick}
                                     style={{
                                         maxWidth: '300px',
-                                        borderStyle: 'dashed',
-                                        borderColor: '#b194f4',
+                                        borderStyle: 'dotted',
+                                        borderColor: 'var(--bgPurple)',
                                         background: '#fff',
                                         opacity: agreed ? 1 : 0.6,
                                         cursor: agreed ? 'pointer' : 'not-allowed'
@@ -116,7 +116,7 @@ function AddBulkReleaseComponent() {
                                         style={{ display: 'none' }}
                                         accept=".zip"
                                     />
-                                    <div className="file-icon" style={{ background: '#b194f4', borderRadius: '5px' }}>
+                                    <div className="file-icon" style={{ background: 'var(--bgPurple)', borderRadius: '5px' }}>
                                         <i className="fa-solid fa-plus" />
                                     </div>
                                     <h5 style={{ fontSize: '13px', color: '#444', lineHeight: '1.5' }}>
@@ -183,9 +183,11 @@ function AddBulkReleaseComponent() {
 
                     <div className="template-status-card border-0 shadow-sm mt-4" style={{ background: '#fff', padding: '25px', borderRadius: '8px' }}>
                         <h6 className="fw-bold mb-3" style={{ fontSize: '14px', color: '#444' }}>Download Dummy Bulk Release Zip File.</h6>
-                        <button className="btn-download-status" style={{ background: '#31aaa1', border: 'none', color: '#fff', padding: '8px 15px', borderRadius: '5px', fontSize: '13px' }}>
-                            Download Dummy Zip (Default)
-                        </button>
+                        <div className="section-btn-fx">
+                            <button className="mainBtn bgPurple clWhite">
+                                Download Dummy Zip (Default)
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -14,6 +14,7 @@ function ReviewComponent() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedLabel, setSelectedLabel] = useState("");
     const [selectedReleases, setSelectedReleases] = useState([]);
+    const [showBulkApproveModal, setShowBulkApproveModal] = useState(false);
     const [pagination, setPagination] = useState({
         totalDocs: 0,
         totalPages: 0,
@@ -94,14 +95,17 @@ function ReviewComponent() {
         }
     };
 
-    const handleBulkApprove = async () => {
+    const handleBulkApprove = () => {
         if (selectedReleases.length === 0) {
             toast.warn("Please select at least one release to approve.");
             return;
         }
-        if (!window.confirm(`Are you sure you want to approve ${selectedReleases.length} releases?`)) return;
+        setShowBulkApproveModal(true);
+    };
 
+    const confirmBulkApprove = async () => {
         setLoading(true);
+        setShowBulkApproveModal(false);
         try {
             const promises = selectedReleases.map(id => {
                 const release = releases.find(r => (r.id === id || r._id === id));
@@ -135,13 +139,35 @@ function ReviewComponent() {
                     <div className="d-flex justify-content-between align-items-center mb-4 pb-3" style={{ borderBottom: '1px solid #eee' }}>
                         <h6 className="mb-0 fw-bold clPurple" style={{ fontSize: '16px' }}>Content in Review</h6>
                         <button
-                            className="btn bgPurple clWhite px-4 py-2 fw-medium"
-                            style={{ borderRadius: '4px', fontSize: '13px' }}
+                            className="mainBtn bgPurple clWhite"
                             onClick={handleBulkApprove}
                         >
                             Bulk Approve
                         </button>
                     </div>
+
+                    {/* Confirmation Modal */}
+                    {showBulkApproveModal && (
+                        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                            <div className="modal-dialog modal-dialog-centered">
+                                <div className="modal-content" style={{ borderRadius: '10px', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}>
+                                    <div className="modal-header border-0 pb-0">
+                                        <h5 className="modal-title clPurple fw-bold">Bulk Approve</h5>
+                                        <button type="button" className="btn-close" onClick={() => setShowBulkApproveModal(false)}></button>
+                                    </div>
+                                    <div className="modal-body py-4">
+                                        <p className="mb-0" style={{ fontSize: '15px' }}>
+                                            Are you sure you want to approve <strong>{selectedReleases.length}</strong> {selectedReleases.length === 1 ? 'release' : 'releases'}?
+                                        </p>
+                                    </div>
+                                    <div className="modal-footer border-0 pt-0">
+                                        <button type="button" className="mainBtn bgRed clWhite" onClick={() => setShowBulkApproveModal(false)}>Cancel</button>
+                                        <button type="button" className="mainBtn bgPurple clWhite" onClick={confirmBulkApprove}>Approve</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Filter Bar */}
                     <div className="d-flex gap-3 mb-4 align-items-center">
@@ -197,7 +223,7 @@ function ReviewComponent() {
                         )}
                         {!loading && (
                             <>
-                                <table className="table bg-white align-middle" style={{ border: '1px solid #eee' }}>
+                                <table className="table bg-white align-middle" style={{ border: '1px solid #eee' }} id="review-table">
                                     <thead>
                                         <tr style={{ color: '#777', fontSize: '13px', borderBottom: '2px solid #eee' }}>
                                             <th className="px-3 py-3 fw-medium border-0" style={{ width: '5%' }}>
@@ -246,13 +272,13 @@ function ReviewComponent() {
                                                         <td className="px-3 py-3 border-0 text-secondary">{release.primary_artist?.name || '-'}</td>
                                                         <td className="px-3 py-3 border-0 text-secondary">{release.label?.name || '-'}</td>
                                                         <td className="px-3 py-3 border-0 text-center">
-                                                            <span className="badge text-white" style={{ backgroundColor: '#007bff', fontWeight: 'normal', fontSize: '11px', padding: '5px 8px' }}>Pending</span>
+                                                            <span className="badge bgRed clWhite" style={{ display: "inline-block", fontSize: "10px", padding: "5px" }} >Pending</span>
                                                         </td>
                                                         <td className="px-3 py-3 border-0 text-secondary">
                                                             {release.release_date ? new Date(release.release_date).toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}
                                                         </td>
                                                         <td className="px-3 py-3 border-0 text-center">
-                                                            <Link to={`/review-release/${id}`} className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '12px', borderRadius: '4px' }}>
+                                                            <Link to={`/review-release/${id}`} state={{ from: '/review' }} className="mainBtn bgPurple clWhite">
                                                                 View
                                                             </Link>
                                                         </td>

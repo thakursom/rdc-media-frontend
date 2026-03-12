@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { apiRequest } from "../../services/api";
 import { toast } from "react-toastify";
 import Loader from "../Loader/Loader";
@@ -7,6 +7,9 @@ import Loader from "../Loader/Loader";
 function ReviewSingleReleaseComponent() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from || '/review';
+
     const [release, setRelease] = useState(null);
     console.log("release", release);
 
@@ -52,7 +55,7 @@ function ReviewSingleReleaseComponent() {
             if (response.success) {
                 toast.success('Release Approved successfully');
                 document.getElementById('closeApproveModal')?.click();
-                navigate('/review');
+                navigate(from);
             } else {
                 toast.error(response?.data?.message || "Failed to update status");
             }
@@ -87,7 +90,7 @@ function ReviewSingleReleaseComponent() {
             if (response.success) {
                 toast.success('Release Rejected successfully');
                 document.getElementById('closeRejectModal')?.click();
-                navigate('/review');
+                navigate(from);
             } else {
                 toast.error(response?.data?.message || "Failed to update status");
             }
@@ -118,7 +121,7 @@ function ReviewSingleReleaseComponent() {
             <section className="right-sidebar py-5" id="sidebarRight">
                 <div className="container">
                     <h4>Release not found.</h4>
-                    <button className="btn bgPurple clWhite mt-3" onClick={() => navigate('/review')}>Back to Review</button>
+                    <button className="btn bgPurple clWhite mt-3" onClick={() => navigate(from)}>Back to Review</button>
                 </div>
             </section>
         );
@@ -129,7 +132,7 @@ function ReviewSingleReleaseComponent() {
             <div className="view-release-sec views-sec p-4">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h5 className="clPurple mb-0">Views</h5>
-                    <button className="btn bgPurple clWhite px-4 py-1" onClick={() => navigate('/review')}>Back</button>
+                    <button className="mainBtn bgPurple clWhite" onClick={() => navigate(from)}>Back</button>
                 </div>
 
                 {/* Main Release Card */}
@@ -214,9 +217,9 @@ function ReviewSingleReleaseComponent() {
                                 </div>
 
                                 <div className="d-flex gap-2">
-                                    <button className="btn clWhite px-4" style={{ backgroundColor: '#0066b2' }} onClick={() => navigate(`/edit-release/${release.id}`)}>Edit</button>
-                                    <button className="btn btn-danger px-4" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
-                                    <button className="btn bgPurple clWhite px-4" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
+                                    <button className="mainBtn bgPurple clWhite" onClick={() => navigate(`/edit-release/${release.id}`, { state: { from } })}>Edit</button>
+                                    <button className="mainBtn bgRed clWhite" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
+                                    <button className="mainBtn bgPurple clWhite" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +258,7 @@ function ReviewSingleReleaseComponent() {
                                                 <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.artist || release.primary_artist?.name || 'N/A'}</td>
                                                 <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.duration || '00:00'}</td>
                                                 <td className="px-2 py-3 border-0 text-center">
-                                                    <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '12px', borderRadius: '4px' }}>
+                                                    <button className="mainBtn bgPurple clWhite" style={{ fontSize: '12px', borderRadius: '4px' }}>
                                                         <i className="fa-solid fa-bell me-1"></i> Promote
                                                     </button>
                                                 </td>
@@ -314,7 +317,7 @@ function ReviewSingleReleaseComponent() {
                     <div className="modal-content" style={{ borderRadius: '10px', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}>
                         <div className="modal-header border-0 pb-0">
                             <h5 className="modal-title clPurple fw-bold" id="rejectModalLabel">Reject Reason</h5>
-                            <button type="button" className="btn-close" id="closeRejectModal" data-bs-dismiss="modal" aria-label="Close" style={{ backgroundColor: '#888', padding: '4px', margin: '10px' }}></button>
+                            <button type="button" className="btn-close ms-auto" id="closeRejectModal" data-bs-dismiss="modal" aria-label="Close"><i className="fa-solid fa-xmark" /></button>
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
@@ -354,10 +357,10 @@ function ReviewSingleReleaseComponent() {
                                 />
                             </div>
                             <div className="d-flex justify-content-end gap-2">
-                                <button type="button" className="btn text-white px-4" style={{ backgroundColor: '#6c757d' }} data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" className="mainBtn bgGray clWhite" data-bs-dismiss="modal">Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn btn-danger px-4"
+                                    className="mainBtn bgPurple clWhite"
                                     onClick={handleReject}
                                     disabled={updating}
                                 >
@@ -375,7 +378,9 @@ function ReviewSingleReleaseComponent() {
                     <div className="modal-content" style={{ borderRadius: '10px', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}>
                         <div className="modal-header border-0 pb-0">
                             <h5 className="modal-title clPurple fw-bold" id="approveModalLabel">Approve Release</h5>
-                            <button type="button" className="btn-close bgPurple" id="closeApproveModal" data-bs-dismiss="modal" aria-label="Close" style={{ padding: '4px', margin: '10px' }}></button>
+                            <button type="button" className="btn-close ms-auto" id="closeApproveModal" data-bs-dismiss="modal" aria-label="Close">
+                                <i className="fa-solid fa-xmark" />
+                            </button>
                         </div>
                         <div className="modal-body">
                             <div className="mb-4">
@@ -390,10 +395,10 @@ function ReviewSingleReleaseComponent() {
                                 ></textarea>
                             </div>
                             <div className="d-flex justify-content-end gap-2">
-                                <button type="button" className="btn text-white px-4" style={{ backgroundColor: '#6c757d' }} data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" className="mainBtn bgRed clWhite" data-bs-dismiss="modal">Cancel</button>
                                 <button
                                     type="button"
-                                    className="btn bgPurple text-white px-4"
+                                    className="mainBtn bgPurple clWhite"
                                     onClick={handleApprove}
                                     disabled={updating}
                                 >

@@ -211,28 +211,27 @@ function ViewAllReleaseComponent() {
                                         }}
                                         style={{ fontSize: '13px' }}
                                     />
-                                    <button className="btn bgPurple clWhite px-4" type="submit" style={{ borderTopRightRadius: '4px', borderBottomRightRadius: '4px', fontSize: '13px' }}>
+                                    <button className="btn bgPurple clWhite px-4" type="submit" style={{ borderTopRightRadius: '4px', borderBottomRightRadius: '4px', fontSize: '15px' }}>
                                         Search
                                     </button>
                                 </div>
                             </form>
                             <button
-                                className="btn text-white px-3 whitespace-nowrap"
-                                style={{ backgroundColor: '#6c757d', fontSize: '13px', whiteSpace: 'nowrap' }}
+                                className="mainBtn bgGray clWhite"
                                 onClick={handleResetFilters}
                             >
                                 Clear Filter
                             </button>
                         </div>
-
-                        {/* <div className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-paper-plane me-1"></i> Bulk Resend</button>
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-angle-down me-1"></i> Takedown</button>
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-pen-to-square me-1"></i> Update</button>
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-file-export me-1"></i> Export Selected</button>
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-download me-1"></i> PDL</button>
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-cloud-arrow-up me-1"></i> FUGGA</button>
-                            <button className="btn bgPurple clWhite px-3 py-1" style={{ fontSize: '13px' }}><i className="fa-solid fa-database me-1"></i> Download All</button>
+                        {/* 
+                        <div className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-paper-plane me-1"></i> Bulk Resend</button>
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-angle-down me-1"></i> Takedown</button>
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-pen-to-square me-1"></i> Update</button>
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-file-export me-1"></i> Export Selected</button>
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-download me-1"></i> PDL</button>
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-cloud-arrow-up me-1"></i> FUGGA</button>
+                            <button className="mainBtn bgPurple clWhite" style={{ fontSize: '13px' }}><i className="fa-solid fa-database me-1"></i> Download All</button>
                         </div> */}
                     </div>
 
@@ -240,8 +239,7 @@ function ViewAllReleaseComponent() {
                     <div className="d-flex align-items-center px-3 py-2 border rounded mb-4 bg-light">
                         <span className="fw-bold me-3 text-secondary" style={{ fontSize: '13px' }}>FILTERS:</span>
                         <button
-                            className="btn bgPurple clWhite px-3 py-1"
-                            style={{ fontSize: '13px', borderRadius: '4px' }}
+                            className="mainBtn bgPurple clWhite"
                             data-bs-toggle="modal"
                             data-bs-target="#advanceFilter"
                             onClick={() => setTempFilters({ ...filters })}
@@ -721,7 +719,7 @@ function ViewAllReleaseComponent() {
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <Link to={`/view-release/${id}`} className="btn bgPurple clWhite px-3 py-1 fw-medium" style={{ fontSize: '13px', borderRadius: '4px' }}>
+                                                                <Link to={`/view-release/${id}`} className="mainBtn bgPurple clWhite">
                                                                     View
                                                                 </Link>
                                                             </td>

@@ -4588,6 +4588,10 @@ td.add-track-button .edit {
     border-color: #1271fd !important;
 }
 
+#review-table .form-check-input:checked[type=checkbox] {
+    background-color: transparent !important;
+}
+
 .addition-form-check .form-check-input:checked {
     background-color: #e2fffb !important;
     border-color: #0d6efd;
@@ -4599,7 +4603,7 @@ td.add-track-button .edit {
 }
 
 .form-check-input:focus {
-    border-color: #35bdaa;
+    border-color: var(--bgPurple);
     box-shadow: none;
 }
 
@@ -6224,19 +6228,16 @@ button.playBtn {
     /* margin-top: 22px; */
 }
 
-.add-NewsLetter-button button {
-    display: inline-block;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 12px 30px;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 100%;
-    color: #fff;
-    background-color: #35bdaa;
+.btn-close {
+    --bs-btn-close-bg: none !important;
+    background: var(--bgPurple) !important;
+    color: var(--clWhite) !important;
+    opacity: 1 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px !important;
 }
-
 
 /* ######################## add Newsletter Page media Queries ############## */
 

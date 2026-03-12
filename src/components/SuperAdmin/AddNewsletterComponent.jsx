@@ -371,7 +371,7 @@ function AddNewsletterComponent() {
                         <div className="form-group add-NewsLetter-button d-flex gap-3 mt-4">
                             <button
                                 type="button"
-                                className="mainBtn bgGray clWhite px-5 py-2"
+                                className="mainBtn bgGray clWhite "
                                 onClick={() => navigate('/view-newsletter')}
                                 disabled={formik.isSubmitting}
                             >
@@ -379,7 +379,7 @@ function AddNewsletterComponent() {
                             </button>
                             <button
                                 type="submit"
-                                className="mainBtn bgPurple clWhite px-5 py-2"
+                                className="mainBtn bgPurple clWhite"
                                 id="newsLetterSubmit"
                                 disabled={formik.isSubmitting || isUploading}
                             >

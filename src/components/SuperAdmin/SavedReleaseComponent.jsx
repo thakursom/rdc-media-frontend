@@ -129,7 +129,7 @@ function SavedReleaseComponent() {
                                                         <button
                                                             className="btn bgPurple clWhite px-3 py-1"
                                                             style={{ fontSize: '12px', borderRadius: '4px' }}
-                                                            onClick={() => navigate(`/edit-release/${release.id || release._id}`)}
+                                                            onClick={() => navigate(`/edit-release/${release.id || release._id}`, { state: { from: '/saved-release' } })}
                                                         >
                                                             Continue
                                                         </button>

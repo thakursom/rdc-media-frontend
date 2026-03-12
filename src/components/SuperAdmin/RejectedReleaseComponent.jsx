@@ -125,10 +125,8 @@ function RejectedReleaseComponent() {
                             </select>
                         </div>
                         <button
-                            className="btn bgPurple clWhite fw-medium px-4"
-                            onClick={handleSearch}
-                            style={{ borderRadius: '4px', fontSize: '14px', padding: '10px 15px', height: '43px' }}
-                        >
+                            className="mainBtn bgPurple clWhite"
+                            onClick={handleSearch} >
                             Search
                         </button>
                     </div>

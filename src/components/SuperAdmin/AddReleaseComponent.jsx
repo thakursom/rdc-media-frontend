@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { apiRequest } from "../../services/api";
 import { toast } from "react-toastify";
 import * as Yup from 'yup';
@@ -13,6 +13,9 @@ import Step5Review from './AddReleaseSteps/Step5Review';
 function AddReleaseComponent() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from || (id ? '/review' : null);
+
     const currentYear = new Date().getFullYear();
     const years = Array(currentYear - 1949).fill().map((_, i) => currentYear - i);
 
@@ -610,8 +613,10 @@ function AddReleaseComponent() {
                         URL.revokeObjectURL(form.artworkPreview);
                     }
                 } else {
-                    // If editing, navigate back or refresh?
-                    // navigate(-1); 
+                    // If editing, navigate back to from or default
+                    if (from) {
+                        navigate(from);
+                    }
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });

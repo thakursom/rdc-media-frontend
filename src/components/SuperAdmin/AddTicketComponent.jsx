@@ -217,7 +217,7 @@ const AddTicketComponent = () => {
                         <div className="mt-4 d-flex gap-3">
                             <button
                                 type="button"
-                                className="mainBtn bgGray clWhite px-4 py-2"
+                                className="mainBtn bgGray clWhite"
                                 onClick={() => navigate('/view-ticket')}
                             >
                                 Cancel
