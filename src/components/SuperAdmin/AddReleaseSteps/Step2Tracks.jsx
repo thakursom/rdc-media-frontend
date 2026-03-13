@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import { ROOT_URL } from '../../../services/api';
 
 const Step2Tracks = ({
@@ -18,46 +19,94 @@ const Step2Tracks = ({
     years
 }) => {
     const [playingTrackId, setPlayingTrackId] = React.useState(null);
+    const [isActuallyPlaying, setIsActuallyPlaying] = React.useState(false);
+    const [playbackProgress, setPlaybackProgress] = React.useState(0);
     const audioRef = React.useRef(new Audio());
 
     React.useEffect(() => {
         const audio = audioRef.current;
-        const handleEnded = () => setPlayingTrackId(null);
+        const handleEnded = () => {
+            setPlayingTrackId(null);
+            setIsActuallyPlaying(false);
+        };
+        const handlePlay = () => setIsActuallyPlaying(true);
+        const handlePause = () => setIsActuallyPlaying(false);
+        const handleTimeUpdate = () => setPlaybackProgress(audio.currentTime);
+
         audio.addEventListener('ended', handleEnded);
+        audio.addEventListener('play', handlePlay);
+        audio.addEventListener('pause', handlePause);
+        audio.addEventListener('timeupdate', handleTimeUpdate);
+
         return () => {
             audio.removeEventListener('ended', handleEnded);
+            audio.removeEventListener('play', handlePlay);
+            audio.removeEventListener('pause', handlePause);
+            audio.removeEventListener('timeupdate', handleTimeUpdate);
             audio.pause();
         };
     }, []);
+
+    // Stop preview if modal closes
+    React.useEffect(() => {
+        if (!editingTrackId && playingTrackId === 'preview') {
+            audioRef.current.pause();
+            setPlayingTrackId(null);
+        }
+    }, [editingTrackId, playingTrackId]);
+
+    const parseDurationToSeconds = (duration) => {
+        if (typeof duration === 'number') return duration;
+        if (typeof duration === 'string' && duration.includes(':')) {
+            const [mins, secs] = duration.split(':').map(Number);
+            return (mins * 60) + (secs || 0);
+        }
+        return Number(duration) || 0;
+    };
+
+    const formatDurationSeconds = (totalSeconds) => {
+        const seconds = Number(totalSeconds) || 0;
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
 
     const togglePlay = (track) => {
         const audio = audioRef.current;
 
         if (playingTrackId === track.id) {
-            // Toggle pause/play for same track
             if (audio.paused) {
-                audio.play();
+                audio.play().catch(console.error);
             } else {
                 audio.pause();
-                setPlayingTrackId(null);
             }
         } else {
-            // New track
+            // New track list source
+            audio.pause();
+
+            let url = '';
             if (track.file) {
-                const url = URL.createObjectURL(track.file);
-                audio.src = url;
-                audio.play();
-                setPlayingTrackId(track.id);
+                url = URL.createObjectURL(track.file);
             } else if (track.audio_path) {
-                // If it's a server-side path (Bulk Upload case)
-                const fullUrl = track.audio_path.startsWith('http')
+                url = track.audio_path.startsWith('http')
                     ? track.audio_path
                     : `${ROOT_URL}${track.audio_path}`;
-                audio.src = fullUrl;
-                audio.play();
-                setPlayingTrackId(track.id);
+            }
+
+            if (url) {
+                audio.src = url;
+                audio.load();
+
+                const onCanPlay = () => {
+                    const previewOffset = Number(track.previewStart) || 0;
+                    audio.currentTime = previewOffset;
+                    audio.play().catch(e => console.error("Track play failed", e));
+                    setPlayingTrackId(track.id);
+                    audio.removeEventListener('canplay', onCanPlay);
+                };
+                audio.addEventListener('canplay', onCanPlay);
             } else {
-                toast.error("No audio file found for this track");
+                toast.error("No audio content to play");
             }
         }
     };
@@ -118,6 +167,66 @@ const Step2Tracks = ({
             lyricsFile: file,
             lyricsFileName: file.name
         }));
+    };
+
+    const handlePreviewPlay = () => {
+        const audio = audioRef.current;
+        const track = tempTrack;
+
+        if (!track) return;
+
+        if (playingTrackId === 'preview') {
+            if (audio.paused) {
+                audio.play().catch(console.error);
+            } else {
+                audio.pause();
+            }
+        } else {
+            // New preview source
+            audio.pause();
+
+            let url = '';
+            if (track.file) {
+                url = URL.createObjectURL(track.file);
+            } else if (track.audio_path) {
+                url = track.audio_path.startsWith('http')
+                    ? track.audio_path
+                    : `${ROOT_URL}${track.audio_path}`;
+            }
+
+            if (url) {
+                audio.src = url;
+                audio.load();
+
+                const onCanPlay = () => {
+                    audio.currentTime = track.previewStart || 0;
+                    audio.play().catch(e => console.error("Preview play failed", e));
+                    setPlayingTrackId('preview');
+                    audio.removeEventListener('canplay', onCanPlay);
+                };
+                audio.addEventListener('canplay', onCanPlay);
+            } else {
+                toast.error("No audio content to preview");
+            }
+        }
+    };
+
+    const handleProgressBarClick = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const width = rect.width;
+        const percentage = Math.max(0, Math.min(1, x / width));
+        const newSeconds = Math.floor(percentage * (tempTrack.duration || 0));
+
+        setTempTrack(prev => ({
+            ...prev,
+            previewStart: newSeconds
+        }));
+
+        // If currently playing preview, seek audio
+        if (playingTrackId === 'preview') {
+            audioRef.current.currentTime = newSeconds;
+        }
     };
 
     return (
@@ -215,7 +324,7 @@ const Step2Tracks = ({
                                                                         className="btn btn-sm btn-outline-primary rounded-circle"
                                                                         onClick={() => togglePlay(track)}
                                                                     >
-                                                                        <i className={`fas ${playingTrackId === track.id ? 'fa-pause' : 'fa-play'}`}></i>
+                                                                        <i className={`fas ${playingTrackId === track.id && isActuallyPlaying ? 'fa-pause' : 'fa-play'}`}></i>
                                                                     </button>
                                                                 </td>
                                                                 <td>
@@ -300,8 +409,8 @@ const Step2Tracks = ({
                                     {/* Footer summary */}
                                     <div className="mt-3 small text-muted">
                                         {form.tracks.length} tracks •{" "}
-                                        {Math.floor(form.tracks.reduce((sum, t) => sum + (t.duration || 0), 0) / 60)}:
-                                        {(form.tracks.reduce((sum, t) => sum + (t.duration || 0), 0) % 60).toString().padStart(2, '0')}
+                                        {Math.floor(form.tracks.reduce((sum, t) => sum + parseDurationToSeconds(t.duration), 0) / 60)}:
+                                        {(form.tracks.reduce((sum, t) => sum + parseDurationToSeconds(t.duration), 0) % 60).toString().padStart(2, '0')}
                                     </div>
 
                                     <div className='track-append'>
@@ -317,7 +426,7 @@ const Step2Tracks = ({
                                                             setEditingTrackId(null);
                                                             setTempTrack(null);
                                                         }}
-                                                    ></button>
+                                                    ><i class="fa-solid fa-xmark"></i></button>
                                                 </div>
 
                                                 {/* Uploaded file + Replace */}
@@ -358,22 +467,43 @@ const Step2Tracks = ({
                                                                 onChange={e => setTempTrack(prev => ({ ...prev, previewStart: Number(e.target.value) }))}
                                                             />
                                                         </div>
-                                                        <button className="btn btn-outline-secondary btn-sm playBtn">
-                                                            <i className="fas fa-play"></i>
+                                                        <button
+                                                            className="btn btn-outline-secondary btn-sm playBtn"
+                                                            onClick={handlePreviewPlay}
+                                                        >
+                                                            <i className={`fas ${playingTrackId === 'preview' && isActuallyPlaying ? 'fa-pause' : 'fa-play'}`}></i>
                                                         </button>
                                                         <div className="flex-grow-1 progress-fx">
-                                                            <p className="small text-muted mb-2">Select your track preview start time</p>
+                                                            <div className="d-flex justify-content-between mb-2">
+                                                                <p className="small text-muted mb-0">Select your track preview start time</p>
+                                                                <p className="small text-muted mb-0">Total: {formatDurationSeconds(tempTrack.duration)}</p>
+                                                            </div>
 
-                                                            <div className="progress bg-light" style={{ height: '38px', marginBottom: "32px" }}>
+                                                            <div
+                                                                className="progress bg-light"
+                                                                style={{ height: '38px', marginBottom: "32px", cursor: 'pointer', position: 'relative' }}
+                                                                onClick={handleProgressBarClick}
+                                                            >
                                                                 <div
                                                                     className="progress-bar bg-primary"
-                                                                    style={{ width: `${(tempTrack.previewStart / tempTrack.duration) * 100 || 0}%` }}
+                                                                    style={{ width: `${((tempTrack.previewStart || 0) / (tempTrack.duration || 1)) * 100}%` }}
                                                                 ></div>
+                                                                {playingTrackId === 'preview' && (
+                                                                    <div
+                                                                        style={{
+                                                                            position: 'absolute',
+                                                                            height: '100%',
+                                                                            width: '2px',
+                                                                            background: '#000',
+                                                                            left: `${(playbackProgress / (tempTrack.duration || 1)) * 100}%`,
+                                                                            zIndex: 3
+                                                                        }}
+                                                                    ></div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                         <span className="small text-muted">
-                                                            {Math.floor(tempTrack.previewStart / 60)}:
-                                                            {(tempTrack.previewStart % 60).toString().padStart(2, '0')}
+                                                            {formatDurationSeconds(tempTrack.previewStart)}
                                                         </span>
                                                     </div>
                                                     {tempTrack.duration < 30 && (
@@ -491,7 +621,7 @@ const Step2Tracks = ({
                                                                                         artists: prev.artists.filter((_, i) => i !== index),
                                                                                     }));
                                                                                 }}
-                                                                            />
+                                                                            ><i class="fa-solid fa-xmark"></i></button>
                                                                         </span>
                                                                     ))}
                                                                 </div>

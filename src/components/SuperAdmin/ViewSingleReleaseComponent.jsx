@@ -22,6 +22,15 @@ function ViewSingleReleaseComponent() {
         fetchReleaseDetails();
     }, [id]);
 
+    const formatDuration = (duration) => {
+        if (!duration) return '0:00';
+        if (typeof duration === 'string' && duration.includes(':')) return duration;
+        const totalSeconds = Number(duration) || 0;
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
     const fetchReleaseDetails = async () => {
         setLoading(true);
         try {
@@ -224,12 +233,12 @@ function ViewSingleReleaseComponent() {
                                                 <tr style={{ borderBottom: isExp ? 'none' : '1px solid #f5f5f5' }}>
                                                     <td className="px-4 py-3 border-0">
                                                         <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '14px' }} onClick={() => toggleTrackDetail(idx)}>
-                                                            {track.title || '-'}
+                                                            {track.title || '-'} {track.mix_version ? `(${track.mix_version})` : ''}
                                                         </span>
                                                     </td>
-                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.isrc || '-'}</td>
+                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.isrc_number || track.isrc || '-'}</td>
                                                     <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.artist || track.author || release.primary_artist?.name || '-'}</td>
-                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.duration || '0:00'}</td>
+                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{formatDuration(track.duration)}</td>
                                                     <td className="px-2 py-3 border-0 text-center">
                                                         <button className="mainBtn bgPurple clWhite">
                                                             <i className="fa-solid fa-bullhorn me-1"></i> Promote
@@ -239,7 +248,7 @@ function ViewSingleReleaseComponent() {
                                                         <div className="d-flex align-items-center justify-content-end gap-3">
                                                             {track.audio_path ? (
                                                                 <audio controls style={{ height: '35px', width: '200px' }} className="shadow-sm rounded">
-                                                                    <source src={track.audio_path} type="audio/mpeg" />
+                                                                    <source src={(track.preview_start !== undefined && track.preview_start !== null) ? `${track.audio_path}#t=${track.preview_start}` : track.audio_path} type="audio/mpeg" />
                                                                     Your browser does not support the audio element.
                                                                 </audio>
                                                             ) : (

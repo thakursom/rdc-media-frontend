@@ -269,22 +269,37 @@ function AddReleaseComponent() {
                         upc: release.upc_number || '',
                         isrcMode: release.isrc ? 'Manual' : 'Auto',
                         isrc: release.isrc || '',
-                        tracks: (release.tracks || []).map(t => ({
-                            id: t.id,
-                            title: t.title,
-                            version: t.mix_version || '',
-                            artists: Array.isArray(t.display_artist) ? t.display_artist : [t.display_artist || ''],
-                            isrc: t.isrc_number || '',
-                            isrcMode: t.isrc_number ? 'Manual' : 'Auto',
-                            explicit: !!t.explicit,
-                            duration: t.duration || 0,
-                            composer: t.composer || '',
-                            producer: t.producer || '',
-                            lyricist: t.lyricist || '',
-                            lyrics: t.lyrics_text || '',
-                            audio_path: t.audio_path,
-                            status: 'ready'
-                        })),
+                        tracks: (release.tracks || []).map(t => {
+                            let duration = t.duration || 0;
+                            if (typeof duration === 'string' && duration.includes(':')) {
+                                const [m, s] = duration.split(':').map(Number);
+                                duration = (m * 60) + (s || 0);
+                            } else {
+                                duration = Number(duration) || 0;
+                            }
+
+                            return {
+                                id: t.id,
+                                title: t.title,
+                                version: t.mix_version || '',
+                                artists: Array.isArray(t.display_artist) ? t.display_artist : [t.display_artist || ''],
+                                isrc: t.isrc_number || '',
+                                isrcMode: t.isrc_number ? 'Manual' : 'Auto',
+                                explicit: !!t.explicit,
+                                duration: duration,
+                                previewStart: t.preview_start || 0,
+                                copyrightYear: t.c_line_year || '',
+                                copyrightHolder: t.c_line || '',
+                                productionYear: t.p_line_year || '',
+                                productionHolder: t.p_line || '',
+                                composer: t.composer || '',
+                                producer: t.producer || '',
+                                lyricist: t.lyricist || '',
+                                lyrics: t.lyrics_text || '',
+                                audio_path: t.audio_path,
+                                status: 'ready'
+                            };
+                        }),
                         copyrightDocs: null,
                         explicitConfirmation: true,
                         ownRightsConfirmation: true,
@@ -517,20 +532,20 @@ function AddReleaseComponent() {
                     type: track.type,
                     duration: track.duration,
                     title: track.title?.trim() || "",
-                    version: track.version?.trim() || "",
-                    artists: track.artists || [],
-                    isrc: track.isrcMode === 'Auto' ? null : (track.isrc?.trim() || null),
+                    mix_version: track.version?.trim() || "",
+                    display_artist: track.artists || [],
+                    isrc_number: track.isrcMode === 'Auto' ? null : (track.isrc?.trim() || null),
                     isrcMode: track.isrcMode || 'Auto',
                     explicit: track.explicit || false,
-                    previewStart: track.previewStart || 0,
-                    copyrightYear: track.copyrightYear || "",
-                    copyrightHolder: track.copyrightHolder?.trim() || "",
-                    productionYear: track.productionYear || "",
-                    productionHolder: track.productionHolder?.trim() || "",
+                    preview_start: track.previewStart || 0,
+                    c_line_year: track.copyrightYear || "",
+                    c_line: track.copyrightHolder?.trim() || "",
+                    p_line_year: track.productionYear || "",
+                    p_line: track.productionHolder?.trim() || "",
                     composer: track.composer?.trim() || "",
                     producer: track.producer?.trim() || "",
                     lyricist: track.lyricist?.trim() || "",
-                    lyrics: track.lyrics?.trim() || "",
+                    lyrics_text: track.lyrics?.trim() || "",
 
                     hasNewAudioFile: false,
                     hasNewLyricsFile: false
@@ -551,8 +566,20 @@ function AddReleaseComponent() {
 
             const releaseData = {
                 ...form,
-                upc: form.upcMode === 'Auto' ? null : form.upc?.trim() || null,
-                isrc: form.isrcMode === 'Auto' ? null : form.isrc?.trim() || null,
+                release_type: form.releaseType,
+                c_line_year: form.copyrightYear,
+                c_line: form.copyrightHolder?.trim() || "",
+                p_line_year: form.productionYear,
+                p_line: form.productionHolder?.trim() || "",
+                label_id: form.label,
+                display_artist: form.releaseArtists,
+                is_first: form.isFirstRelease,
+                is_various: form.isVariousArtists,
+                genre_id: form.primaryGenre,
+                subgenre_id: form.secondaryGenre,
+                language_id: form.language,
+                upc_number: form.upcMode === 'Auto' ? null : (form.upc?.trim() || null),
+                isrc: form.isrcMode === 'Auto' ? null : (form.isrc?.trim() || null),
                 artworkFile: undefined,
                 artworkPreview: undefined,
                 copyrightDocs: undefined,

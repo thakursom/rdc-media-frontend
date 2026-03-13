@@ -249,7 +249,7 @@ const Step1Details = ({
                                                         const updated = form.releaseArtists.filter((_, i) => i !== index);
                                                         update('releaseArtists', updated.length > 0 ? updated : ['']);
                                                     }}
-                                                ></button>
+                                                ><i class="fa-solid fa-xmark"></i></button>
                                             </div>
                                         ))}
                                 </div>

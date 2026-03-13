@@ -25,11 +25,21 @@ function ReviewSingleReleaseComponent() {
         fetchReleaseDetails();
     }, [id]);
 
+    const formatDuration = (duration) => {
+        if (!duration) return '00:00';
+        if (typeof duration === 'string' && duration.includes(':')) return duration;
+        const totalSeconds = Number(duration) || 0;
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
     const fetchReleaseDetails = async () => {
         try {
             const response = await apiRequest(`/releases/${id}`, "GET", null, true);
             if (response.success && response.data?.data) {
-                setRelease(response.data.data);
+                const fetchedRelease = Array.isArray(response.data.data) ? response.data.data[0] : response.data.data;
+                setRelease(fetchedRelease);
             } else {
                 toast.error(response?.data?.message || "Failed to fetch release details");
             }
@@ -251,12 +261,12 @@ function ReviewSingleReleaseComponent() {
                                             <tr style={{ borderBottom: expandedTracks.includes(idx) ? 'none' : '1px solid #eee' }}>
                                                 <td className="px-4 py-3 border-0">
                                                     <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '14px' }} onClick={() => toggleTrackDetail(idx)}>
-                                                        {track.title}
+                                                        {track.title} {track.mix_version ? `(${track.mix_version})` : ''}
                                                     </span>
                                                 </td>
-                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.isrc || 'N/A'}</td>
+                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.isrc_number || track.isrc || 'N/A'}</td>
                                                 <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.artist || release.primary_artist?.name || 'N/A'}</td>
-                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.duration || '00:00'}</td>
+                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{formatDuration(track.duration)}</td>
                                                 <td className="px-2 py-3 border-0 text-center">
                                                     <button className="mainBtn bgPurple clWhite" style={{ fontSize: '12px', borderRadius: '4px' }}>
                                                         <i className="fa-solid fa-bell me-1"></i> Promote
@@ -266,7 +276,7 @@ function ReviewSingleReleaseComponent() {
                                                     <div className="d-flex align-items-center justify-content-center gap-2">
                                                         <audio
                                                             controls
-                                                            src={track.audio_path}
+                                                            src={(track.preview_start !== undefined && track.preview_start !== null) ? `${track.audio_path}#t=${track.preview_start}` : track.audio_path}
                                                             style={{ height: '35px', width: '200px' }}
                                                             className="rounded bg-light"
                                                         />
