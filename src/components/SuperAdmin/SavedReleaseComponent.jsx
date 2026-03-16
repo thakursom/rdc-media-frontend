@@ -97,7 +97,7 @@ function SavedReleaseComponent() {
                                     <tbody>
                                         {releases.length > 0 ? (
                                             releases.map((release) => (
-                                                <tr key={release.id || release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
+                                                <tr key={release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
                                                     <td className="px-3 py-3 border-0 text-dark">
                                                         <span>{release.release_type === 1 ? 'Single' : 'Album'}</span>
                                                     </td>
@@ -129,7 +129,7 @@ function SavedReleaseComponent() {
                                                         <button
                                                             className="btn bgPurple clWhite px-3 py-1"
                                                             style={{ fontSize: '12px', borderRadius: '4px' }}
-                                                            onClick={() => navigate(`/edit-release/${release.id || release._id}`, { state: { from: '/saved-release' } })}
+                                                            onClick={() => navigate(`/edit-release/${release._id}`, { state: { from: '/saved-release' } })}
                                                         >
                                                             Continue
                                                         </button>

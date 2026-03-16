@@ -20,6 +20,12 @@ function ReviewSingleReleaseComponent() {
     const [rejectData, setRejectData] = useState({ type: '', reason: '', file: null });
     const [approveComment, setApproveComment] = useState('');
 
+    // Promote (Track Event Assignment) State
+    const [selectedTrack, setSelectedTrack] = useState(null);
+    const [availableEvents, setAvailableEvents] = useState([]);
+    const [selectedEventIds, setSelectedEventIds] = useState([]);
+    const [submittingAssignment, setSubmittingAssignment] = useState(false);
+
     useEffect(() => {
         window.scrollTo(0, 0);
         fetchReleaseDetails();
@@ -116,6 +122,63 @@ function ReviewSingleReleaseComponent() {
         setExpandedTracks(prev =>
             prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
         );
+    };
+
+    // Promote (Track Event Assignment) Handlers
+    const handleOpenAssignModal = async (track, releaseId) => {
+        setSelectedTrack({ ...track, releaseId });
+        setSelectedEventIds([]);
+
+        try {
+            const response = await apiRequest('/events?status=Active&limit=100', "GET", null, true);
+            if (response.success) {
+                setAvailableEvents(response.data.data || []);
+            } else {
+                toast.error("Failed to fetch active events");
+            }
+        } catch (error) {
+            console.error("Fetch events error:", error);
+            toast.error("An error occurred while fetching events");
+        }
+    };
+
+    const handleEventToggle = (eventId) => {
+        setSelectedEventIds(prev =>
+            prev.includes(eventId) ? prev.filter(id => id !== eventId) : [...prev, eventId]
+        );
+    };
+
+    const handleAssignSubmit = async () => {
+        if (!selectedTrack) return;
+        setSubmittingAssignment(true);
+
+        try {
+            const payload = {
+                trackId: selectedTrack._id,
+                releaseId: selectedTrack.releaseId,
+                eventIds: selectedEventIds
+            };
+            const response = await apiRequest('/assign-events', "POST", payload, true);
+            if (response.success) {
+                toast.success(response.data?.message || "Events assigned successfully");
+                // Close modal using data-bs-dismiss trigger or check window.bootstrap
+                const modalElement = document.getElementById('assignEventsModal');
+                if (window.bootstrap && window.bootstrap.Modal) {
+                    const modal = window.bootstrap.Modal.getInstance(modalElement);
+                    if (modal) modal.hide();
+                } else {
+                    const closeBtn = modalElement?.querySelector('[data-bs-dismiss="modal"]');
+                    if (closeBtn) closeBtn.click();
+                }
+            } else {
+                toast.error(response.data?.message || "Failed to assign events");
+            }
+        } catch (error) {
+            console.error("Assign events error:", error);
+            toast.error("An error occurred while assigning events");
+        } finally {
+            setSubmittingAssignment(false);
+        }
     };
 
     if (loading) {
@@ -227,7 +290,7 @@ function ReviewSingleReleaseComponent() {
                                 </div>
 
                                 <div className="d-flex gap-2">
-                                    <button className="mainBtn bgPurple clWhite" onClick={() => navigate(`/edit-release/${release.id}`, { state: { from } })}>Edit</button>
+                                    <button className="mainBtn bgPurple clWhite" onClick={() => navigate(`/edit-release/${release._id}`, { state: { from } })}>Edit</button>
                                     <button className="mainBtn bgRed clWhite" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>
                                     <button className="mainBtn bgPurple clWhite" data-bs-toggle="modal" data-bs-target="#approveModal">Approve</button>
                                 </div>
@@ -257,7 +320,7 @@ function ReviewSingleReleaseComponent() {
                                 </thead>
                                 <tbody>
                                     {release.tracks.map((track, idx) => (
-                                        <React.Fragment key={track.id || idx}>
+                                        <React.Fragment key={track._id || idx}>
                                             <tr style={{ borderBottom: expandedTracks.includes(idx) ? 'none' : '1px solid #eee' }}>
                                                 <td className="px-4 py-3 border-0">
                                                     <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '14px' }} onClick={() => toggleTrackDetail(idx)}>
@@ -268,7 +331,12 @@ function ReviewSingleReleaseComponent() {
                                                 <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.artist || release.primary_artist?.name || 'N/A'}</td>
                                                 <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{formatDuration(track.duration)}</td>
                                                 <td className="px-2 py-3 border-0 text-center">
-                                                    <button className="mainBtn bgPurple clWhite" style={{ fontSize: '12px', borderRadius: '4px' }}>
+                                                    <button className="mainBtn bgPurple clWhite"
+                                                        style={{ fontSize: '12px', borderRadius: '4px' }}
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#assignEventsModal"
+                                                        onClick={() => handleOpenAssignModal(track, release._id)}
+                                                    >
                                                         <i className="fa-solid fa-bell me-1"></i> Promote
                                                     </button>
                                                 </td>
@@ -281,9 +349,11 @@ function ReviewSingleReleaseComponent() {
                                                             className="rounded bg-light"
                                                         />
                                                         {track.audio_path && (
-                                                            <a href={track.audio_path} target="_blank" rel="noreferrer" className="text-secondary" title="Download">
-                                                                <i className="fa-solid fa-download clPurple text-center" style={{ fontSize: '16px', border: '1px solid #ddd', padding: '6px', borderRadius: '4px' }}></i>
-                                                            </a>
+                                                            <>
+                                                                <a href={track.audio_path} target="_blank" rel="noreferrer" className="text-secondary" title="Download">
+                                                                    <i className="fa-solid fa-download clPurple text-center" style={{ fontSize: '16px', border: '1px solid #ddd', padding: '6px', borderRadius: '4px' }}></i>
+                                                                </a>
+                                                            </>
                                                         )}
                                                     </div>
                                                 </td>
@@ -291,7 +361,7 @@ function ReviewSingleReleaseComponent() {
                                             {/* Expanded Detail Row */}
                                             {expandedTracks.includes(idx) && (
                                                 <tr style={{ borderBottom: '1px solid #eee' }}>
-                                                    <td colSpan="6" className="px-4 py-1 pb-4 border-0">
+                                                    <td colSpan="5" className="px-4 py-1 pb-4 border-0">
                                                         <div className="ms-3 pt-2">
                                                             <div className="mb-2">
                                                                 <h6 className="clPurple mb-1" style={{ fontSize: '13px', fontWeight: 'bold' }}>Roles</h6>
@@ -415,6 +485,74 @@ function ReviewSingleReleaseComponent() {
                                     {updating ? 'Approving...' : 'Approve'}
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Assign Events Modal */}
+            <div className="modal fade" id="assignEventsModal" tabIndex="-1" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header border-0 pb-0">
+                            <h5 className="modal-title fw-bold clPurple">Assign Events</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div className="modal-body">
+                            <p className="text-muted mb-4" style={{ fontSize: '14px' }}>
+                                Assign upcoming events to track: <span className="fw-bold text-dark">{selectedTrack?.title}</span>
+                            </p>
+
+                            <div className="table-responsive border rounded">
+                                <table className="table table-hover mb-0">
+                                    <thead className="table-light">
+                                        <tr>
+                                            <th style={{ width: '80px' }}>Select</th>
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {availableEvents.length > 0 ? (
+                                            availableEvents.map(event => (
+                                                <tr key={event._id}>
+                                                    <td>
+                                                        <div className="form-check d-flex justify-content-center">
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                checked={selectedEventIds.includes(event._id)}
+                                                                onChange={() => handleEventToggle(event._id)}
+                                                            />
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ fontSize: '14px' }}>{event.title}</td>
+                                                    <td style={{ fontSize: '14px' }}>{new Date(event.eventDate).toLocaleDateString()}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="3" className="text-center py-4 text-muted">No active events found. Please create events first.</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="modal-footer border-0">
+                            <button type="button" className="mainBtn bgGray clWhite" data-bs-dismiss="modal">Close</button>
+                            <button
+                                type="button"
+                                className="mainBtn bgPurple clWhite d-flex align-items-center gap-2"
+                                onClick={handleAssignSubmit}
+                                disabled={submittingAssignment}
+                            >
+                                {submittingAssignment ? (
+                                    <><i className="fa-solid fa-spinner fa-spin"></i> Submitting...</>
+                                ) : (
+                                    <><i className="fa-solid fa-check"></i> Submit</>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>

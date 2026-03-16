@@ -262,7 +262,7 @@ function ViewNewsletterComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={closeDeleteModal}></button>
+                                <button type="button" className="btn-close" onClick={closeDeleteModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the newsletter <strong>{selectedNewsletter?.titleArtist}</strong>? This action cannot be undone.</p>

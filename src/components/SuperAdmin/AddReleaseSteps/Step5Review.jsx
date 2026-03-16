@@ -3,25 +3,25 @@ import React from 'react';
 const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores }) => {
     // Helper to find name by ID
     const getLanguageName = (id) => {
-        const lang = languages?.find(l => l.id == id);
+        const lang = languages?.find(l => l._id == id);
         return lang ? lang.name : id || '(not set)';
     };
 
     const getStoreNames = (selectedIds) => {
         if (!selectedIds || selectedIds.length === 0) return 'None selected';
         return selectedIds.map(id => {
-            const store = stores?.find(s => s.id === id);
+            const store = stores?.find(s => s._id === id);
             return store ? store.name : id;
         }).join(', ');
     };
 
     const getGenreName = (id) => {
-        const g = genres?.find(g => g.id == id);
+        const g = genres?.find(g => g._id == id);
         return g ? g.title : id || '(not set)';
     };
 
     const getSubGenreName = (id) => {
-        const sg = subGenres?.find(s => s.id == id);
+        const sg = subGenres?.find(s => s._id == id);
         return sg ? sg.title : id || '-';
     };
 

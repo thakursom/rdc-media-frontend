@@ -74,7 +74,7 @@ function ViewArtistComponent() {
         if (!selectedArtist) return;
         setIsDeleting(true);
         try {
-            const response = await apiRequest(`/delete-artist/${selectedArtist.id || selectedArtist._id}`, "DELETE", null, true);
+            const response = await apiRequest(`/delete-artist/${selectedArtist._id}`, "DELETE", null, true);
             if (response.success) {
                 toast.success("Artist deleted successfully");
                 closeDeleteModal();
@@ -152,7 +152,7 @@ function ViewArtistComponent() {
                                 <tbody>
                                     {artists.length > 0 ? (
                                         artists.map((artist, index) => (
-                                            <tr key={artist.id || artist._id}>
+                                            <tr key={artist._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td className="text-color-dark font-weight-bold">{artist.name}</td>
                                                 <td>{artist.email || '-'}</td>
@@ -185,7 +185,7 @@ function ViewArtistComponent() {
                                                     <button
                                                         type="button"
                                                         className="mainBtn bgPurple clWhite"
-                                                        onClick={() => navigate(`/edit-artist/${artist.id}`)}
+                                                        onClick={() => navigate(`/edit-artist/${artist._id}`)}
                                                     >
                                                         Edit
                                                     </button>
@@ -228,7 +228,7 @@ function ViewArtistComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={closeDeleteModal}></button>
+                                <button type="button" className="btn-close" onClick={closeDeleteModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the artist <strong>{selectedArtist?.name}</strong>? This action cannot be undone.</p>

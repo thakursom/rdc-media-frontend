@@ -120,7 +120,7 @@ function RejectedReleaseComponent() {
                             >
                                 <option value="">Search label...</option>
                                 {labels.map(label => (
-                                    <option key={label.id || label._id} value={label.name || label.id}>{label.name}</option>
+                                    <option key={label._id} value={label.name || label._id}>{label.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -156,7 +156,7 @@ function RejectedReleaseComponent() {
                                     <tbody>
                                         {releases.length > 0 ? (
                                             releases.map((release) => (
-                                                <tr key={release.id || release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
+                                                <tr key={release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
                                                     <td className="px-3 py-3 border-0 text-dark">
                                                         <span>{release.release_type === 1 ? 'Single' : 'Album'}</span>
                                                     </td>
@@ -233,7 +233,7 @@ function RejectedReleaseComponent() {
                     <div className="modal-content">
                         <div className="modal-header border-0">
                             <h5 className="modal-title clPurple fw-bold" id="reasonModalLabel">Reason for Rejection</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                         <div className="modal-body">
                             <div className="correction-data p-3 bg-light rounded bg-opacity-50">

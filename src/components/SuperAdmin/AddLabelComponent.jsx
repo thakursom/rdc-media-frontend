@@ -68,7 +68,7 @@ function AddLabelComponent() {
                 if (isEdit) {
                     const response = await apiRequest(`/all-labels?limit=1000`, "GET", null, true);
                     if (response.success && response.data?.data) {
-                        const label = response.data.data.find(l => String(l.id) === String(labelId) || String(l._id) === String(labelId));
+                        const label = response.data.data.find(l => String(l._id) === String(labelId));
                         if (label) {
                             formik.setValues({
                                 name: label.name || "",
@@ -155,8 +155,8 @@ function AddLabelComponent() {
                                             User
                                         </label>
                                         <Select
-                                            options={users.map(u => ({ value: u.id, label: u.name }))}
-                                            value={users.map(u => ({ value: u.id, label: u.name })).find(u => u.value === formik.values.user_id) || null}
+                                            options={users.map(u => ({ value: u._id, label: u.name }))}
+                                            value={users.map(u => ({ value: u._id, label: u.name })).find(u => u.value === formik.values.user_id) || null}
                                             onChange={(val) => formik.setFieldValue("user_id", val ? val.value : "")}
                                             onBlur={() => formik.setFieldTouched("user_id", true)}
                                             placeholder="-- Choose User --"

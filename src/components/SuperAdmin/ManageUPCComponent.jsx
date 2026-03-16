@@ -296,7 +296,7 @@ function ManageUPCComponent() {
                                 <tbody>
                                     {upcs.length > 0 ? (
                                         upcs.map((item, index) => (
-                                            <tr key={item.id || item._id}>
+                                            <tr key={item._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td>{item.upc}</td>
                                                 <td>{item.ean}</td>
@@ -307,9 +307,9 @@ function ManageUPCComponent() {
                                                             type="checkbox"
                                                             checked={item.status === 1}
                                                             onChange={() => handleToggleStatus(item)}
-                                                            id={`status-${item.id || item._id}`}
+                                                            id={`status-${item._id}`}
                                                         />
-                                                        <label className="form-check-label" htmlFor={`status-${item.id || item._id}`}>
+                                                        <label className="form-check-label" htmlFor={`status-${item._id}`}>
                                                             {item.status === 1 ? "Enabled" : "Disabled"}
                                                         </label>
                                                     </div>
@@ -366,7 +366,7 @@ function ManageUPCComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Bulk Add UPC</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={handleUploadSubmit}>
                                 <div className="modal-body">
@@ -403,7 +403,7 @@ function ManageUPCComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Edit UPC</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="modal-body">
@@ -457,7 +457,7 @@ function ManageUPCComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the UPC <strong>{selectedUPC?.upc}</strong>?</p>

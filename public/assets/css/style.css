@@ -6239,6 +6239,10 @@ button.playBtn {
     border-radius: 2px !important;
 }
 
+canvas#dashLineChart {
+    width: 100% !important;
+}
+
 /* ######################## add Newsletter Page media Queries ############## */
 
 @media (max-width:1024px) {

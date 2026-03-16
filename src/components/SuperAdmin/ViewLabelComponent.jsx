@@ -64,7 +64,7 @@ function ViewLabelComponent() {
         if (!labelToDelete) return;
         setIsDeleting(true);
         try {
-            const response = await apiRequest(`/delete-label/${labelToDelete.id || labelToDelete._id}`, "DELETE", null, true);
+            const response = await apiRequest(`/delete-label/${labelToDelete._id}`, "DELETE", null, true);
             if (response.success) {
                 toast.success("Label deleted successfully");
                 setLabelToDelete(null);
@@ -116,7 +116,7 @@ function ViewLabelComponent() {
                                 <tbody>
                                     {labels.length > 0 ? (
                                         labels.map((label, index) => (
-                                            <tr key={label.id || label._id || index}>
+                                            <tr key={label._id || index}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td id="artist-td">{label.name}</td>
                                                 <td>{label.email}</td>
@@ -127,7 +127,7 @@ function ViewLabelComponent() {
                                                             type="button"
                                                             className="mainBtn bgPurple clWhite"
                                                             id="subLabelsBtn"
-                                                            onClick={() => handleEdit(label.id || label._id)}
+                                                            onClick={() => handleEdit(label._id)}
                                                         >
                                                             Edit
                                                         </button>
@@ -173,7 +173,7 @@ function ViewLabelComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={() => setLabelToDelete(null)}></button>
+                                <button type="button" className="btn-close" onClick={() => setLabelToDelete(null)}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the label <strong>{labelToDelete.name}</strong>?</p>

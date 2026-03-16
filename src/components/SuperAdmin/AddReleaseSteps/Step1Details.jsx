@@ -179,8 +179,8 @@ const Step1Details = ({
 
                                 {labels.map(label => (
                                     <option
-                                        key={label.id || label._id}
-                                        value={label.id || label._id}
+                                        key={label._id}
+                                        value={label._id}
                                     >
                                         {label.name}
                                     </option>
@@ -377,7 +377,7 @@ const Step1Details = ({
                             >
                                 <option value="">Select genre...</option>
                                 {genres?.map(g => (
-                                    <option key={g.id} value={g.id}>{g.title}</option>
+                                    <option key={g._id} value={g._id}>{g.title}</option>
                                 ))}
                             </select>
                             {showError('primaryGenre')}
@@ -394,7 +394,7 @@ const Step1Details = ({
                             >
                                 <option value="">Select sub-genre...</option>
                                 {subGenres?.map(sg => (
-                                    <option key={sg.id} value={sg.id}>{sg.title}</option>
+                                    <option key={sg._id} value={sg._id}>{sg.title}</option>
                                 ))}
                             </select>
                         </div>
@@ -409,7 +409,7 @@ const Step1Details = ({
                             >
                                 <option value="">Select language...</option>
                                 {languages?.map(l => (
-                                    <option key={l.id} value={l.id}>{l.name}</option>
+                                    <option key={l._id} value={l._id}>{l.name}</option>
                                 ))}
                             </select>
                         </div>

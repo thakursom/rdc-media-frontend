@@ -35,7 +35,7 @@ function ManageSubGenreComponent() {
         validationSchema,
         enableReinitialize: true,
         onSubmit: async (values) => {
-            const endpoint = modalType === 'add' ? "/create-subgenre" : `/update-subgenre/${selectedSubGenre.id || selectedSubGenre._id}`;
+            const endpoint = modalType === 'add' ? "/create-subgenre" : `/update-subgenre/${selectedSubGenre._id}`;
             const method = modalType === 'add' ? "POST" : "PUT";
 
             try {
@@ -116,7 +116,7 @@ function ManageSubGenreComponent() {
     const handleDelete = async () => {
         if (!selectedSubGenre) return;
         try {
-            const response = await apiRequest(`/delete-subgenre/${selectedSubGenre.id || selectedSubGenre._id}`, "DELETE", null, true);
+            const response = await apiRequest(`/delete-subgenre/${selectedSubGenre._id}`, "DELETE", null, true);
             if (response.success) {
                 toast.success("Sub-genre deleted successfully");
                 handleCloseModal();
@@ -133,7 +133,7 @@ function ManageSubGenreComponent() {
     const handleToggleStatus = async (subGenre) => {
         const newStatus = subGenre.status === 1 ? 0 : 1;
         try {
-            const response = await apiRequest(`/update-subgenre/${subGenre.id || subGenre._id}`, "PUT", { status: newStatus }, true);
+            const response = await apiRequest(`/update-subgenre/${subGenre._id}`, "PUT", { status: newStatus }, true);
             if (response.success) {
                 toast.success(`Sub-genre status updated successfully`);
                 fetchSubGenres();
@@ -147,8 +147,10 @@ function ManageSubGenreComponent() {
     };
 
     const getGenreTitle = (genreId) => {
-        const genre = genres.find(g => g.id === genreId || g._id === genreId);
-        return genre ? genre.title : `ID: ${genreId}`;
+        if (!genreId) return 'N/A';
+        const genre = genres.find(g => String(g._id) === String(genreId));
+        if (genre) return genre.title;
+        return (genreId === "NaN" || genreId === NaN) ? "Invalid Genre" : `ID: ${genreId}`;
     };
 
     return (
@@ -188,10 +190,10 @@ function ManageSubGenreComponent() {
                                 <tbody>
                                     {subGenres.length > 0 ? (
                                         subGenres.map((subGenre, index) => (
-                                            <tr key={subGenre.id || subGenre._id}>
+                                            <tr key={subGenre._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td>{subGenre.title}</td>
-                                                <td>{getGenreTitle(subGenre.genre_id)}</td>
+                                                <td>{subGenre.genreDetails?.title || getGenreTitle(subGenre.genre_id)}</td>
                                                 <td className="news-pra">
                                                     <p>{subGenre.description || 'No description'}</p>
                                                 </td>
@@ -260,7 +262,7 @@ function ManageSubGenreComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">{modalType === 'add' ? 'Add New Sub-genre' : 'Edit Sub-genre'}</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="modal-body">
@@ -290,7 +292,7 @@ function ManageSubGenreComponent() {
                                         >
                                             <option value="">-- Choose Genre --</option>
                                             {genres.map(genre => (
-                                                <option key={genre.id || genre._id} value={genre.id || genre._id}>
+                                                <option key={genre._id} value={genre._id}>
                                                     {genre.title}
                                                 </option>
                                             ))}
@@ -330,7 +332,7 @@ function ManageSubGenreComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the sub-genre <strong>{selectedSubGenre?.title}</strong>? This action cannot be undone.</p>

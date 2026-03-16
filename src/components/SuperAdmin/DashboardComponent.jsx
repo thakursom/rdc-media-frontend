@@ -1,529 +1,294 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { apiRequest } from "../../services/api";
+import { toast } from 'react-toastify';
+import Loader from '../Loader/Loader';
+import DashboardLineChart from './DashboardLineChart';
 
 function DashboardComponent() {
-    return (
-        <>
-            <section className="right-sidebar" id="sidebarRight">
-                <div className="container-fluid">
-                    <section className="streaming">
-                        <div className="row">
-                            <div className="col-sm-12 col-md-12 col-lg-12 col-xxl-9 Stream-col">
-                                <div className="chart-content chart-content-first">
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <h6>Streaming Performance</h6>
-                                        <div className="selectBox">
-                                            <select id="streaming-performance">
-                                                <option value="All">All</option>
-                                            </select>
-                                            <select id="select-days">
-                                                <option value="Sort By">Sort By</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="streams">
-                                        <h6>
-                                            20,161 Streams <span className="value1">+4,882 (34%)</span>
-                                            <span className="content"> vs. previous 7 days</span>
-                                        </h6>
-                                    </div>
-                                    <div className="chart-container">
-                                        <canvas id="streamsChart" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-12 col-md-12 col-lg-12 col-xxl-3 Stream-col">
-                                <div className="chart-content">
-                                    <div className="main d-flex justify-content-between align-items-center">
-                                        <h6>Top Releases</h6>
-                                        <div className="selectBox">
-                                            <select id="top-rlease">
-                                                <option value="All">All</option>
-                                            </select>
-                                            <select id="artist-time">
-                                                <option value="Sort By">Sort By</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="releases-main-content mt-2">
-                                        <div className="content d-flex align-items-start gap-5 mt-2">
-                                            <p>1</p>
-                                            <div className="artist-data">
-                                                <h6>CAT0084 - Demo Releas 84</h6>
-                                                <p>R Artist 5</p>
-                                            </div>
-                                        </div>
-                                        <div className="content d-flex align-items-start gap-5 mt-2">
-                                            <p>2</p>
-                                            <div className="artist-data">
-                                                <h6>CAT0090 - Demo Releas 90</h6>
-                                                <p>R Artist 5</p>
-                                            </div>
-                                        </div>
-                                        <div className="content d-flex align-items-start gap-5 mt-2">
-                                            <p>3</p>
-                                            <div className="artist-data">
-                                                <h6>CAT0085 - Demo Releas 85</h6>
-                                                <p>R Artist 5</p>
-                                            </div>
-                                        </div>
-                                        <div className="content d-flex align-items-start gap-5 mt-2">
-                                            <p>4</p>
-                                            <div className="artist-data">
-                                                <h6>CAT0074 - Demo Releas 74</h6>
-                                                <p>R Artist 5</p>
-                                            </div>
-                                        </div>
-                                        <div className="content d-flex align-items-start gap-5 mt-2">
-                                            <p>5</p>
-                                            <div className="artist-data">
-                                                <h6>CAT0034 - Demo Releas 34</h6>
-                                                <p>R Artist 5</p>
-                                            </div>
-                                        </div>
-                                        <div className="content d-flex align-items-start gap-5 mt-2">
-                                            <p>6</p>
-                                            <div className="artist-data">
-                                                <h6>CAT0034 - Demo Releas 34</h6>
-                                                <p>R Artist 5</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section className="charts-section">
-                        <div className="row">
-                            <div className="col-sm-12 col-md-6 col-xxl-3 Stream-col">
-                                <div className="charts chart-content  mt-3">
-                                    <div className="inner-content d-flex justify-content-between align-items-center">
-                                        <h6>Top Artist</h6>
-                                        <div className="selectBox">
-                                            <select id="Top-Artist">
-                                                <option value="All">All</option>
-                                            </select>
-                                            <select id="Artist-time">
-                                                <option value="Sort By">Sort By</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="chartMainBox">
-                                        <canvas id="myChart" />
-                                    </div>
-                                    <div className="top-artist d-flex justify-content-between align-items-center flex-wrap">
-                                        <div className="main-content">
-                                            <ul>
-                                                <li>
-                                                    <span>Artist</span>
-                                                    <h6>David doe</h6>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="main-content">
-                                            <ul>
-                                                <li>
-                                                    <span>Streaming</span>
-                                                    <h6>300,168.69</h6>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="main-content">
-                                            <ul>
-                                                <li>
-                                                    <span>Percentage</span>
-                                                    <h6>(60%)</h6>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-12 col-md-6 col-xxl-3 Stream-col">
-                                <div className="chart-content charts mt-4">
-                                    <div className="inner-content d-flex justify-content-between align-items-center">
-                                        <h6>Top Languages</h6>
-                                        <div className="selectBox">
-                                            <select id="Top-Territories">
-                                                <option value="All">All</option>
-                                            </select>
-                                            <select id="Territories-days">
-                                                <option value="Sort By">Sort By</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="peiChart"
-                                        style={{ width: "50%", maxWidth: 400, margin: "15px auto" }}
-                                    >
-                                        <canvas id="myPieChart" />
-                                    </div>
-                                    <div className="country-data">
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>English</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(60%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Spanish</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(50%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Spanish</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(40%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>French</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(30%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Other</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(80%)</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-12 col-md-6 col-xxl-3 Stream-col">
-                                <div className="chart-content charts mt-4">
-                                    <div className="inner-content d-flex justify-content-between align-items-center">
-                                        <h6>Top Streaming Platform</h6>
-                                        <div className="selectBox">
-                                            <select id="Streaming-brands">
-                                                <option value="All">All</option>
-                                            </select>
-                                            <select id="Streaming-time">
-                                                <option value="Sort By">Sort By</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="verticalBar">
-                                        <canvas id="customBarChart" />
-                                    </div>
-                                    <div className="country-data">
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>$547,78.69</span>
-                                                        <p>$547,78.69(60%)</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(60%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Label Store</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(40%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>iTunes</span>
-                                                        <p>$49,310.26</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(20%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>iTunes Streaming (Apple Music)</span>
-                                                        <p>$35,310.26</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(30%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Other</span>
-                                                        <p>$80,310.26</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(50%)</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-12 col-md-6 col-xxl-3 Stream-col">
-                                <div className="chart-content charts mt-4">
-                                    <div className="inner-content d-flex justify-content-between align-items-center">
-                                        <h6>Top Genre</h6>
-                                        <div className="selectBox">
-                                            <select id="topGenre">
-                                                <option value="All">All</option>
-                                            </select>
-                                            <select id="genreTime">
-                                                <option value="Sort By">Sort By</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="doughnut">
-                                        <canvas id="doughnutChart" />
-                                    </div>
-                                    <div className="country-data">
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Rock</span>
-                                                        <p>$547,78.69(60%)</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(60%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Pop Music</span>
-                                                        <p>$547,78.69</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(50%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Rhythm and blues</span>
-                                                        <p>$49,310.26</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(40%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Heavy Metal</span>
-                                                        <p>$35,310.26</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(30%)</h6>
-                                        </div>
-                                        <div className="teritory-deta d-flex justify-content-between align-items-start">
-                                            <div className="country">
-                                                <ul>
-                                                    <li>
-                                                        <span>Other</span>
-                                                        <p>$80,310.26</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <h6>(80%)</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <section className="latest-releases-section">
-                        <div className="row">
-                            <div className="col-md-12 col-lg-12 col-xxl-9 Stream-col">
-                                <div className="chart-content imageBox-section mt-4">
-                                    <div className="latest-releas d-flex justify-content-between align-items-center gap-3">
-                                        <h6>Latest Releases</h6>
-                                        <div className="selectBox">
-                                            <select id="labels">
-                                                <option value="">All Labels</option>
-                                            </select>
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className=" col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-                                            <div className="imageBox d-flex justify-content-start flex-column  gap-2">
-                                                <div className="imgbox">
-                                                    <img src="../assets/Img/02.png" alt="" />
-                                                </div>
-                                                <div className="img-content">
-                                                    <h6>The Infiniti</h6>
-                                                    <p>Simth Jonas</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className=" col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-                                            <div className="imageBox d-flex justify-content-start flex-column  gap-2">
-                                                <div className="imgbox">
-                                                    <img src="../assets/Img/05.png" alt="" />
-                                                </div>
-                                                <div className="img-content">
-                                                    <h6>The Infiniti</h6>
-                                                    <p>Simth Jonas</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className=" col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-                                            <div className="imageBox d-flex justify-content-start flex-column  gap-2">
-                                                <div className="imgbox">
-                                                    <img src="../assets/Img/07.png" alt="" />
-                                                </div>
-                                                <div className="img-content">
-                                                    <h6>The Infiniti</h6>
-                                                    <p>Simth Jonas</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className=" col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-                                            <div className="imageBox d-flex justify-content-start flex-column  gap-2">
-                                                <div className="imgbox">
-                                                    <img src="../assets/Img/08.png" alt="" />
-                                                </div>
-                                                <div className="img-content">
-                                                    <h6>The Infiniti</h6>
-                                                    <p>Simth Jonas</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className=" col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-                                            <div className="imageBox d-flex justify-content-start flex-column  gap-2">
-                                                <div className="imgbox">
-                                                    <img src="../assets/Img/09.png" alt="" />
-                                                </div>
-                                                <div className="img-content">
-                                                    <h6>The Infiniti</h6>
-                                                    <p>Simth Jonas</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className=" col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2">
-                                            <div className="imageBox d-flex justify-content-start flex-column  gap-2">
-                                                <div className="imgbox">
-                                                    <img src="../assets/Img/27.png" alt="" />
-                                                </div>
-                                                <div className="img-content">
-                                                    <h6>The Infiniti</h6>
-                                                    <p>Simth Jonas</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-12 col-lg-12 col-xxl-3 Stream-col">
-                                <div className="chart-content subLabel-section">
-                                    <div className="sub-label d-flex justify-content-between align-items-center align-content-center gap-3">
-                                        <h6>Sub Labels</h6>
-                                        <div className="selectBox">
-                                            <i className="fa fa-ellipsis-h" aria-hidden="true" />
-                                        </div>
-                                    </div>
-                                    <div className="sub-label-artist">
-                                        <div className="label-artist d-flex justify-content-between align-items-center ">
-                                            <div className="artist d-flex justify-content-center align-items-center gap-3">
-                                                <div className="artist-img">
-                                                    <img src="../assets/Img/sidemenu/artist1.jpg" alt="not found" />
-                                                </div>
-                                                <div className="artist-content">
-                                                    <h6>Smith Jonas</h6>
-                                                    <p>smith@rdc.com</p>
-                                                </div>
-                                            </div>
-                                            <h5>Artist</h5>
-                                        </div>
-                                        <div className="label-artist d-flex justify-content-between align-items-center ">
-                                            <div className="artist d-flex justify-content-center align-items-center gap-3">
-                                                <div className="artist-img">
-                                                    <img src="../assets/Img/sidemenu/artist1.jpg" alt="not found" />
-                                                </div>
-                                                <div className="artist-content">
-                                                    <h6>Allex William</h6>
-                                                    <p>smith@rdc.com</p>
-                                                </div>
-                                            </div>
-                                            <h5>Artist</h5>
-                                        </div>
-                                        <div className="label-artist d-flex justify-content-between align-items-center ">
-                                            <div className="artist d-flex justify-content-center align-items-center gap-3">
-                                                <div className="artist-img">
-                                                    <img src="../assets/Img/sidemenu/artist1.jpg" alt="not found" />
-                                                </div>
-                                                <div className="artist-content">
-                                                    <h6>Neha Arena</h6>
-                                                    <p>smith@rdc.com</p>
-                                                </div>
-                                            </div>
-                                            <h5>Artist</h5>
-                                        </div>
-                                        <div className="label-artist d-flex justify-content-between align-items-center ">
-                                            <div className="artist d-flex justify-content-center align-items-center gap-3">
-                                                <div className="artist-img">
-                                                    <img src="../assets/Img/sidemenu/artist1.jpg" alt="not found" />
-                                                </div>
-                                                <div className="artist-content">
-                                                    <h6>Haul Josh</h6>
-                                                    <p>smith@rdc.com</p>
-                                                </div>
-                                            </div>
-                                            <h5>Artist</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </section>
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState({
+        summary: { totalAlbums: 0, todayAlbums: 0, totalTracks: 0, totalLabels: 0 },
+        trendData: { labels: [], albums: [], tracks: [], labelsTrend: [] },
+        topArtists: [],
+        topGenres: [],
+        topLabels: [],
+        topLanguages: []
+    });
 
-        </>
-    )
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const fetchStats = async (start = '', end = '') => {
+        setLoading(true);
+        try {
+            let endpoint = '/dashboard-stats';
+            if (start && end) {
+                endpoint += `?startDate=${start}&endDate=${end}`;
+            }
+
+            const response = await apiRequest(endpoint, 'GET', null, true);
+            if (response.success) {
+                // The backend returns { success: true, data: { summary: ... } }
+                // and apiRequest wraps it in { success: ..., data: backendResponse }
+                setStats(response?.data?.data || response?.data);
+            } else {
+                toast.error(response.message || "Failed to load dashboard stats");
+            }
+        } catch (error) {
+            console.error("Dashboard error:", error);
+            toast.error("An error occurred");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
+    const handleSearch = () => {
+        if ((startDate && !endDate) || (!startDate && endDate)) {
+            toast.warning("Please select both start and end dates");
+            return;
+        }
+        fetchStats(startDate, endDate);
+    };
+
+    const handleClear = () => {
+        setStartDate('');
+        setEndDate('');
+        fetchStats();
+    };
+
+
+
+    const renderProgressBar = (item, index, maxCount) => {
+        const bgColors = ['#b194f4', '#D3A336', '#3b82f6', '#10b981', '#8b5cf6'];
+        const color = bgColors[index % bgColors.length];
+        const percentage = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
+
+        return (
+            <div key={index} className="d-flex align-items-center mb-4">
+                <div style={{ width: '150px', fontSize: '13px', fontWeight: '500' }}>{item.name}</div>
+                <div className="d-flex align-items-center justify-content-center bg-light rounded-circle border shadow-sm mx-3" style={{ width: '35px', height: '35px' }}>
+                    <i className="fa-solid fa-user text-muted"></i>
+                </div>
+                <div className="flex-grow-1 position-relative">
+                    <div className="progress" style={{ height: '30px', borderRadius: '15px', backgroundColor: '#f1f5f9' }}>
+                        <div className="progress-bar" role="progressbar" style={{ width: `${percentage}%`, backgroundColor: color, borderRadius: '15px' }}></div>
+                    </div>
+                    <div className="position-absolute shadow-sm d-flex align-items-center justify-content-center bg-white rounded-circle"
+                        style={{
+                            width: '36px', height: '36px',
+                            right: '-5px', top: '-3px',
+                            fontWeight: 'bold', color: color,
+                            border: `2px solid #fff`
+                        }}>
+                        {item.count}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <section className="right-sidebar" id="sidebarRight">
+            <div className="container-fluid p-0 pt-4">
+                {/* Filters */}
+                <div className="d-flex flex-wrap align-items-end gap-3 mb-4">
+                    <div>
+                        <label className="form-label text-muted small mb-1">Start Date</label>
+                        <input type="date" className="form-control bg-white shadow-sm border-0" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="form-label text-muted small mb-1">End Date</label>
+                        <input type="date" className="form-control bg-white shadow-sm border-0" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                    </div>
+                    <div className="d-flex gap-2">
+                        <button className="btn text-white shadow-sm bgPurple" onClick={handleSearch}>
+                            <i className="fa-solid fa-search me-1"></i> Search
+                        </button>
+                        <button className="btn btn-secondary text-white shadow-sm" style={{ backgroundColor: '#64748b', border: 'none' }} onClick={handleClear}>
+                            <i className="fa-solid fa-xmark me-1"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                {loading ? <Loader /> : (
+                    <>
+                        {/* Metric Cards */}
+                        <div className="row g-3 mb-4">
+                            <div className="col-12 col-md-6 col-xl-3">
+                                <div className="card border-0 shadow-sm rounded-3 h-100">
+                                    <div className="card-body p-4 d-flex align-items-center">
+                                        <div className="d-flex flex-column flex-grow-1">
+                                            <span className="text-muted small fw-semibold mb-2">Total Albums</span>
+                                            <div className="d-flex align-items-center mt-2">
+                                                <div className="rounded-2 d-flex align-items-center justify-content-center me-3 shadow-sm" style={{ width: '45px', height: '45px', backgroundColor: '#f3e8ff', color: '#b194f4', fontSize: '20px' }}>
+                                                    <i className="fa-solid fa-compact-disc"></i>
+                                                </div>
+                                                <h4 className="mb-0 fw-bold">{stats?.summary?.totalAlbums || 0}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-6 col-xl-3">
+                                <div className="card border-0 shadow-sm rounded-3 h-100">
+                                    <div className="card-body p-4 d-flex align-items-center">
+                                        <div className="d-flex flex-column flex-grow-1">
+                                            <span className="text-muted small fw-semibold mb-2">Today Albums</span>
+                                            <div className="d-flex align-items-center mt-2">
+                                                <div className="rounded-2 d-flex align-items-center justify-content-center me-3 shadow-sm" style={{ width: '45px', height: '45px', backgroundColor: '#f3e8ff', color: '#b194f4', fontSize: '20px' }}>
+                                                    <i className="fa-solid fa-record-vinyl"></i>
+                                                </div>
+                                                <h4 className="mb-0 fw-bold">{stats?.summary?.todayAlbums || 0}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-6 col-xl-3">
+                                <div className="card border-0 shadow-sm rounded-3 h-100">
+                                    <div className="card-body p-4 d-flex align-items-center">
+                                        <div className="d-flex flex-column flex-grow-1">
+                                            <span className="text-muted small fw-semibold mb-2">Total Tracks</span>
+                                            <div className="d-flex align-items-center mt-2">
+                                                <div className="rounded-2 d-flex align-items-center justify-content-center me-3 shadow-sm" style={{ width: '45px', height: '45px', backgroundColor: '#f3e8ff', color: '#b194f4', fontSize: '20px' }}>
+                                                    <i className="fa-solid fa-align-left" style={{ transform: 'rotate(90deg)' }}></i>
+                                                </div>
+                                                <h4 className="mb-0 fw-bold">{stats?.summary?.totalTracks || 0}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-6 col-xl-3">
+                                <div className="card border-0 shadow-sm rounded-3 h-100">
+                                    <div className="card-body p-4 d-flex align-items-center">
+                                        <div className="d-flex flex-column flex-grow-1">
+                                            <span className="text-muted small fw-semibold mb-2">Total Labels</span>
+                                            <div className="d-flex align-items-center mt-2">
+                                                <div className="rounded-2 d-flex align-items-center justify-content-center me-3 shadow-sm" style={{ width: '45px', height: '45px', backgroundColor: '#f3e8ff', color: '#b194f4', fontSize: '20px' }}>
+                                                    <i className="fa-solid fa-user-group"></i>
+                                                </div>
+                                                <h4 className="mb-0 fw-bold">{stats?.summary?.totalLabels || 0}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Main Chart */}
+                        <div className="card border-0 shadow-sm rounded-3 mb-4">
+                            <div className="card-body p-4">
+                                <DashboardLineChart trendData={stats?.trendData} />
+                            </div>
+                        </div>
+
+                        {/* Lower Grid */}
+                        <div className="row g-4">
+                            {/* Top Artist */}
+                            <div className="col-12 col-xl-6">
+                                <div className="card border-0 shadow-sm rounded-3 h-100">
+                                    <div className="card-body p-4">
+                                        <h6 className="fw-semibold text-muted mb-4 small">Top Artist</h6>
+                                        {stats?.topArtists?.length > 0 ? (
+                                            (() => {
+                                                const maxArtistCount = Math.max(...stats.topArtists.map(a => a.count || 0));
+                                                return stats.topArtists.slice(0, 5).map((artist, index) => renderProgressBar(artist, index, maxArtistCount));
+                                            })()
+                                        ) : (
+                                            <div className="text-muted small">No data available</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Top Genre */}
+                            <div className="col-12 col-xl-6">
+                                <div className="card border-0 shadow-sm rounded-3 h-100">
+                                    <div className="card-body p-4">
+                                        <h6 className="fw-semibold text-muted mb-4 small">Top Genre</h6>
+                                        {stats?.topGenres?.length > 0 ? (
+                                            <div className="d-flex flex-column align-items-center justify-content-center h-100" style={{ paddingBottom: '30px', minHeight: '250px' }}>
+                                                <div className="position-relative d-flex justify-content-center mt-4" style={{ width: '150px', height: '180px' }}>
+                                                    <div style={{
+                                                        width: '0',
+                                                        height: '0',
+                                                        borderLeft: '80px solid transparent',
+                                                        borderRight: '80px solid transparent',
+                                                        borderBottom: '180px solid rgba(177, 148, 244, 0.8)', // Matching clPurple but translucent
+                                                        position: 'absolute',
+                                                        bottom: 0
+                                                    }}></div>
+                                                    <div className="bgPurple text-white rounded position-absolute py-1 px-2 shadow" style={{ top: '-15px', fontSize: '12px', fontWeight: 'bold', zIndex: 2 }}>
+                                                        {stats.topGenres[0].count}
+                                                        <div style={{
+                                                            position: 'absolute',
+                                                            bottom: '-4px', left: '50%', transform: 'translateX(-50%)',
+                                                            width: '0', height: '0',
+                                                            borderLeft: '4px solid transparent',
+                                                            borderRight: '4px solid transparent',
+                                                            borderTop: '4px solid #b194f4'
+                                                        }}></div>
+                                                    </div>
+                                                </div>
+                                                <div className="clPurple mt-3 fw-semibold small">
+                                                    {stats.topGenres[0].name}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="text-muted small">No data available</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Top Labels */}
+                            <div className="col-12 col-xl-6">
+                                <div className="card border-0 shadow-sm rounded-3 h-100 min-vh-25">
+                                    <div className="card-body p-4">
+                                        <h6 className="fw-semibold text-muted mb-4 small">Top Labels</h6>
+                                        {stats?.topLabels?.length > 0 ? (
+                                            stats.topLabels.map((item, index) => (
+                                                <div key={index} className="d-flex justify-content-between align-items-center mb-3">
+                                                    <span className="small text-dark fw-medium">{item.name}</span>
+                                                    <span className="badge bg-light text-dark shadow-sm rounded-pill px-3 py-2">{item.count}</span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="text-muted small">No data available</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Top Language */}
+                            <div className="col-12 col-xl-6">
+                                <div className="card border-0 shadow-sm rounded-3 h-100 min-vh-25">
+                                    <div className="card-body p-4">
+                                        <h6 className="fw-semibold text-muted mb-4 small">Top Language</h6>
+                                        {stats?.topLanguages?.length > 0 ? (
+                                            stats.topLanguages.map((item, index) => (
+                                                <div key={index} className="d-flex justify-content-between align-items-center mb-3">
+                                                    <span className="small text-dark fw-medium">{item.name}</span>
+                                                    <span className="badge bg-light text-dark shadow-sm rounded-pill px-3 py-2">{item.count}</span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="text-muted small">Loading chart...</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+        </section>
+    );
 }
 
-export default DashboardComponent
+export default DashboardComponent;

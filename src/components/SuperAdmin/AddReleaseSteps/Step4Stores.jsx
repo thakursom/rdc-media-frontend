@@ -27,25 +27,25 @@ const Step4Stores = ({ form, update, errors, showError, stores }) => {
                         <h6 className='mb-3'>Select stores</h6>
                         <div className="row g-2 store-grid">
                             {stores.map((store) => (
-                                <div key={store.id} className="col-4 col-md-3 col-lg-2">
+                                <div key={store._id} className="col-4 col-md-3 col-lg-2">
                                     <div className="form-check store-item">
                                         <input
                                             type="checkbox"
                                             className="form-check-input"
-                                            id={`store-${store.id}`}
-                                            checked={form.selectedStores.includes(store.id)}
+                                            id={`store-${store._id}`}
+                                            checked={form.selectedStores.includes(store._id)}
                                             onChange={(e) => {
                                                 if (e.target.checked) {
-                                                    update('selectedStores', [...form.selectedStores, store.id]);
+                                                    update('selectedStores', [...form.selectedStores, store._id]);
                                                 } else {
                                                     update(
                                                         'selectedStores',
-                                                        form.selectedStores.filter((s) => s !== store.id)
+                                                        form.selectedStores.filter((s) => s !== store._id)
                                                     );
                                                 }
                                             }}
                                         />
-                                        <label className="form-check-label small" htmlFor={`store-${store.id}`}>
+                                        <label className="form-check-label small" htmlFor={`store-${store._id}`}>
                                             {store.name}
                                         </label>
                                     </div>

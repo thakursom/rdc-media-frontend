@@ -279,7 +279,7 @@ function AddReleaseComponent() {
                             }
 
                             return {
-                                id: t.id,
+                                id: t._id,
                                 title: t.title,
                                 version: t.mix_version || '',
                                 artists: Array.isArray(t.display_artist) ? t.display_artist : [t.display_artist || ''],
@@ -689,7 +689,7 @@ function AddReleaseComponent() {
                 if (modalType === "label") {
                     const newLabel = result?.data?.data || { name: modalInput.trim(), id: Date.now() }; // Fallback with ID if needed
                     setLabels(prev => [...prev, newLabel]);
-                    update("label", newLabel.id || newLabel._id);
+                    update("label", newLabel._id);
                 } else if (modalType === "artist") {
                     const newArtist = result?.data?.artist || { name: modalInput.trim() };
                     setArtists(prev => [...prev, newArtist]);

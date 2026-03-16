@@ -263,8 +263,8 @@ function AddUserComponent() {
                                         <div className="form-group add-sublab-group">
                                             <label className="form-label required">Assign User</label>
                                             <Select
-                                                options={users.map(u => ({ value: u.id, label: u.name }))}
-                                                value={users.map(u => ({ value: u.id, label: u.name })).find(u => u.value === formik.values.parent_id) || null}
+                                                options={users.map(u => ({ value: u._id, label: u.name }))}
+                                                value={users.map(u => ({ value: u._id, label: u.name })).find(u => u.value === formik.values.parent_id) || null}
                                                 onChange={(val) => formik.setFieldValue("parent_id", val ? val.value : "")}
                                                 onBlur={() => formik.setFieldTouched("parent_id", true)}
                                                 placeholder="-- Choose User --"

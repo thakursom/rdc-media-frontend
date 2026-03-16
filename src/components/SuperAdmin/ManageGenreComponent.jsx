@@ -119,7 +119,7 @@ function ManageGenreComponent() {
     const handleToggleStatus = async (genre) => {
         const newStatus = !genre.status;
         try {
-            const response = await apiRequest(`/update-genre/${genre.id || genre._id}`, "PUT", { status: newStatus }, true);
+            const response = await apiRequest(`/update-genre/${genre._id}`, "PUT", { status: newStatus }, true);
             if (response.success) {
                 toast.success(`Genre status updated to ${newStatus ? 'Enabled' : 'Disabled'}`);
                 fetchGenres();
@@ -168,7 +168,7 @@ function ManageGenreComponent() {
                                 <tbody>
                                     {genres.length > 0 ? (
                                         genres.map((genre, index) => (
-                                            <tr key={genre.id || genre._id}>
+                                            <tr key={genre._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td>{genre.title}</td>
                                                 <td className="news-pra">
@@ -181,9 +181,9 @@ function ManageGenreComponent() {
                                                             type="checkbox"
                                                             checked={genre.status}
                                                             onChange={() => handleToggleStatus(genre)}
-                                                            id={`status-${genre.id || genre._id}`}
+                                                            id={`status-${genre._id}`}
                                                         />
-                                                        <label className="form-check-label" htmlFor={`status-${genre.id || genre._id}`}>
+                                                        <label className="form-check-label" htmlFor={`status-${genre._id}`}>
                                                             {genre.status ? "Enabled" : "Disabled"}
                                                         </label>
                                                     </div>
@@ -240,7 +240,7 @@ function ManageGenreComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">{modalType === 'add' ? 'Add New Genre' : 'Edit Genre'}</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="modal-body">
@@ -290,7 +290,7 @@ function ManageGenreComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the genre <strong>{selectedGenre?.title}</strong>? This will also delete all associated subgenres.</p>

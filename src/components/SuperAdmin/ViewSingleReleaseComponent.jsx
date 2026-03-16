@@ -10,6 +10,15 @@ function ViewSingleReleaseComponent() {
     const [release, setRelease] = useState(null);
     const [loading, setLoading] = useState(true);
     const [expandedTracks, setExpandedTracks] = useState([]);
+    const [stores, setStores] = useState([]);
+
+    const getStoreNames = (selectedIds) => {
+        if (!selectedIds || selectedIds.length === 0) return 'None selected';
+        return selectedIds.map(id => {
+            const store = stores?.find(s => s._id === id);
+            return store ? store.name : id;
+        }).join(', ');
+    };
 
     const toggleTrackDetail = (trackIdx) => {
         setExpandedTracks(prev => {
@@ -20,7 +29,19 @@ function ViewSingleReleaseComponent() {
 
     useEffect(() => {
         fetchReleaseDetails();
+        fetchStores();
     }, [id]);
+
+    const fetchStores = async () => {
+        try {
+            const response = await apiRequest("/release-dsps", "GET", null, true);
+            if (response.success && response.data?.data) {
+                setStores(response.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching stores:", error);
+        }
+    };
 
     const formatDuration = (duration) => {
         if (!duration) return '0:00';
@@ -187,10 +208,14 @@ function ViewSingleReleaseComponent() {
                                     <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>P-Line Year : </span>
                                     <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.p_line_year || 'N/A'}</span>
                                 </div>
+                                <div className="col-12 mb-3">
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Selected Stores : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{getStoreNames(release.store_ids)}</span>
+                                </div>
                             </div>
 
                             <div className="d-flex gap-3 mt-2">
-                                <button className="mainBtn bgPurple clWhite" onClick={() => navigate(`/edit-release/${release.id}`)}>Edit</button>
+                                <button className="mainBtn bgPurple clWhite" onClick={() => navigate(`/edit-release/${release._id}`)}>Edit</button>
                                 <button className="mainBtn bgPurple clWhite" onClick={handleDownloadMeta}>Download Meta</button>
                             </div>
                         </div>
@@ -218,11 +243,10 @@ function ViewSingleReleaseComponent() {
                                 <thead>
                                     <tr style={{ color: '#666', fontSize: '13px', borderBottom: '2px solid #eaeaea' }}>
                                         <th className="px-4 py-3 fw-medium border-0" style={{ width: '25%' }}>Title</th>
-                                        <th className="px-2 py-3 fw-medium border-0" style={{ width: '15%' }}>ISRC</th>
-                                        <th className="px-2 py-3 fw-medium border-0" style={{ width: '15%' }}>Artist</th>
+                                        <th className="px-2 py-3 fw-medium border-0" style={{ width: '20%' }}>ISRC</th>
+                                        <th className="px-2 py-3 fw-medium border-0" style={{ width: '20%' }}>Artist</th>
                                         <th className="px-2 py-3 fw-medium border-0" style={{ width: '10%' }}>Duration</th>
-                                        <th className="px-2 py-3 fw-medium border-0 text-center" style={{ width: '12%' }}>Promote</th>
-                                        <th className="px-4 py-3 fw-medium border-0 text-end" style={{ width: '23%' }}>Audio File</th>
+                                        <th className="px-4 py-3 fw-medium border-0 text-end" style={{ width: '25%' }}>Audio File</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -239,11 +263,6 @@ function ViewSingleReleaseComponent() {
                                                     <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.isrc_number || track.isrc || '-'}</td>
                                                     <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.artist || track.author || release.primary_artist?.name || '-'}</td>
                                                     <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{formatDuration(track.duration)}</td>
-                                                    <td className="px-2 py-3 border-0 text-center">
-                                                        <button className="mainBtn bgPurple clWhite">
-                                                            <i className="fa-solid fa-bullhorn me-1"></i> Promote
-                                                        </button>
-                                                    </td>
                                                     <td className="px-4 py-3 border-0 text-end">
                                                         <div className="d-flex align-items-center justify-content-end gap-3">
                                                             {track.audio_path ? (

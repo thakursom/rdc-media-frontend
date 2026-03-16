@@ -119,7 +119,7 @@ function ManageCountryComponent() {
     const handleToggleStatus = async (country) => {
         const newStatus = !country.status;
         try {
-            const response = await apiRequest(`/update-country/${country.id || country._id}`, "PUT", { status: newStatus }, true);
+            const response = await apiRequest(`/update-country/${country._id}`, "PUT", { status: newStatus }, true);
             if (response.success) {
                 toast.success(`Country status updated to ${newStatus ? 'Enabled' : 'Disabled'}`);
                 fetchCountries();
@@ -168,7 +168,7 @@ function ManageCountryComponent() {
                                 <tbody>
                                     {countries.length > 0 ? (
                                         countries.map((country, index) => (
-                                            <tr key={country.id || country._id}>
+                                            <tr key={country._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td>{country.countryName}</td>
                                                 <td>{country.countryCode}</td>
@@ -179,9 +179,9 @@ function ManageCountryComponent() {
                                                             type="checkbox"
                                                             checked={country.status}
                                                             onChange={() => handleToggleStatus(country)}
-                                                            id={`status-${country.id || country._id}`}
+                                                            id={`status-${country._id}`}
                                                         />
-                                                        <label className="form-check-label" htmlFor={`status-${country.id || country._id}`}>
+                                                        <label className="form-check-label" htmlFor={`status-${country._id}`}>
                                                             {country.status ? "Enabled" : "Disabled"}
                                                         </label>
                                                     </div>
@@ -238,7 +238,7 @@ function ManageCountryComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">{modalType === 'add' ? 'Add New Country' : 'Edit Country'}</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="modal-body">
@@ -292,7 +292,7 @@ function ManageCountryComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the country <strong>{selectedCountry?.countryName}</strong>?</p>

@@ -32,7 +32,7 @@ function ManageDSPComponent() {
         validationSchema,
         enableReinitialize: true,
         onSubmit: async (values) => {
-            const endpoint = modalType === 'add' ? "/create-dsp" : `/update-dsp/${selectedDsp.id || selectedDsp._id}`;
+            const endpoint = modalType === 'add' ? "/create-dsp" : `/update-dsp/${selectedDsp._id}`;
             const method = modalType === 'add' ? "POST" : "PUT";
 
             try {
@@ -98,7 +98,7 @@ function ManageDSPComponent() {
     const handleDelete = async () => {
         if (!selectedDsp) return;
         try {
-            const response = await apiRequest(`/delete-dsp/${selectedDsp.id || selectedDsp._id}`, "DELETE", null, true);
+            const response = await apiRequest(`/delete-dsp/${selectedDsp._id}`, "DELETE", null, true);
             if (response.success) {
                 toast.success("DSP deleted successfully");
                 handleCloseModal();
@@ -115,7 +115,7 @@ function ManageDSPComponent() {
     const handleToggleStatus = async (dsp) => {
         const newStatus = dsp.status === 1 ? 0 : 1;
         try {
-            const response = await apiRequest(`/update-dsp/${dsp.id || dsp._id}`, "PUT", { status: newStatus }, true);
+            const response = await apiRequest(`/update-dsp/${dsp._id}`, "PUT", { status: newStatus }, true);
             if (response.success) {
                 toast.success(`DSP status updated successfully`);
                 fetchDsps();
@@ -164,11 +164,13 @@ function ManageDSPComponent() {
                                 <tbody>
                                     {dsps.length > 0 ? (
                                         dsps.map((dsp, index) => (
-                                            <tr key={dsp.id || dsp._id}>
+                                            <tr key={dsp._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td>{dsp.name}</td>
                                                 <td className="news-pra">
-                                                    <p>{dsp.description || 'No description'}</p>
+                                                    <p style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={dsp.description}>
+                                                        {dsp.description || 'No description'}
+                                                    </p>
                                                 </td>
                                                 <td className="genreStatus">
                                                     <div className="form-check form-switch">
@@ -235,7 +237,7 @@ function ManageDSPComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">{modalType === 'add' ? 'Add New DSP' : 'Edit DSP'}</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="modal-body">
@@ -285,7 +287,7 @@ function ManageDSPComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the DSP <strong>{selectedDsp?.name}</strong>? This action cannot be undone.</p>

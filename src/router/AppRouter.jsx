@@ -25,6 +25,9 @@ import AddNewsletter from "../pages/SuperAdmin/AddNewsletter";
 import ViewNewsletter from "../pages/SuperAdmin/ViewNewsletter";
 import ViewTicket from "../pages/SuperAdmin/ViewTicket";
 import AddTicket from "../pages/SuperAdmin/AddTicket";
+import ManageEvents from "../pages/SuperAdmin/ManageEvents";
+import ViewEvents from "../pages/SuperAdmin/ViewEvents";
+import AddEvent from "../pages/SuperAdmin/AddEvent";
 import ManageGenre from "../pages/SuperAdmin/ManageGenre";
 import ManageSubGenre from "../pages/SuperAdmin/ManageSubGenre";
 import ManageDSP from "../pages/SuperAdmin/ManageDSP";
@@ -85,6 +88,10 @@ function AppRouter() {
                     <Route path="/view-ticket" element={<ViewTicket />} />
                     <Route path="/add-ticket" element={<AddTicket />} />
                     <Route path="/add-ticket/:id" element={<AddTicket />} />
+                    <Route path="/manage-events" element={<ManageEvents />} />
+                    <Route path="/view-events" element={<ViewEvents />} />
+                    <Route path="/add-event" element={<AddEvent />} />
+                    <Route path="/edit-event/:id" element={<AddEvent />} />
                     <Route path="/genre" element={<ManageGenre />} />
                     <Route path="/sub-genre" element={<ManageSubGenre />} />
                     <Route path="/dsp" element={<ManageDSP />} />

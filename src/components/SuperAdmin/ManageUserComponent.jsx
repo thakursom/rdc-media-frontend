@@ -76,7 +76,7 @@ function ManageUserComponent() {
         if (!selectedUser) return;
         setIsDeleting(true);
         try {
-            const response = await apiRequest(`/delete-user/${selectedUser.id || selectedUser._id}`, "DELETE", null, true);
+            const response = await apiRequest(`/delete-user/${selectedUser._id}`, "DELETE", null, true);
             if (response.success) {
                 toast.success("User deleted successfully");
                 handleCloseModal();
@@ -94,7 +94,7 @@ function ManageUserComponent() {
 
     const toggleApprove = async (user) => {
         try {
-            const response = await apiRequest(`/toggle-approve/${user.id || user._id}`, "PUT", null, true);
+            const response = await apiRequest(`/toggle-approve/${user._id}`, "PUT", null, true);
             if (response.success) {
                 toast.success(response.message);
                 fetchUsers(pagination.currentPage, pagination.limit, searchTerm);
@@ -109,7 +109,7 @@ function ManageUserComponent() {
 
     const toggleLock = async (user) => {
         try {
-            const response = await apiRequest(`/toggle-lock/${user.id || user._id}`, "PUT", null, true);
+            const response = await apiRequest(`/toggle-lock/${user._id}`, "PUT", null, true);
             if (response.success) {
                 toast.success(response.message);
                 fetchUsers(pagination.currentPage, pagination.limit, searchTerm);
@@ -182,7 +182,7 @@ function ManageUserComponent() {
                                     <tbody>
                                         {users.length > 0 ? (
                                             users.map((user, index) => (
-                                                <tr key={user.id || user._id}>
+                                                <tr key={user._id}>
                                                     <td>{(pagination.currentPage - 1) * pagination.limit + index + 1}</td>
                                                     <td dangerouslySetInnerHTML={{ __html: user.name }}></td>
                                                     <td>{user.email}</td>
@@ -217,7 +217,7 @@ function ManageUserComponent() {
                                                             <button
                                                                 type="button"
                                                                 className="mainBtn bgPurple clWhite"
-                                                                onClick={() => navigate(`/add-user?id=${user.id}`)}
+                                                                onClick={() => navigate(`/add-user?id=${user._id}`)}
                                                             >
                                                                 Edit
                                                             </button>
@@ -262,7 +262,7 @@ function ManageUserComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the user <strong>{selectedUser?.name}</strong>? This action cannot be undone.</p>

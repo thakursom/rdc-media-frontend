@@ -156,6 +156,33 @@ function Navbar({ sidebarOpen, setSidebarOpen }) {
                         </ul>
                     </li>
 
+                    {/* Events */}
+                    <li className="menuItem liclass subMenu-toggle"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            toggleMenu("events");
+                        }}>
+                        <div className="inner-content">
+                            <div className="menu-icon d-flex align-items-center justify-content-start">
+                                <i className="fa-regular fa-calendar clPurple" style={{ fontSize: "22px" }}></i>
+                            </div>
+
+                            <a>
+                                Events
+                            </a>
+                        </div>
+
+                        <ul
+                            className="subMenu subMenu4"
+                            style={{
+                                display: activeMenu === "events" ? "block" : "none",
+                            }}
+                        >
+                            <li><NavLink to="/view-events">View Events</NavLink></li>
+                            <li><NavLink to="/manage-events">Manage Events</NavLink></li>
+                        </ul>
+                    </li>
+
                     {/* Support */}
                     <li className="menuItem liclass subMenu-toggle"
                         onClick={(e) => {

@@ -29,7 +29,7 @@ function ReviewComponent() {
 
     const fetchLabels = async () => {
         try {
-            const labelRes = await apiRequest("/all-labels", "GET", null, true);
+            const labelRes = await apiRequest("/all-labels?limit=1000", "GET", null, true);
             if (labelRes.success) setLabels(labelRes?.data?.data || []);
         } catch (error) {
             console.error("Fetch labels error:", error);
@@ -80,7 +80,7 @@ function ReviewComponent() {
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
-            const allIds = releases.map(r => r.id || r._id);
+            const allIds = releases.map(r => r._id);
             setSelectedReleases(allIds);
         } else {
             setSelectedReleases([]);
@@ -108,7 +108,7 @@ function ReviewComponent() {
         setShowBulkApproveModal(false);
         try {
             const promises = selectedReleases.map(id => {
-                const release = releases.find(r => (r.id === id || r._id === id));
+                const release = releases.find(r => (r._id === id || r._id === id));
                 const hasTracks = release && release.tracks && release.tracks.length > 0;
 
                 const payload = {
@@ -200,7 +200,7 @@ function ReviewComponent() {
                         >
                             <option value="">Select Label</option>
                             {labels.map(label => (
-                                <option key={label.id || label._id} value={label.name || label.id}>{label.name}</option>
+                                <option key={label._id} value={label.name || label._id}>{label.name}</option>
                             ))}
                         </select>
                         {/* <select className="form-select text-secondary" style={{ flex: 1, maxWidth: '200px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', padding: '10px 15px', color: '#6c757d' }}>
@@ -248,7 +248,7 @@ function ReviewComponent() {
                                     <tbody>
                                         {releases.length > 0 ? (
                                             releases.map((release) => {
-                                                const id = release?.id;
+                                                const id = release?._id;
                                                 console.log("id", id);
 
                                                 return (
