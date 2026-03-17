@@ -90,18 +90,35 @@ function ViewArtistComponent() {
         }
     };
 
-    const renderToggle = (val) => (val === 1 ? <span className="text-success">Yes</span> : <span className="text-danger">No</span>);
+    const renderToggle = (val) => (
+        val === 1
+            ? <span style={{ color: '#198754', fontWeight: '500' }}>Enabled</span>
+            : <span style={{ color: '#dc3545', fontWeight: '500' }}>Disabled</span>
+    );
+
+    const socialIconStyle = (bgColor) => ({
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '32px',
+        height: '32px',
+        borderRadius: '4px',
+        backgroundColor: bgColor,
+        color: '#fff',
+        fontSize: '16px',
+        textDecoration: 'none'
+    });
 
     return (
         <>
             <section className="right-sidebar" id="sidebarRight">
                 <div className="view-release-sec scroll-x-hidden">
-                    <div className="view-release">
+                    <div className="view-release d-flex justify-content-between align-items-center">
                         <div className="view-release-heading">
                             <h6 className='clPurple'>View Artist</h6>
                         </div>
-                        <div className="manage-genre-btn d-flex align-items-center">
-                            <form className="me-3 d-flex" onSubmit={handleSearch}>
+                        <div className="manage-genre-btn d-flex align-items-center gap-2">
+                            <form className="d-flex" onSubmit={handleSearch}>
                                 <div className="input-group">
                                     <input
                                         type="text"
@@ -141,11 +158,11 @@ function ViewArtistComponent() {
                                 <thead>
                                     <tr>
                                         <th>SN</th>
-                                        <th style={{ width: "10%" }}>Name</th>
-                                        <th style={{ width: "10%" }}>Email</th>
-                                        <th>Spotify</th>
-                                        <th>Apple</th>
-                                        <th>Socials</th>
+                                        <th style={{ width: "15%" }}>Artist Name</th>
+                                        <th style={{ width: "20%" }}>Email Address</th>
+                                        <th style={{ width: "15%" }}>Spotify</th>
+                                        <th style={{ width: "15%" }}>Apple</th>
+                                        <th style={{ width: "15%" }}>Socials</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -155,47 +172,54 @@ function ViewArtistComponent() {
                                             <tr key={artist._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
                                                 <td className="text-color-dark font-weight-bold">{artist.name}</td>
-                                                <td>{artist.email || '-'}</td>
+                                                <td style={{ fontSize: '0.9rem', color: '#6c757d' }}>{artist.email || '-'}</td>
                                                 <td>
-                                                    <div>On: {renderToggle(artist.is_on_spotify)}</div>
-                                                    {artist.spotify_link && (
-                                                        <a href={artist.spotify_link} target="_blank" rel="noreferrer" className="text-primary small text-truncate d-inline-block" style={{ maxWidth: '150px' }}>
-                                                            Link
-                                                        </a>
-                                                    )}
+                                                    <div className="d-flex flex-column gap-1">
+                                                        <span style={{ fontSize: '0.9rem', color: '#6c757d' }}>Status: {renderToggle(artist.is_on_spotify)}</span>
+                                                        {artist.spotify_link && (
+                                                            <a href={artist.spotify_link} target="_blank" rel="noreferrer" className="text-primary small text-decoration-none">
+                                                                Spotify Link
+                                                            </a>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td>
-                                                    <div>On: {renderToggle(artist.is_on_apple)}</div>
-                                                    {artist.apple_link && (
-                                                        <a href={artist.apple_link} target="_blank" rel="noreferrer" className="text-primary small text-truncate d-inline-block" style={{ maxWidth: '150px' }}>
-                                                            Link
-                                                        </a>
-                                                    )}
+                                                    <div className="d-flex flex-column gap-1">
+                                                        <span style={{ fontSize: '0.9rem', color: '#6c757d' }}>Status: {renderToggle(artist.is_on_apple)}</span>
+                                                        {artist.apple_link && (
+                                                            <a href={artist.apple_link} target="_blank" rel="noreferrer" className="text-primary small text-decoration-none">
+                                                                Apple Link
+                                                            </a>
+                                                        )}
+                                                    </div>
                                                 </td>
-                                                <td className='linksBtn'>
+                                                <td>
                                                     <div className="d-flex flex-wrap gap-2">
-                                                        {artist.sound_cloud && <a href={artist.sound_cloud} className='soundCloud' title="SoundCloud" target="_blank" rel="noreferrer"><i className="fa-brands fa-soundcloud text-orange"></i></a>}
-                                                        {artist.twitter && <a href={artist.twitter} className='twitter' title="Twitter" target="_blank" rel="noreferrer"><i className="fa-brands fa-twitter text-info"></i></a>}
-                                                        {artist.facebook && <a href={artist.facebook} className='facebook' title="Facebook" target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook text-primary"></i></a>}
-                                                        {artist.instagram && <a href={artist.instagram} className='instagram' title="Instagram" target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram text-danger"></i></a>}
-                                                        {artist.youtube && <a href={artist.youtube} className='youtube' title="YouTube" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube text-danger"></i></a>}
+                                                        {artist.sound_cloud && <a href={artist.sound_cloud} style={socialIconStyle('#ff5500')} title="SoundCloud" target="_blank" rel="noreferrer"><i className="fa-brands fa-soundcloud"></i></a>}
+                                                        {artist.twitter && <a href={artist.twitter} style={socialIconStyle('#1da1f2')} title="Twitter" target="_blank" rel="noreferrer"><i className="fa-brands fa-twitter"></i></a>}
+                                                        {artist.facebook && <a href={artist.facebook} style={socialIconStyle('#1877f2')} title="Facebook" target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook"></i></a>}
+                                                        {artist.instagram && <a href={artist.instagram} style={socialIconStyle('#e4405f')} title="Instagram" target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram"></i></a>}
+                                                        {artist.youtube && <a href={artist.youtube} style={socialIconStyle('#ff0000')} title="YouTube" target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube"></i></a>}
+                                                        {!artist.sound_cloud && !artist.twitter && !artist.facebook && !artist.instagram && !artist.youtube && "-"}
                                                     </div>
                                                 </td>
                                                 <td className="view-artist-button">
-                                                    <button
-                                                        type="button"
-                                                        className="mainBtn bgPurple clWhite"
-                                                        onClick={() => navigate(`/edit-artist/${artist._id}`)}
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="mainBtn bgRed clWhite"
-                                                        onClick={() => openDeleteModal(artist)}
-                                                    >
-                                                        Delete
-                                                    </button>
+                                                    <div className="d-flex gap-2">
+                                                        <button
+                                                            type="button"
+                                                            className="mainBtn bgPurple clWhite"
+                                                            onClick={() => navigate(`/edit-artist/${artist._id}`)}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="mainBtn bgRed clWhite"
+                                                            onClick={() => openDeleteModal(artist)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))
@@ -209,14 +233,16 @@ function ViewArtistComponent() {
                         )}
                     </div>
 
-                    {!loading && pagination.totalPages > 0 && (
-                        <CustomPagination
-                            pageCount={pagination.totalPages}
-                            onPageChange={handlePageChange}
-                            currentPage={pagination.currentPage}
-                            perPage={pagination.limit}
-                            onPerPageChange={handlePerPageChange}
-                        />
+                    {!loading && pagination.totalPages > 1 && (
+                        <div className="mt-4">
+                            <CustomPagination
+                                pageCount={pagination.totalPages}
+                                onPageChange={handlePageChange}
+                                currentPage={pagination.currentPage}
+                                perPage={pagination.limit}
+                                onPerPageChange={handlePerPageChange}
+                            />
+                        </div>
                     )}
                 </div>
             </section>
@@ -228,7 +254,7 @@ function ViewArtistComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={closeDeleteModal}><i class="fa-solid fa-xmark"></i></button>
+                                <button type="button" className="btn-close" onClick={closeDeleteModal}><i className="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the artist <strong>{selectedArtist?.name}</strong>? This action cannot be undone.</p>
