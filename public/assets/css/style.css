@@ -80,7 +80,7 @@
     outline: none !important;
     cursor: pointer !important;
     padding: 8px 15px;
-    font-size: 14px;
+    font-size: 12px;
     border-radius: 3px;
 }
 
@@ -4029,7 +4029,7 @@ td.add-track-button .edit {
 }
 
 .viewReleases-main-sec .table>:not(caption)>*>* {
-    font-size: 14px;
+    font-size: 12px !important;
     font-weight: 500;
     color: #434d6a;
     text-align: start;
@@ -4566,7 +4566,6 @@ td.add-track-button .edit {
 
 .form-check-input:checked[type=checkbox] {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%230065ab' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
-    background-color: var(--bgPurple);
     border: 1px solid var(--bgPurple);
 }
 
@@ -4584,7 +4583,6 @@ td.add-track-button .edit {
 }
 
 .form-check-input:checked {
-    background-color: #1271fd !important;
     border-color: #1271fd !important;
 }
 
@@ -6841,6 +6839,13 @@ select:focus-visible {
 
 .login-2fa-container .fa-shield {
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.twoFa-close {
+    background: #fff !important;
+    border: 2px solid #fff !important;
+    padding: 3px !important;
+    border-radius: 3px !important;
 }
 
 @keyframes fadeIn {

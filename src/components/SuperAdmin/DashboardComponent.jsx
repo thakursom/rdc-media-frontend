@@ -114,7 +114,7 @@ function DashboardComponent() {
                     </div>
                 </div>
 
-                {loading ? <Loader /> : (
+                {loading ? <Loader variant="success" message='Loading Dashboard...' /> : (
                     <>
                         {/* Metric Cards */}
                         <div className="row g-3 mb-4">
@@ -184,7 +184,7 @@ function DashboardComponent() {
                         {/* Main Chart */}
                         <div className="card border-0 shadow-sm rounded-3 mb-4">
                             <div className="card-body p-4">
-                                <DashboardLineChart trendData={stats?.trendData} />
+                                <DashboardLineChart trendData={stats?.trendData} key={JSON.stringify(stats?.trendData)} />
                             </div>
                         </div>
 

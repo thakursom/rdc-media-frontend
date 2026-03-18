@@ -35,6 +35,7 @@ import ManageUser from "../pages/SuperAdmin/ManageUser";
 import AddUser from "../pages/SuperAdmin/AddUser";
 import ManageCountry from "../pages/SuperAdmin/ManageCountry";
 import ManageUPC from "../pages/SuperAdmin/ManageUPC";
+import ViewSingleArtist from "../pages/SuperAdmin/ViewSingleArtist";
 import TwoFactorSetupPage from "../pages/Auth/TwoFactorSetupPage";
 
 
@@ -82,6 +83,7 @@ function AppRouter() {
                     <Route path="/add-artist" element={<AddArtist />} />
                     <Route path="/edit-artist/:id" element={<AddArtist />} />
                     <Route path="/view-artist" element={<ViewArtist />} />
+                    <Route path="/view-artist/:id" element={<ViewSingleArtist />} />
                     <Route path="/add-newsletter" element={<AddNewsletter />} />
                     <Route path="/edit-newsletter/:id" element={<AddNewsletter />} />
                     <Route path="/view-newsletter" element={<ViewNewsletter />} />

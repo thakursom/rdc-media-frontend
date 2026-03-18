@@ -68,7 +68,7 @@ function AddEventComponent() {
         }
     });
 
-    if (loading && !eventData) return <Loader message="Loading..." />;
+    if (loading && !eventData) return <Loader message="Loading Event..." variant="success" />;
 
     return (
         <section className="right-sidebar" id="sidebarRight">

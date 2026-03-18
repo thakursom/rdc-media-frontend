@@ -139,55 +139,53 @@ function RejectedReleaseComponent() {
                         )}
                         {!loading && (
                             <>
-                                <table className="table bg-white align-middle" style={{ border: '1px solid #eee' }}>
-                                    <thead>
-                                        <tr style={{ color: '#555', fontSize: '13px', borderBottom: '2px solid #eee' }}>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">Type <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">Title <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">Artist <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">Label <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">Release Date <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end"># Of Tracks <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">UPC / Catalogue <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 border-end">Reason</th>
-                                            <th className="px-3 py-3 fw-medium border-0">Action</th>
+                                <table className="table table-bordered align-middle">
+                                    <thead className="table-light">
+                                        <tr style={{ color: '#555', fontSize: '13px' }}>
+                                            <th style={{ width: '100px' }}>Type</th>
+                                            <th style={{ minWidth: '180px' }}>Title</th>
+                                            <th style={{ minWidth: '110px' }}>Label</th>
+                                            <th style={{ minWidth: '110px' }}>Release Date</th>
+                                            <th style={{ minWidth: '90px' }}># Of Tracks</th>
+                                            <th style={{ minWidth: '140px' }}>UPC / Catalogue</th>
+                                            <th style={{ minWidth: '140px' }}>Reason</th>
+                                            <th className="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {releases.length > 0 ? (
                                             releases.map((release) => (
-                                                <tr key={release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
-                                                    <td className="px-3 py-3 border-0 text-dark">
+                                                <tr key={release._id} style={{ fontSize: '14px' }}>
+                                                    <td className="text-secondary">
                                                         <span>{release.release_type === 1 ? 'Single' : 'Album'}</span>
                                                     </td>
-                                                    <td className="px-3 py-3 border-0 text-dark clPurple fw-medium">
-                                                        {release.release_title || 'Untitled'}
+                                                    <td>
+                                                        <div>
+                                                            <span className="clPurple fw-medium">{release.release_title || 'Untitled'}</span>
+                                                            <div className="text-muted" style={{ fontSize: '12px' }}>{release.primary_artist?.name || '-'}</div>
+                                                        </div>
                                                     </td>
-                                                    <td className="px-3 py-3 border-0 text-secondary">
-                                                        {release.primary_artist?.name || '-'}
-                                                    </td>
-                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                    <td className="text-secondary">
                                                         {release.label?.name || '-'}
                                                     </td>
-                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                    <td className="text-secondary">
                                                         {release.release_date ? new Date(release.release_date).toLocaleDateString() : '-'}
                                                     </td>
-                                                    <td className="px-3 py-3 border-0 text-secondary">
+                                                    <td className="text-secondary">
                                                         {release.tracks?.length || 0}
                                                     </td>
-                                                    <td className="px-3 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>
+                                                    <td className="text-secondary">
                                                         <div>{release.upc || '-'}</div>
-                                                        <div className="text-muted mt-1">{release.catalogue_number || '-'}</div>
+                                                        <div className="text-muted mt-1" style={{ fontSize: '12px' }}>{release.catalogue_number || '-'}</div>
                                                     </td>
-                                                    <td className="px-3 py-3 border-0 text-secondary" style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    <td className="text-secondary" style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                                         <span title={release.rejection_reason || release.admin_remarks || '-'}>
                                                             {release.rejection_reason || release.admin_remarks || '-'}
                                                         </span>
                                                     </td>
-                                                    <td className="px-3 py-3 border-0">
+                                                    <td className="text-center">
                                                         <button
-                                                            className="btn bgPurple clWhite px-3 py-1"
-                                                            style={{ fontSize: '12px', borderRadius: '4px' }}
+                                                            className="mainBtn bgPurple clWhite"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#reasonModal"
                                                             onClick={() => setSelectedRelease(release)}

@@ -22,7 +22,7 @@ function AddReleaseComponent() {
     const [step, setStep] = useState(1);
     const [form, setForm] = useState({
         title: '',
-        releaseType: 1,
+        releaseType: 'single',
         copyrightYear: currentYear,
         copyrightHolder: '',
         productionYear: currentYear,

@@ -255,7 +255,10 @@ const Step2Tracks = ({
                                     multiple
                                     accept="audio/*"
                                     style={{ display: 'none' }}
-                                    onChange={e => handleTrackUpload(e.target.files)}
+                                    onChange={e => {
+                                        handleTrackUpload(e.target.files);
+                                        e.target.value = null;
+                                    }}
                                 />
                                 <button
                                     className="mainBtn bgPurple clWhite mt-2 px-4"
@@ -439,7 +442,10 @@ const Step2Tracks = ({
                                                             id="replaceAudioInput"
                                                             style={{ display: 'none' }}
                                                             accept="audio/*"
-                                                            onChange={handleAudioReplace}
+                                                            onChange={e => {
+                                                                handleAudioReplace(e);
+                                                                e.target.value = null;
+                                                            }}
                                                         />
                                                         <button
                                                             className="mainBtn bgPurple clWhite"
@@ -738,7 +744,10 @@ const Step2Tracks = ({
                                                                         type="file"
                                                                         name="explicit"
                                                                         accept=".txt,.doc,.docx,.pdf"
-                                                                        onChange={handleLyricsUpload}
+                                                                        onChange={e => {
+                                                                            handleLyricsUpload(e);
+                                                                            e.target.value = null;
+                                                                        }}
                                                                     />
                                                                     <span>
                                                                         {tempTrack.lyricsFileName || "Click or Drag File Here"}

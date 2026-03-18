@@ -241,7 +241,7 @@ function TwoFactorSetup() {
                         <div className="modal-content border-0 shadow-lg" style={{ borderRadius: '15px' }}>
                             <div className="modal-header bg-danger text-white" style={{ borderRadius: '15px 15px 0 0' }}>
                                 <h5 className="modal-title fw-bold">Disable 2FA Security</h5>
-                                <button type="button" className="btn-close btn-close-white" onClick={() => setShowDisableModal(false)}></button>
+                                <button type="button" className="btn-close twoFa-close" onClick={() => setShowDisableModal(false)}><i className="fa fa-times clRed"></i></button>
                             </div>
                             <div className="modal-body p-4 text-center">
                                 <i className="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>

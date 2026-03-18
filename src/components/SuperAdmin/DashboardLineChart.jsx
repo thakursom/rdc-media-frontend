@@ -76,7 +76,7 @@ const DashboardLineChart = ({ trendData }) => {
         ]
     };
 
-    return <Line options={lineChartOptions} data={lineChartData} height={70} id='dashLineChart' />;
+    return <Line options={lineChartOptions} data={lineChartData} height={70} id='dashLineChart' redraw={true} />;
 };
 
 export default DashboardLineChart;

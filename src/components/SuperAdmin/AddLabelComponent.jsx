@@ -95,7 +95,7 @@ function AddLabelComponent() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [labelId, isEdit]);
 
-    if (loading) return <Loader message="Loading label details..." />;
+    if (loading) return <Loader message="Loading label details..." variant="success" />;
 
     return (
         <section className="right-sidebar" id="sidebarRight">

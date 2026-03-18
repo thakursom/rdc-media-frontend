@@ -100,7 +100,7 @@ function ViewSingleReleaseComponent() {
     if (loading) {
         return (
             <section className="right-sidebar py-5 text-center" id="sidebarRight">
-                <Loader message="Loading release details..." />
+                <Loader message="Loading release details..." variant="success" />
             </section>
         );
     }
@@ -143,74 +143,74 @@ function ViewSingleReleaseComponent() {
 
                             <div className="row mb-4">
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Artist : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.primary_artist?.name || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Artist : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.primary_artist?.name || 'N/A'}</span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Label : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.label?.name || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Label : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.label?.name || 'N/A'}</span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Genre : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.genre_name || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Genre : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.genre_name || 'N/A'}</span>
                                 </div>
 
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>UPC : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.upc || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>UPC : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.upc || 'N/A'}</span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Product Type : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Product Type : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>
                                         {typeof release.release_type === 'number'
                                             ? (release.release_type === 1 ? 'single' : 'album')
                                             : (release.release_type || 'N/A')}
                                     </span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Release Date : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Release Date : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>
                                         {release.release_date ? new Date(release.release_date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : 'N/A'}
                                     </span>
                                 </div>
 
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Preorder Data : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>-</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Preorder Data : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>-</span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Meta Language : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.language_name || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Meta Language : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.language_name || 'N/A'}</span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Production Year : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.p_line_year || 'N/A'}</span>
-                                </div>
-
-                                <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Catalogue Number : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.catalogue_number || 'N/A'}</span>
-                                </div>
-                                <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>© C-Line : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.c_line || 'N/A'}</span>
-                                </div>
-                                <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>C-Line Year : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.c_line_year || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Production Year : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.p_line_year || 'N/A'}</span>
                                 </div>
 
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>℗ P-Line : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.p_line || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Catalogue Number : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.catalogue_number || 'N/A'}</span>
                                 </div>
                                 <div className="col-md-4 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>P-Line Year : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{release.p_line_year || 'N/A'}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>© C-Line : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.c_line || 'N/A'}</span>
+                                </div>
+                                <div className="col-md-4 mb-3">
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>C-Line Year : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.c_line_year || 'N/A'}</span>
+                                </div>
+
+                                <div className="col-md-4 mb-3">
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>℗ P-Line : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.p_line || 'N/A'}</span>
+                                </div>
+                                <div className="col-md-4 mb-3">
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>P-Line Year : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{release.p_line_year || 'N/A'}</span>
                                 </div>
                                 <div className="col-12 mb-3">
-                                    <span className="text-secondary fw-semibold" style={{ fontSize: '13px' }}>Selected Stores : </span>
-                                    <span className="fw-medium text-dark" style={{ fontSize: '13px' }}>{getStoreNames(release.store_ids)}</span>
+                                    <span className="text-secondary fw-semibold" style={{ fontSize: '14px' }}>Selected Stores : </span>
+                                    <span className="fw-medium text-dark" style={{ fontSize: '14px' }}>{getStoreNames(release.store_ids)}</span>
                                 </div>
                             </div>
 
@@ -235,13 +235,13 @@ function ViewSingleReleaseComponent() {
                 <div className="card border-0 bg-white" style={{ borderRadius: '10px', boxShadow: '0 0 10px rgba(0,0,0,0.05)' }}>
                     <div className="card-header bg-light border-0 d-flex justify-content-between align-items-center py-3 px-4 rounded-top">
                         <h4 className="mb-0 text-dark fw-bold" style={{ fontSize: '20px' }}>Volume 1</h4>
-                        <span className="clPurple" style={{ cursor: 'pointer', fontSize: '13px' }}>Show Detail</span>
+                        <span className="clPurple" style={{ cursor: 'pointer', fontSize: '12px' }}>Show Detail</span>
                     </div>
                     <div className="card-body p-0">
                         {release.tracks && release.tracks.length > 0 ? (
                             <table className="table table-hover mb-0 align-middle">
                                 <thead>
-                                    <tr style={{ color: '#666', fontSize: '13px', borderBottom: '2px solid #eaeaea' }}>
+                                    <tr style={{ color: '#666', fontSize: '12px', borderBottom: '2px solid #eaeaea' }}>
                                         <th className="px-4 py-3 fw-medium border-0" style={{ width: '25%' }}>Title</th>
                                         <th className="px-2 py-3 fw-medium border-0" style={{ width: '20%' }}>ISRC</th>
                                         <th className="px-2 py-3 fw-medium border-0" style={{ width: '20%' }}>Artist</th>
@@ -256,13 +256,13 @@ function ViewSingleReleaseComponent() {
                                             <React.Fragment key={idx}>
                                                 <tr style={{ borderBottom: isExp ? 'none' : '1px solid #f5f5f5' }}>
                                                     <td className="px-4 py-3 border-0">
-                                                        <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '14px' }} onClick={() => toggleTrackDetail(idx)}>
+                                                        <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => toggleTrackDetail(idx)}>
                                                             {track.title || '-'} {track.mix_version ? `(${track.mix_version})` : ''}
                                                         </span>
                                                     </td>
-                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.isrc_number || track.isrc || '-'}</td>
-                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{track.artist || track.author || release.primary_artist?.name || '-'}</td>
-                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '13px', color: '#777' }}>{formatDuration(track.duration)}</td>
+                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '12px', color: '#777' }}>{track.isrc_number || track.isrc || '-'}</td>
+                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '12px', color: '#777' }}>{track.artist || track.author || release.primary_artist?.name || '-'}</td>
+                                                    <td className="px-2 py-3 border-0" style={{ fontSize: '12px', color: '#777' }}>{formatDuration(track.duration)}</td>
                                                     <td className="px-4 py-3 border-0 text-end">
                                                         <div className="d-flex align-items-center justify-content-end gap-3">
                                                             {track.audio_path ? (
@@ -285,7 +285,7 @@ function ViewSingleReleaseComponent() {
                                                     <tr style={{ backgroundColor: '#fdfdfd', borderBottom: '1px solid #f5f5f5' }}>
                                                         <td colSpan="6" className="px-4 py-3 border-0">
                                                             <div className="d-flex flex-column gap-2 mb-2">
-                                                                <h6 className="clPurple mb-1" style={{ fontSize: '13px', fontWeight: 'bold' }}>Roles</h6>
+                                                                <h6 className="clPurple mb-1" style={{ fontSize: '12px', fontWeight: 'bold' }}>Roles</h6>
                                                                 <div className="d-flex gap-4" style={{ fontSize: '12px', color: '#666' }}>
                                                                     <span>Remixer: {track.remixer || 'Not Provided'}</span>
                                                                     <span>Artists: {track.artist || release.primary_artist?.name || 'Not Provided'}</span>
@@ -295,7 +295,7 @@ function ViewSingleReleaseComponent() {
                                                                 </div>
                                                             </div>
                                                             <div className="d-flex flex-column gap-2">
-                                                                <h6 className="clPurple mb-1" style={{ fontSize: '13px', fontWeight: 'bold' }}>Information</h6>
+                                                                <h6 className="clPurple mb-1" style={{ fontSize: '12px', fontWeight: 'bold' }}>Information</h6>
                                                                 <div className="d-flex gap-4" style={{ fontSize: '12px', color: '#666' }}>
                                                                     <span>ISRC: {track.isrc || track.isrc_number || 'N/A'}</span>
                                                                     <span>Language: {release.language_name || 'N/A'}</span>

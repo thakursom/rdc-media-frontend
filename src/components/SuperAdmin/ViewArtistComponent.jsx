@@ -171,11 +171,19 @@ function ViewArtistComponent() {
                                         artists.map((artist, index) => (
                                             <tr key={artist._id}>
                                                 <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
-                                                <td className="text-color-dark font-weight-bold">{artist.name}</td>
+                                                <td className="text-color-dark font-weight-bold">
+                                                    <span
+                                                        className='clPurple'
+                                                        onClick={() => navigate(`/view-artist/${artist._id}`)}
+                                                        title="Click to view artist details"
+                                                    >
+                                                        {artist.name}
+                                                    </span>
+                                                </td>
                                                 <td style={{ fontSize: '0.9rem', color: '#6c757d' }}>{artist.email || '-'}</td>
                                                 <td>
                                                     <div className="d-flex flex-column gap-1">
-                                                        <span style={{ fontSize: '0.9rem', color: '#6c757d' }}>Status: {renderToggle(artist.is_on_spotify)}</span>
+                                                        <span style={{ fontSize: '12px', color: '#6c757d' }}>Status: {renderToggle(artist.is_on_spotify)}</span>
                                                         {artist.spotify_link && (
                                                             <a href={artist.spotify_link} target="_blank" rel="noreferrer" className="text-primary small text-decoration-none">
                                                                 Spotify Link
@@ -185,7 +193,7 @@ function ViewArtistComponent() {
                                                 </td>
                                                 <td>
                                                     <div className="d-flex flex-column gap-1">
-                                                        <span style={{ fontSize: '0.9rem', color: '#6c757d' }}>Status: {renderToggle(artist.is_on_apple)}</span>
+                                                        <span style={{ fontSize: '12px', color: '#6c757d' }}>Status: {renderToggle(artist.is_on_apple)}</span>
                                                         {artist.apple_link && (
                                                             <a href={artist.apple_link} target="_blank" rel="noreferrer" className="text-primary small text-decoration-none">
                                                                 Apple Link
@@ -205,6 +213,13 @@ function ViewArtistComponent() {
                                                 </td>
                                                 <td className="view-artist-button">
                                                     <div className="d-flex gap-2">
+                                                        <button
+                                                            type="button"
+                                                            className="mainBtn bgPurple clWhite"
+                                                            onClick={() => navigate(`/view-artist/${artist._id}`)}
+                                                        >
+                                                            View
+                                                        </button>
                                                         <button
                                                             type="button"
                                                             className="mainBtn bgPurple clWhite"

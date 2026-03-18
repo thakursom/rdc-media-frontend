@@ -24,6 +24,16 @@ function AddArtistComponent() {
         artist_image: isEdit
             ? Yup.string()
             : Yup.string().required("Artist image is required. Please upload an image."),
+        spotify_link: Yup.string().when('is_on_spotify', {
+            is: 1,
+            then: (schema) => schema.required("Spotify link is required"),
+            otherwise: (schema) => schema.nullable()
+        }),
+        apple_link: Yup.string().when('is_on_apple', {
+            is: 1,
+            then: (schema) => schema.required("Apple Artist link is required"),
+            otherwise: (schema) => schema.nullable()
+        }),
     });
 
     const formik = useFormik({
@@ -546,16 +556,20 @@ function AddArtistComponent() {
                                             </div>
                                             {formik.values.is_on_spotify === 1 && (
                                                 <div className="form-group spotify-artist-link mt-2">
-                                                    <label htmlFor="spotify_link">Spotify Artist Link</label>
+                                                    <label htmlFor="spotify_link" className="required">Spotify Artist Link</label>
                                                     <input
                                                         type="text"
-                                                        className="form-control"
+                                                        className={`form-control ${formik.touched.spotify_link && formik.errors.spotify_link ? 'is-invalid' : ''}`}
                                                         id="spotify_link"
                                                         name="spotify_link"
                                                         placeholder="https://open.spotify.com/artist/..."
                                                         value={formik.values.spotify_link}
                                                         onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
                                                     />
+                                                    {formik.touched.spotify_link && formik.errors.spotify_link && (
+                                                        <small className="text-danger">{formik.errors.spotify_link}</small>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -598,16 +612,20 @@ function AddArtistComponent() {
                                             </div>
                                             {formik.values.is_on_apple === 1 && (
                                                 <div className="form-group spotify-artist-link mt-2">
-                                                    <label htmlFor="apple_link">Apple Artist Link</label>
+                                                    <label htmlFor="apple_link" className="required">Apple Artist Link</label>
                                                     <input
                                                         type="text"
-                                                        className="form-control"
+                                                        className={`form-control ${formik.touched.apple_link && formik.errors.apple_link ? 'is-invalid' : ''}`}
                                                         id="apple_link"
                                                         name="apple_link"
                                                         placeholder="https://music.apple.com/..."
                                                         value={formik.values.apple_link}
                                                         onChange={formik.handleChange}
+                                                        onBlur={formik.handleBlur}
                                                     />
+                                                    {formik.touched.apple_link && formik.errors.apple_link && (
+                                                        <small className="text-danger">{formik.errors.apple_link}</small>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>

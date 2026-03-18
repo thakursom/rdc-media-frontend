@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,6 +12,17 @@ const AddTicketComponent = () => {
     const { id } = useParams();
     const isEdit = !!id;
     const editor = useRef(null);
+
+    const editorConfig = useMemo(() => ({
+        readonly: false,
+        height: 300,
+        placeholder: 'Start writing...',
+        showCharsCounter: false,
+        showWordsCounter: false,
+        showXPathInStatusbar: false,
+        hidePoweredByJodit: true,
+        statusbar: false
+    }), []);
 
     const [isLoading, setIsLoading] = useState(isEdit);
 
@@ -90,7 +101,7 @@ const AddTicketComponent = () => {
 
     return (
         <section className="right-sidebar" id="sidebarRight">
-            {isLoading && <Loader />}
+            {isLoading && <Loader message='Loading Ticket...' variant="success" />}
             <div className="Audio-main-sec">
                 <div className="title-sec text-center mb-3" >
                     <h5 className='clPurple'>
@@ -191,21 +202,9 @@ const AddTicketComponent = () => {
                             <JoditEditor
                                 ref={editor}
                                 value={formik.values.message}
-                                config={{
-                                    readonly: false,
-                                    height: 300,
-                                    placeholder: 'Start writing...',
-                                    showCharsCounter: false,
-                                    showWordsCounter: false,
-                                    showXPathInStatusbar: false,
-                                    hidePoweredByJodit: true,
-                                    statusbar: false
-                                }}
+                                config={editorConfig}
                                 onBlur={(newContent) => {
                                     formik.setFieldTouched('message', true);
-                                    formik.setFieldValue('message', newContent);
-                                }}
-                                onChange={(newContent) => {
                                     formik.setFieldValue('message', newContent);
                                 }}
                             />

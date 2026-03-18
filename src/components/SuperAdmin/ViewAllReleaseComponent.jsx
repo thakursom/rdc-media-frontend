@@ -26,14 +26,10 @@ function ViewAllReleaseComponent() {
 
     const [filters, setFilters] = useState({
         releaseTypes: [],
-        statuses: [],
         label: "",
         artist: "",
-        user: "",
-        preDefined: "",
         periodFrom: "",
         periodTo: "",
-        sources: [],
         sortBy: "creation_date",
         sortOrder: "desc"
     });
@@ -54,17 +50,10 @@ function ViewAllReleaseComponent() {
             if (currentFilters.releaseTypes.length > 0) {
                 currentFilters.releaseTypes.forEach(t => endpoint += `&releaseTypes=${t}`);
             }
-            if (currentFilters.statuses.length > 0) {
-                currentFilters.statuses.forEach(s => endpoint += `&statuses=${s}`);
-            }
             if (currentFilters.label) endpoint += `&label=${encodeURIComponent(currentFilters.label)}`;
             if (currentFilters.artist) endpoint += `&artist=${encodeURIComponent(currentFilters.artist)}`;
-            if (currentFilters.user) endpoint += `&user=${encodeURIComponent(currentFilters.user)}`;
-            if (currentFilters.periodFrom) endpoint += `&startDate=${currentFilters.periodFrom}`;
-            if (currentFilters.periodTo) endpoint += `&endDate=${currentFilters.periodTo}`;
-            if (currentFilters.sources.length > 0) {
-                currentFilters.sources.forEach(s => endpoint += `&source=${s}`);
-            }
+            if (currentFilters.periodFrom) endpoint += `&periodFrom=${currentFilters.periodFrom}`;
+            if (currentFilters.periodTo) endpoint += `&periodTo=${currentFilters.periodTo}`;
             if (currentFilters.sortBy) endpoint += `&sortBy=${currentFilters.sortBy}`;
             if (currentFilters.sortOrder) endpoint += `&sortOrder=${currentFilters.sortOrder}`;
 
@@ -118,23 +107,28 @@ function ViewAllReleaseComponent() {
     const handleApplyFilters = () => {
         setFilters({ ...tempFilters });
         setPagination(prev => ({ ...prev, currentPage: 1 }));
+
         // Close modal (Bootstrap 5 way)
         const modalElement = document.getElementById('advanceFilter');
-        const modal = window.bootstrap?.Modal?.getInstance(modalElement);
-        if (modal) modal.hide();
+        if (modalElement) {
+            if (window.bootstrap && window.bootstrap.Modal) {
+                const modal = window.bootstrap.Modal.getInstance(modalElement) || new window.bootstrap.Modal(modalElement);
+                if (modal) modal.hide();
+            } else {
+                // Fallback to manual trigger if bootstrap is not on window
+                const closeBtn = modalElement.querySelector('[data-bs-dismiss="modal"]');
+                if (closeBtn) closeBtn.click();
+            }
+        }
     };
 
     const handleResetFilters = () => {
         const resetFilters = {
             releaseTypes: [],
-            statuses: [],
             label: "",
             artist: "",
-            user: "",
-            preDefined: "",
             periodFrom: "",
             periodTo: "",
-            sources: [],
             sortBy: "creation_date",
             sortOrder: "desc"
         };
@@ -199,7 +193,11 @@ function ViewAllReleaseComponent() {
 
     const handleOpenAssignModal = async (track, releaseId) => {
         setSelectedTrack({ ...track, releaseId });
-        setSelectedEventIds([]);
+
+        // Pre-select existing event IDs if available
+        const existingEventIds = track.assignedEvents ? track.assignedEvents.map(a => a.eventId) : [];
+
+        setSelectedEventIds(existingEventIds);
 
         try {
             const response = await apiRequest('/events?status=Active&limit=100', "GET", null, true);
@@ -324,211 +322,102 @@ function ViewAllReleaseComponent() {
                         aria-labelledby="staticBackdropLabel"
                         aria-hidden="true"
                     >
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title" id="staticBackdropLabel">
-                                        Add Filters
+                        <div className="modal-dialog modal-lg modal-dialog-centered">
+                            <div className="modal-content shadow-lg border-0">
+                                <div className="modal-header bg-light border-bottom-0 py-3">
+                                    <h5 className="modal-title fw-bold clPurple" id="staticBackdropLabel">
+                                        <i className="fa-solid fa-filter me-2"></i> Refine Search Filters
                                     </h5>
                                     <button
                                         type="button"
-                                        className="btn-close"
+                                        className="btn-close shadow-none"
                                         data-bs-dismiss="modal"
-                                    >
-                                        <i className="fa-solid fa-xmark" />
-                                    </button>
+                                        aria-label="Close"
+                                    ><i class="fa-solid fa-xmark"></i></button>
                                 </div>
-                                <div className="modal-body">
-                                    <div className="product-info">
-                                        <div className="product-info-heading">
-                                            <h6>Product Information</h6>
-                                        </div>
-                                        <form className="product-list">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <div className="product-mainbox">
-                                                        <div className="product-mainbox-content">
-                                                            <div className="product-list-heading">
-                                                                <h6>Product Type</h6>
-                                                            </div>
-                                                            <div className="product-list-check form-check">
+                                <div className="modal-body p-4">
+                                    <div className="row g-4">
+                                        {/* Product Information Section */}
+                                        <div className="col-lg-7">
+                                            <div className="filter-section p-3 border rounded h-100 bg-white shadow-sm">
+                                                <h6 className="fw-bold mb-3 clPurple border-bottom pb-2">
+                                                    <i className="fa-solid fa-compact-disc me-2"></i> Product Information
+                                                </h6>
+                                                <div className="row">
+                                                    <div className="col-md-12 mb-3">
+                                                        <label className="form-label fw-medium small mb-2">Release Type</label>
+                                                        <div className="d-flex gap-3">
+                                                            <div className="form-check custom-check">
                                                                 <input
-                                                                    className="form-check-input pro"
+                                                                    className="form-check-input"
                                                                     type="checkbox"
                                                                     id="typeSingle"
                                                                     checked={tempFilters.releaseTypes.includes('single')}
                                                                     onChange={() => handleFilterChange('releaseTypes', 'single', true)}
+                                                                    style={{ accentColor: '#0066b2', cursor: 'pointer' }}
                                                                 />
-                                                                <label className="form-check-label" htmlFor="typeSingle">
-                                                                    <span>Single</span>
-                                                                </label>
+                                                                <label className="form-check-label small" htmlFor="typeSingle" style={{ cursor: 'pointer' }}>Single</label>
                                                             </div>
-                                                            <div className="product-list-check form-check">
+                                                            <div className="form-check custom-check">
                                                                 <input
-                                                                    className="form-check-input pro"
+                                                                    className="form-check-input"
                                                                     type="checkbox"
                                                                     id="typeAlbum"
                                                                     checked={tempFilters.releaseTypes.includes('album')}
                                                                     onChange={() => handleFilterChange('releaseTypes', 'album', true)}
+                                                                    style={{ accentColor: '#0066b2', cursor: 'pointer' }}
                                                                 />
-                                                                <label className="form-check-label" htmlFor="typeAlbum">
-                                                                    <span>Album</span>
-                                                                </label>
+                                                                <label className="form-check-label small" htmlFor="typeAlbum" style={{ cursor: 'pointer' }}>Album</label>
                                                             </div>
-                                                        </div>
-                                                        <div className="form-group product-field">
-                                                            <label className="form-label" htmlFor="label">
-                                                                Label
-                                                            </label>
-                                                            <input
-                                                                className="form-control"
-                                                                type="text"
-                                                                id="label"
-                                                                value={tempFilters.label}
-                                                                onChange={(e) => handleFilterChange('label', e.target.value)}
-                                                            />
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="product-mainbox">
-                                                        <div className="product-mainbox-content">
-                                                            <div className="product-list-heading">
-                                                                <h6>Status</h6>
-                                                            </div>
-                                                            <div className="product-list-check form-check">
-                                                                <input
-                                                                    className="form-check-input pro"
-                                                                    type="checkbox"
-                                                                    id="product-published"
-                                                                    checked={tempFilters.statuses.includes('approved')}
-                                                                    onChange={() => handleFilterChange('statuses', 'approved', true)}
-                                                                />
-                                                                <label className="form-check-label" htmlFor="product-published">
-                                                                    <span>Approved</span>
-                                                                </label>
-                                                            </div>
-                                                            <div className="product-list-check form-check">
-                                                                <input
-                                                                    className="form-check-input pro"
-                                                                    type="checkbox"
-                                                                    id="product-review"
-                                                                    checked={tempFilters.statuses.includes('processing')}
-                                                                    onChange={() => handleFilterChange('statuses', 'processing', true)}
-                                                                />
-                                                                <label className="form-check-label" htmlFor="product-review">
-                                                                    <span>Processing</span>
-                                                                </label>
-                                                            </div>
-                                                            <div className="product-list-check form-check">
-                                                                <input
-                                                                    className="form-check-input pro"
-                                                                    type="checkbox"
-                                                                    id="correction"
-                                                                    checked={tempFilters.statuses.includes('correction')}
-                                                                    onChange={() => handleFilterChange('statuses', 'correction', true)}
-                                                                />
-                                                                <label className="form-check-label" htmlFor="correction">
-                                                                    <span>Correction Requested</span>
-                                                                </label>
-                                                            </div>
-                                                            <div className="product-list-check form-check">
-                                                                <input
-                                                                    className="form-check-input pro"
-                                                                    type="checkbox"
-                                                                    id="draft"
-                                                                    checked={tempFilters.statuses.includes('draft')}
-                                                                    onChange={() => handleFilterChange('statuses', 'draft', true)}
-                                                                />
-                                                                <label className="form-check-label" htmlFor="draft">
-                                                                    <span>Draft</span>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-group product-field">
-                                                            <label className="form-label" htmlFor="artist">
-                                                                Artist
-                                                            </label>
-                                                            <input
-                                                                className="form-control"
-                                                                type="text"
-                                                                id="artist"
-                                                                value={tempFilters.artist}
-                                                                onChange={(e) => handleFilterChange('artist', e.target.value)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div className="account-info">
-                                        <div className="account-info-heading">
-                                            <h6>Account Information</h6>
-                                        </div>
-                                        <form className="account-info-form">
-                                            <div className="row">
-                                                <div className="col-md-12">
-                                                    <div className="form-group account-field">
-                                                        <label className="form-label" htmlFor="user">
-                                                            User
-                                                        </label>
+                                                    <div className="col-md-6 mb-3">
+                                                        <label className="form-label fw-medium small mb-1" htmlFor="label">Label</label>
                                                         <input
-                                                            className="form-control"
+                                                            className="form-control form-control-sm"
                                                             type="text"
-                                                            id="user"
-                                                            value={tempFilters.user}
-                                                            onChange={(e) => handleFilterChange('user', e.target.value)}
+                                                            id="label"
+                                                            placeholder="Enter label name"
+                                                            value={tempFilters.label}
+                                                            onChange={(e) => handleFilterChange('label', e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-6 mb-3">
+                                                        <label className="form-label fw-medium small mb-1" htmlFor="artist">Artist</label>
+                                                        <input
+                                                            className="form-control form-control-sm"
+                                                            type="text"
+                                                            id="artist"
+                                                            placeholder="Enter artist name"
+                                                            value={tempFilters.artist}
+                                                            onChange={(e) => handleFilterChange('artist', e.target.value)}
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                    <div className="period-sec">
-                                        <div className="period-sec-heading">
-                                            <h6>Period</h6>
                                         </div>
-                                        <form className="period-sec-form">
-                                            <div className="row">
-                                                <div className="col-md-12">
-                                                    <div className="form-group account-field label">
-                                                        <label className="form-label" htmlFor="preDefined">
-                                                            Pre-Defined Period
-                                                        </label>
+
+                                        {/* Period Section */}
+                                        <div className="col-lg-5">
+                                            <div className="filter-section p-3 border rounded h-100 bg-white shadow-sm">
+                                                <h6 className="fw-bold mb-3 clPurple border-bottom pb-2">
+                                                    <i className="fa-solid fa-calendar-days me-2"></i> Select Period
+                                                </h6>
+                                                <div className="row g-2">
+                                                    <div className="col-12 mb-2">
+                                                        <label className="form-label fw-medium small mb-1" htmlFor="periodFrom">From Date</label>
                                                         <input
-                                                            className="form-control"
-                                                            type="text"
-                                                            id="preDefined"
-                                                            value={tempFilters.preDefined}
-                                                            onChange={(e) => handleFilterChange('preDefined', e.target.value)}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-12 period-label account-field label">
-                                                    <label className="form-label">Period :</label>
-                                                </div>
-                                                <div className="col-md-6 per-form account-field label">
-                                                    <div className="form-group">
-                                                        <label className="form-label" htmlFor="periodFrom">
-                                                            From
-                                                        </label>
-                                                        <input
-                                                            className="form-control"
+                                                            className="form-control form-control-sm"
                                                             type="date"
                                                             id="periodFrom"
                                                             value={tempFilters.periodFrom}
                                                             onChange={(e) => handleFilterChange('periodFrom', e.target.value)}
                                                         />
                                                     </div>
-                                                </div>
-                                                <div className="col-md-6 per-form account-field label">
-                                                    <div className="form-group">
-                                                        <label className="form-label" htmlFor="periodTo">
-                                                            To
-                                                        </label>
+                                                    <div className="col-12">
+                                                        <label className="form-label fw-medium small mb-1" htmlFor="periodTo">To Date</label>
                                                         <input
-                                                            className="form-control"
+                                                            className="form-control form-control-sm"
                                                             type="date"
                                                             id="periodTo"
                                                             value={tempFilters.periodTo}
@@ -537,178 +426,91 @@ function ViewAllReleaseComponent() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-4">
-                                            <div className="source-info">
-                                                <div className="source-info-heading">
-                                                    <h6>Source</h6>
-                                                </div>
-                                                <form className="product-list source-list">
-                                                    <div className="product-mainbox-content">
-                                                        <div className="product-list-check form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="checkbox"
-                                                                id="digital"
-                                                                checked={tempFilters.sources.includes('digital')}
-                                                                onChange={() => handleFilterChange('sources', 'digital', true)}
-                                                            />
-                                                            <label className="form-check-label" htmlFor="digital">
-                                                                <span>Believe Digital</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-list-check form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="checkbox"
-                                                                id="transfer"
-                                                                checked={tempFilters.sources.includes('transfer')}
-                                                                onChange={() => handleFilterChange('sources', 'transfer', true)}
-                                                            />
-                                                            <label className="form-check-label" htmlFor="transfer">
-                                                                <span>Catalog Transfer</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-list-check form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="checkbox"
-                                                                id="upload"
-                                                                checked={tempFilters.sources.includes('upload')}
-                                                                onChange={() => handleFilterChange('sources', 'upload', true)}
-                                                            />
-                                                            <label className="form-check-label" htmlFor="upload">
-                                                                <span>Direct upload on Youtube</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
                                         </div>
-                                        <div className="col-md-4">
-                                            <div className="source-info">
-                                                <div className="source-info-heading">
-                                                    <h6>Sort By</h6>
-                                                </div>
-                                                <form className="product-list source-list">
-                                                    <div className="product-mainbox-content">
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortBy"
-                                                                id="sortTitle"
-                                                                checked={tempFilters.sortBy === 'release_title'}
-                                                                onChange={() => handleFilterChange('sortBy', 'release_title')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortTitle">
-                                                                Release Title
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortBy"
-                                                                id="sortArtist"
-                                                                checked={tempFilters.sortBy === 'artist'}
-                                                                onChange={() => handleFilterChange('sortBy', 'artist')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortArtist">
-                                                                <span>Artist</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortBy"
-                                                                id="sortLabel"
-                                                                checked={tempFilters.sortBy === 'label'}
-                                                                onChange={() => handleFilterChange('sortBy', 'label')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortLabel">
-                                                                <span>Label</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortBy"
-                                                                id="sortCreation"
-                                                                checked={tempFilters.sortBy === 'creation_date'}
-                                                                onChange={() => handleFilterChange('sortBy', 'creation_date')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortCreation">
-                                                                <span>Creation Date</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortBy"
-                                                                id="sortRelease"
-                                                                checked={tempFilters.sortBy === 'release_date'}
-                                                                onChange={() => handleFilterChange('sortBy', 'release_date')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortRelease">
-                                                                <span>Release Date</span>
-                                                            </label>
+
+                                        {/* Sorting Section */}
+                                        <div className="col-12">
+                                            <div className="filter-section p-3 border rounded bg-white shadow-sm">
+                                                <h6 className="fw-bold mb-3 clPurple border-bottom pb-2">
+                                                    <i className="fa-solid fa-sort me-2"></i> Sorting Options
+                                                </h6>
+                                                <div className="row">
+                                                    <div className="col-md-8">
+                                                        <label className="form-label fw-medium small mb-2">Sort By Field</label>
+                                                        <div className="d-flex flex-wrap gap-x-4 gap-y-2">
+                                                            {[
+                                                                { id: 'sortTitle', val: 'release_title', label: 'Release Title' },
+                                                                { id: 'sortArtist', val: 'artist', label: 'Artist' },
+                                                                { id: 'sortLabel', val: 'label', label: 'Label' },
+                                                                { id: 'sortCreation', val: 'creation_date', label: 'Creation Date' },
+                                                                { id: 'sortRelease', val: 'release_date', label: 'Release Date' }
+                                                            ].map(item => (
+                                                                <div className="form-check me-3" key={item.id}>
+                                                                    <input
+                                                                        className="form-check-input"
+                                                                        type="radio"
+                                                                        name="sortBy"
+                                                                        id={item.id}
+                                                                        checked={tempFilters.sortBy === item.val}
+                                                                        onChange={() => handleFilterChange('sortBy', item.val)}
+                                                                        style={{ accentColor: '#0066b2', cursor: 'pointer' }}
+                                                                    />
+                                                                    <label className="form-check-label small" htmlFor={item.id} style={{ cursor: 'pointer' }}>{item.label}</label>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <div className="source-info">
-                                                <div className="source-info-heading">
-                                                    <h6>Order</h6>
-                                                </div>
-                                                <form className="product-list source-list">
-                                                    <div className="product-mainbox-content">
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortOrder"
-                                                                id="sortDesc"
-                                                                checked={tempFilters.sortOrder === 'desc'}
-                                                                onChange={() => handleFilterChange('sortOrder', 'desc')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortDesc">
-                                                                <span>Descending</span>
-                                                            </label>
-                                                        </div>
-                                                        <div className="product-radio form-check">
-                                                            <input
-                                                                className="form-check-input pro"
-                                                                type="radio"
-                                                                name="sortOrder"
-                                                                id="sortAsc"
-                                                                checked={tempFilters.sortOrder === 'asc'}
-                                                                onChange={() => handleFilterChange('sortOrder', 'asc')}
-                                                            />
-                                                            <label className="form-check-label pro-label" htmlFor="sortAsc">
-                                                                <span>Ascending</span>
-                                                            </label>
+                                                    <div className="col-md-4 border-start">
+                                                        <label className="form-label fw-medium small mb-2 ms-md-2">Order</label>
+                                                        <div className="d-flex flex-column gap-2 ms-md-2">
+                                                            <div className="form-check">
+                                                                <input
+                                                                    className="form-check-input"
+                                                                    type="radio"
+                                                                    name="sortOrder"
+                                                                    id="sortDesc"
+                                                                    checked={tempFilters.sortOrder === 'desc'}
+                                                                    onChange={() => handleFilterChange('sortOrder', 'desc')}
+                                                                    style={{ accentColor: '#0066b2', cursor: 'pointer' }}
+                                                                />
+                                                                <label className="form-check-label small" htmlFor="sortDesc" style={{ cursor: 'pointer' }}>Descending (Newest First)</label>
+                                                            </div>
+                                                            <div className="form-check">
+                                                                <input
+                                                                    className="form-check-input"
+                                                                    type="radio"
+                                                                    name="sortOrder"
+                                                                    id="sortAsc"
+                                                                    checked={tempFilters.sortOrder === 'asc'}
+                                                                    onChange={() => handleFilterChange('sortOrder', 'asc')}
+                                                                    style={{ accentColor: '#0066b2', cursor: 'pointer' }}
+                                                                />
+                                                                <label className="form-check-label small" htmlFor="sortAsc" style={{ cursor: 'pointer' }}>Ascending (Oldest First)</label>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="filter-buttons">
-                                        <button className="mainBtn bgRed clWhite" type="button" onClick={handleResetFilters}>
-                                            Reset
-                                        </button>
-                                        <button className="mainBtn bgPurple clWhite" type="button" onClick={handleApplyFilters}>
-                                            Apply Filters
-                                        </button>
-                                    </div>
+                                </div>
+                                <div className="modal-footer bg-light border-top-0 p-3">
+                                    <button
+                                        className="mainBtn bgRed clWhite border-0 px-4 py-2"
+                                        type="button"
+                                        onClick={handleResetFilters}
+                                        style={{ fontSize: '14px', borderRadius: '6px' }}
+                                    >
+                                        <i className="fa-solid fa-rotate-left me-1"></i> Reset
+                                    </button>
+                                    <button
+                                        className="mainBtn bgPurple clWhite border-0 px-4 py-2"
+                                        type="button"
+                                        onClick={handleApplyFilters}
+                                        style={{ fontSize: '14px', borderRadius: '6px' }}
+                                    >
+                                        <i className="fa-solid fa-check me-1"></i> Apply Filters
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -747,7 +549,7 @@ function ViewAllReleaseComponent() {
                                                     <React.Fragment key={id}>
                                                         <tr style={{ backgroundColor: isExp ? '#fdfdfd' : 'transparent', borderBottom: isExp ? 'none' : '1px solid #eff2f7' }}>
                                                             <td><input type="checkbox" className="form-check-input" /></td>
-                                                            <td className="text-secondary" style={{ fontSize: '14px' }}>
+                                                            <td className="text-secondary" style={{ fontSize: '12px' }}>
                                                                 {release.release_type === 1 ? 'Single' : 'Album'}
                                                             </td>
                                                             <td>
@@ -759,19 +561,19 @@ function ViewAllReleaseComponent() {
                                                                         <i className={`fa-solid fa-angle-${isExp ? 'up' : 'down'} text-secondary`} style={{ fontSize: '12px' }}></i>
                                                                     </span>
                                                                     <div>
-                                                                        <Link to={`/view-release/${id}`} className="fw-medium text-dark text-decoration-none" style={{ fontSize: '14px' }}>
+                                                                        <Link to={`/view-release/${id}`} className="clPurple" style={{ fontSize: '12px' }}>
                                                                             {release.release_title}
                                                                         </Link>
                                                                         <div className="text-muted" style={{ fontSize: '12px' }}>{release.primary_artist?.name || '-'}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td style={{ fontSize: '14px' }}>{release.label?.name || '-'}</td>
-                                                            <td style={{ fontSize: '14px' }}>{release.release_date ? new Date(release.release_date).toLocaleDateString('en-CA') : '-'}</td>
-                                                            <td style={{ fontSize: '14px', color: '#888' }}>-</td>
-                                                            <td style={{ fontSize: '14px', color: '#888' }}>{release.createdAt ? new Date(release.createdAt).toLocaleDateString('en-CA') : '-'}</td>
-                                                            <td style={{ fontSize: '14px' }}>{release.tracks?.length || 0}</td>
-                                                            <td style={{ fontSize: '14px', color: '#888' }}>{release.upc || '-'}</td>
+                                                            <td style={{ fontSize: '12px' }}>{release.label?.name || '-'}</td>
+                                                            <td style={{ fontSize: '12px' }}>{release.release_date ? new Date(release.release_date).toLocaleDateString('en-CA') : '-'}</td>
+                                                            <td style={{ fontSize: '12px', color: '#888' }}>-</td>
+                                                            <td style={{ fontSize: '12px', color: '#888' }}>{release.createdAt ? new Date(release.createdAt).toLocaleDateString('en-CA') : '-'}</td>
+                                                            <td style={{ fontSize: '12px' }}>{release.tracks?.length || 0}</td>
+                                                            <td style={{ fontSize: '12px', color: '#888' }}>{release.upc || '-'}</td>
                                                             <td>
                                                                 <div className="d-flex flex-column gap-1" style={{ fontSize: '12px', color: '#555' }}>
                                                                     <div className="d-flex align-items-center gap-2 border rounded px-2 py-1 bg-light">

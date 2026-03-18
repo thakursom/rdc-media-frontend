@@ -165,7 +165,7 @@ function ViewTicketComponent() {
                                             tickets.map((ticket, index) => (
                                                 <tr key={ticket._id}>
                                                     <td>{((pagination.currentPage - 1) * pagination.limit) + index + 1}</td>
-                                                    <td><h6 className="mb-0 text-dark">{ticket.name}</h6></td>
+                                                    <td>{ticket.name}</td>
                                                     <td><p className="mb-0 text-truncate mx-auto text-dark" style={{ maxWidth: '150px' }}>{ticket.subject}</p></td>
                                                     <td className="text-dark">{ticket.department}</td>
                                                     <td className="text-dark">{ticket.priority}</td>

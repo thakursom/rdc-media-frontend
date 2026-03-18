@@ -124,7 +124,7 @@ function AddUserComponent() {
         }
     }, [userId, isEdit]);
 
-    if (loading) return <Loader message="Loading user details..." />;
+    if (loading) return <Loader message="Loading user details..." variant="success" />;
 
     return (
         <section className="right-sidebar" id="sidebarRight">

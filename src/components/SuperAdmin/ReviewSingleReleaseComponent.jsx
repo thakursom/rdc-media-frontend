@@ -11,7 +11,6 @@ function ReviewSingleReleaseComponent() {
     const from = location.state?.from || '/review';
 
     const [release, setRelease] = useState(null);
-    console.log("release", release);
 
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
@@ -127,7 +126,11 @@ function ReviewSingleReleaseComponent() {
     // Promote (Track Event Assignment) Handlers
     const handleOpenAssignModal = async (track, releaseId) => {
         setSelectedTrack({ ...track, releaseId });
-        setSelectedEventIds([]);
+
+        // Pre-select existing event IDs if available
+        const existingEventIds = track.assignedEvents ? track.assignedEvents.map(a => a.eventId) : [];
+
+        setSelectedEventIds(existingEventIds);
 
         try {
             const response = await apiRequest('/events?status=Active&limit=100', "GET", null, true);
@@ -170,6 +173,8 @@ function ReviewSingleReleaseComponent() {
                     const closeBtn = modalElement?.querySelector('[data-bs-dismiss="modal"]');
                     if (closeBtn) closeBtn.click();
                 }
+                // Refresh data to get updated assignments
+                fetchReleaseDetails();
             } else {
                 toast.error(response.data?.message || "Failed to assign events");
             }
@@ -184,7 +189,7 @@ function ReviewSingleReleaseComponent() {
     if (loading) {
         return (
             <section className="right-sidebar text-center py-5" id="sidebarRight">
-                <Loader message="Loading release details..." />
+                <Loader message="Loading release details..." variant="success" />
             </section>
         );
     }
@@ -323,13 +328,13 @@ function ReviewSingleReleaseComponent() {
                                         <React.Fragment key={track._id || idx}>
                                             <tr style={{ borderBottom: expandedTracks.includes(idx) ? 'none' : '1px solid #eee' }}>
                                                 <td className="px-4 py-3 border-0">
-                                                    <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '14px' }} onClick={() => toggleTrackDetail(idx)}>
+                                                    <span className="clPurple fw-medium" style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => toggleTrackDetail(idx)}>
                                                         {track.title} {track.mix_version ? `(${track.mix_version})` : ''}
                                                     </span>
                                                 </td>
-                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.isrc_number || track.isrc || 'N/A'}</td>
-                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{track.artist || release.primary_artist?.name || 'N/A'}</td>
-                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '13px' }}>{formatDuration(track.duration)}</td>
+                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '12px' }}>{track.isrc_number || track.isrc || 'N/A'}</td>
+                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '12px' }}>{track.artist || release.primary_artist?.name || 'N/A'}</td>
+                                                <td className="px-2 py-3 border-0 text-secondary" style={{ fontSize: '12px' }}>{formatDuration(track.duration)}</td>
                                                 <td className="px-2 py-3 border-0 text-center">
                                                     <button className="mainBtn bgPurple clWhite"
                                                         style={{ fontSize: '12px', borderRadius: '4px' }}

@@ -218,15 +218,15 @@ function ReviewComponent() {
                     <div className="table-responsive">
                         {loading && (
                             <div className="text-center py-5">
-                                <Loader message="Fetching pending releases..." />
+                                <Loader message="Fetching pending releases..." variant="success" />
                             </div>
                         )}
                         {!loading && (
                             <>
-                                <table className="table bg-white align-middle" style={{ border: '1px solid #eee' }} id="review-table">
-                                    <thead>
-                                        <tr style={{ color: '#777', fontSize: '13px', borderBottom: '2px solid #eee' }}>
-                                            <th className="px-3 py-3 fw-medium border-0" style={{ width: '5%' }}>
+                                <table className="table table-bordered align-middle" id="review-table">
+                                    <thead className="table-light">
+                                        <tr style={{ color: '#555', fontSize: '13px' }}>
+                                            <th style={{ width: '40px' }}>
                                                 <input
                                                     type="checkbox"
                                                     className="form-check-input"
@@ -234,15 +234,15 @@ function ReviewComponent() {
                                                     checked={releases.length > 0 && selectedReleases.length === releases.length}
                                                 />
                                             </th>
-                                            <th className="px-3 py-3 fw-medium border-0">Album Name <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0">Track Name <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0">UPC <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0">ISRC <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0">Artist Name <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0">Label Name <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 text-center">Status <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0">Date/Time <i className="fa-solid fa-arrows-up-down ms-1" style={{ fontSize: '11px' }}></i></th>
-                                            <th className="px-3 py-3 fw-medium border-0 text-center">Action</th>
+                                            <th style={{ minWidth: '100px' }}>Type</th>
+                                            <th style={{ minWidth: '200px' }}>Title</th>
+                                            <th style={{ minWidth: '150px' }}>Track Name</th>
+                                            <th style={{ minWidth: '120px' }}>UPC</th>
+                                            <th style={{ minWidth: '120px' }}>ISRC</th>
+                                            <th style={{ minWidth: '120px' }}>Label Name</th>
+                                            <th className="text-center">Status</th>
+                                            <th style={{ minWidth: '150px' }}>Date/Time</th>
+                                            <th className="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -252,8 +252,8 @@ function ReviewComponent() {
                                                 console.log("id", id);
 
                                                 return (
-                                                    <tr key={release._id} style={{ borderBottom: '1px solid #eee', fontSize: '14px' }}>
-                                                        <td className="px-3 py-3 border-0">
+                                                    <tr key={release._id} style={{ fontSize: '14px' }}>
+                                                        <td className="text-center">
                                                             <input
                                                                 type="checkbox"
                                                                 className="form-check-input"
@@ -261,23 +261,28 @@ function ReviewComponent() {
                                                                 onChange={(e) => handleSelectRow(e, id)}
                                                             />
                                                         </td>
-                                                        <td className="px-3 py-3 border-0 clPurple">
-                                                            <span>{release.release_title || 'Untitled'}</span>
+                                                        <td className="text-secondary">
+                                                            {release.release_type === 1 ? 'Single' : 'Album'}
                                                         </td>
-                                                        <td className="px-3 py-3 border-0 text-secondary">
+                                                        <td>
+                                                            <div>
+                                                                <span className="clPurple fw-medium" style={{ cursor: 'default' }}>{release.release_title || 'Untitled'}</span>
+                                                                <div className="text-muted" style={{ fontSize: '12px' }}>{release.primary_artist?.name || '-'}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="text-secondary">
                                                             {release.tracks && release.tracks[0] ? release.tracks[0].title : release.release_title}
                                                         </td>
-                                                        <td className="px-3 py-3 border-0 text-secondary">{release.upc || '-'}</td>
-                                                        <td className="px-3 py-3 border-0 text-secondary">{release.tracks && release.tracks[0] ? release.tracks[0].isrc : '-'}</td>
-                                                        <td className="px-3 py-3 border-0 text-secondary">{release.primary_artist?.name || '-'}</td>
-                                                        <td className="px-3 py-3 border-0 text-secondary">{release.label?.name || '-'}</td>
-                                                        <td className="px-3 py-3 border-0 text-center">
-                                                            <span className="badge bgRed clWhite" style={{ display: "inline-block", fontSize: "10px", padding: "5px" }} >Pending</span>
+                                                        <td className="text-secondary">{release.upc || '-'}</td>
+                                                        <td className="text-secondary">{release.tracks && release.tracks[0] ? release.tracks[0].isrc : '-'}</td>
+                                                        <td className="text-secondary">{release.label?.name || '-'}</td>
+                                                        <td className="text-center">
+                                                            <span className="badge bgRed clWhite" style={{ display: "inline-block", fontSize: "10px", padding: "5px", borderRadius: '4px' }} >Pending</span>
                                                         </td>
-                                                        <td className="px-3 py-3 border-0 text-secondary">
+                                                        <td className="text-secondary">
                                                             {release.release_date ? new Date(release.release_date).toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-'}
                                                         </td>
-                                                        <td className="px-3 py-3 border-0 text-center">
+                                                        <td className="text-center">
                                                             <Link to={`/review-release/${id}`} state={{ from: '/review' }} className="mainBtn bgPurple clWhite">
                                                                 View
                                                             </Link>
