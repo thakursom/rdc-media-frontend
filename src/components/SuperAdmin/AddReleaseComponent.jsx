@@ -892,7 +892,7 @@ function AddReleaseComponent() {
                                 <h5 className="modal-title">
                                     {modalType === "label" ? "Add New Label" : "Add New Artist"}
                                 </h5>
-                                <button className="btn-close" onClick={() => setModalType(null)}><i class="fa-solid fa-xmark"></i></button>
+                                <button className="btn-close" onClick={() => setModalType(null)}><i className="fa-solid fa-xmark"></i></button>
                             </div>
 
                             <div className="modal-body">

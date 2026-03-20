@@ -429,7 +429,7 @@ const Step2Tracks = ({
                                                             setEditingTrackId(null);
                                                             setTempTrack(null);
                                                         }}
-                                                    ><i class="fa-solid fa-xmark"></i></button>
+                                                    ><i className="fa-solid fa-xmark"></i></button>
                                                 </div>
 
                                                 {/* Uploaded file + Replace */}
@@ -627,7 +627,7 @@ const Step2Tracks = ({
                                                                                         artists: prev.artists.filter((_, i) => i !== index),
                                                                                     }));
                                                                                 }}
-                                                                            ><i class="fa-solid fa-xmark"></i></button>
+                                                                            ><i className="fa-solid fa-xmark"></i></button>
                                                                         </span>
                                                                     ))}
                                                                 </div>

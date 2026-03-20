@@ -43,7 +43,7 @@ function ViewAllReleaseComponent() {
     const fetchReleases = async (page = 1, search = "", currentLimit = pagination.limit, currentFilters = filters) => {
         setLoading(true);
         try {
-            let endpoint = `/releases?page=${page}&limit=${currentLimit}&create_type=Approved,complete,completed,Complete,Completed,APPROVED,COMPLETE,COMPLETED`;
+            let endpoint = `/releases?page=${page}&limit=${currentLimit}&create_type=Approved`;
             if (search) endpoint += `&search=${encodeURIComponent(search)}`;
 
             // Append advanced filters
@@ -333,7 +333,7 @@ function ViewAllReleaseComponent() {
                                         className="btn-close shadow-none"
                                         data-bs-dismiss="modal"
                                         aria-label="Close"
-                                    ><i class="fa-solid fa-xmark"></i></button>
+                                    ><i className="fa-solid fa-xmark"></i></button>
                                 </div>
                                 <div className="modal-body p-4">
                                     <div className="row g-4">
@@ -677,7 +677,7 @@ function ViewAllReleaseComponent() {
                         <div className="modal-content">
                             <div className="modal-header border-0 pb-0">
                                 <h5 className="modal-title fw-bold clPurple">Assign Events</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p className="text-muted mb-4" style={{ fontSize: '14px' }}>

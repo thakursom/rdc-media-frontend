@@ -501,7 +501,7 @@ function ReviewSingleReleaseComponent() {
                     <div className="modal-content">
                         <div className="modal-header border-0 pb-0">
                             <h5 className="modal-title fw-bold clPurple">Assign Events</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="fa-solid fa-xmark"></i></button>
                         </div>
                         <div className="modal-body">
                             <p className="text-muted mb-4" style={{ fontSize: '14px' }}>

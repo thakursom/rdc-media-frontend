@@ -6,13 +6,12 @@ import Loader from "../Loader/Loader";
 import { useNavigate } from 'react-router-dom';
 
 function ManageEventComponent() {
+    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const navigate = useNavigate();
-
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [appliedSearch, setAppliedSearch] = useState("");
@@ -230,7 +229,7 @@ function ManageEventComponent() {
                         <div className="modal-content border-0 shadow-lg">
                             <div className="modal-header bg-light">
                                 <h5 className="modal-title clPurple">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={closeDeleteModal}><i class="fa-solid fa-xmark"></i></button>
+                                <button type="button" className="btn-close" onClick={closeDeleteModal}><i className="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body p-4 text-center">
                                 <div className="mb-3">

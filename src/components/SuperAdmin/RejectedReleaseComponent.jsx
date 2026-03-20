@@ -18,6 +18,7 @@ function RejectedReleaseComponent() {
         limit: 10
     });
     const [selectedRelease, setSelectedRelease] = useState(null);
+    console.log("selectedRelease", selectedRelease);
 
     useEffect(() => {
         fetchReleases(pagination.currentPage, searchTerm, pagination.limit, selectedLabel);
@@ -148,7 +149,6 @@ function RejectedReleaseComponent() {
                                             <th style={{ minWidth: '110px' }}>Release Date</th>
                                             <th style={{ minWidth: '90px' }}># Of Tracks</th>
                                             <th style={{ minWidth: '140px' }}>UPC / Catalogue</th>
-                                            <th style={{ minWidth: '140px' }}>Reason</th>
                                             <th className="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -178,20 +178,25 @@ function RejectedReleaseComponent() {
                                                         <div>{release.upc || '-'}</div>
                                                         <div className="text-muted mt-1" style={{ fontSize: '12px' }}>{release.catalogue_number || '-'}</div>
                                                     </td>
-                                                    <td className="text-secondary" style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                                        <span title={release.rejection_reason || release.admin_remarks || '-'}>
-                                                            {release.rejection_reason || release.admin_remarks || '-'}
-                                                        </span>
-                                                    </td>
                                                     <td className="text-center">
-                                                        <button
-                                                            className="mainBtn bgPurple clWhite"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#reasonModal"
-                                                            onClick={() => setSelectedRelease(release)}
-                                                        >
-                                                            View Reason
-                                                        </button>
+                                                        <div className="d-flex gap-2 justify-content-center">
+                                                            <button
+                                                                className="mainBtn bgPurple clWhite"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#reasonModal"
+                                                                onClick={() => setSelectedRelease(release)}
+                                                                style={{ fontSize: '12px' }}
+                                                            >
+                                                                View Reason
+                                                            </button>
+                                                            <Link
+                                                                to={`/edit-release/${release._id}`}
+                                                                className="mainBtn bgPurple clWhite"
+                                                                style={{ textDecoration: 'none', fontSize: '12px' }}
+                                                            >
+                                                                Edit
+                                                            </Link>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))
@@ -231,31 +236,62 @@ function RejectedReleaseComponent() {
                     <div className="modal-content">
                         <div className="modal-header border-0">
                             <h5 className="modal-title clPurple fw-bold" id="reasonModalLabel">Reason for Rejection</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="fa-solid fa-xmark"></i></button>
                         </div>
-                        <div className="modal-body">
-                            <div className="correction-data p-3 bg-light rounded bg-opacity-50">
-                                <p className="mb-0 text-dark">
-                                    {selectedRelease?.rejection_reason || selectedRelease?.admin_remarks || "No reason provided by the reviewer. Please review your metadata and audio files carefully."}
-                                </p>
-                                {selectedRelease?.rejection_file && (
-                                    <div className="mt-3">
-                                        <a
-                                            href={selectedRelease.rejection_file}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="btn btn-sm bgPurple clWhite"
-                                            style={{ textDecoration: 'none' }}
-                                        >
-                                            <i className="fa-solid fa-paperclip me-1"></i> View Attachment
-                                        </a>
-                                    </div>
-                                )}
+                        <div className="modal-body p-4">
+                            <div className="d-flex align-items-center mb-4 pb-3 border-bottom">
+                                <div className="bg-danger bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i className="fa-solid fa-triangle-exclamation text-danger fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 className="mb-0 fw-bold text-dark">Reviewer's Feedback</h6>
+                                    <small className="text-secondary">Please correct these issues and re-submit for review.</small>
+                                </div>
                             </div>
-                            <div className="correction-btn text-center mt-4 mb-2">
-                                <Link to={`/edit-release/${selectedRelease?.id || selectedRelease?._id}`} className="btn px-4 py-2 bgPurple clWhite" style={{ borderRadius: '4px' }} data-bs-dismiss="modal">
-                                    Make Correction
-                                </Link>
+
+                            <div className="row g-3 mb-4">
+                                <div className="col-12">
+                                    <div className="p-3 bg-light rounded-3 border-start border-4 border-purple" style={{ borderLeftColor: '#6f42c1' }}>
+                                        <div className="d-flex justify-content-between align-items-center mb-1">
+                                            <span className="text-secondary fw-semibold" style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Release Title</span>
+                                            <i className="fa-solid fa-music text-secondary opacity-50" style={{ fontSize: '12px' }}></i>
+                                        </div>
+                                        <div className="clPurple fw-bold fs-5">{selectedRelease?.release_title}</div>
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <div className="p-3 bg-white border rounded-3 h-100 shadow-sm transition-all hover-shadow">
+                                        <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '11px', textTransform: 'uppercase' }}>Rejection Type</span>
+                                        <span className="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">
+                                            {selectedRelease?.rejection_type}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <div className="p-3 bg-white border rounded-3 h-100 shadow-sm transition-all hover-shadow">
+                                        <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: '11px', textTransform: 'uppercase' }}>Associated File</span>
+                                        {selectedRelease?.rejection_file ? (
+                                            <a href={selectedRelease.rejection_file} target="_blank" rel="noreferrer" className="clPurple text-decoration-none d-flex align-items-center gap-1 fw-medium mt-1" style={{ fontSize: '13px' }}>
+                                                <i className="fa-solid fa-file-pdf"></i> View Attachment
+                                            </a>
+                                        ) : (
+                                            <span className="text-muted italic mt-1 d-block" style={{ fontSize: '13px' }}>No attachment found</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="fw-bold text-dark d-block mb-2" style={{ fontSize: '14px' }}>
+                                    <i className="fa-solid fa-comment-dots me-2 clPurple"></i>Detailed Reason:
+                                </label>
+                                <div className="p-4 bg-light rounded-4 border-0" style={{ minHeight: '100px', backgroundColor: '#f9f9fb', border: '1px dashed #ced4da' }}>
+                                    <p className="mb-0 text-dark" style={{ fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                                        {selectedRelease?.rejection_reason || selectedRelease?.admin_remarks || "No detailed reason provided. Please review your metadata and audio files carefully."}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

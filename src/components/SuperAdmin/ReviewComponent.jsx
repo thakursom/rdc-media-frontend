@@ -7,8 +7,6 @@ import { Link } from "react-router-dom";
 
 function ReviewComponent() {
     const [releases, setReleases] = useState([]);
-    console.log("releases", releases);
-
     const [labels, setLabels] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");

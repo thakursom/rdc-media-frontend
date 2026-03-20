@@ -238,7 +238,7 @@ function ManageCountryComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">{modalType === 'add' ? 'Add New Country' : 'Edit Country'}</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i className="fa-solid fa-xmark"></i></button>
                             </div>
                             <form onSubmit={formik.handleSubmit}>
                                 <div className="modal-body">
@@ -292,7 +292,7 @@ function ManageCountryComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}><i class="fa-solid fa-xmark"></i></button>
+                                <button type="button" className="btn-close" onClick={handleCloseModal}><i className="fa-solid fa-xmark"></i></button>
                             </div>
                             <div className="modal-body">
                                 <p>Are you sure you want to delete the country <strong>{selectedCountry?.countryName}</strong>?</p>
