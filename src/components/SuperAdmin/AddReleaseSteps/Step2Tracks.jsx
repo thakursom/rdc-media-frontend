@@ -22,6 +22,7 @@ const Step2Tracks = ({
     const [isActuallyPlaying, setIsActuallyPlaying] = React.useState(false);
     const [playbackProgress, setPlaybackProgress] = React.useState(0);
     const audioRef = React.useRef(new Audio());
+    const trackIndex = editingTrackId ? form.tracks.findIndex(t => t.id === editingTrackId) : -1;
 
     React.useEffect(() => {
         const audio = audioRef.current;
@@ -799,14 +800,17 @@ const Step2Tracks = ({
 
                                                     {/* Composer */}
                                                     <div className="mb-3">
-                                                        <label className="form-label fw-bold">Composer</label>
+                                                        <label className="form-label fw-bold required">Composer</label>
                                                         <input
                                                             type="text"
                                                             className="form-control mb-2"
-                                                            placeholder="Name"
+                                                            placeholder="Enter full name"
                                                             value={tempTrack.composer || ''}
                                                             onChange={e => setTempTrack(prev => ({ ...prev, composer: e.target.value }))}
                                                         />
+                                                        {trackIndex !== -1 && errors[`tracks[${trackIndex}].composer`] && (
+                                                            <div className="text-danger small mt-1">{errors[`tracks[${trackIndex}].composer`]}</div>
+                                                        )}
                                                     </div>
 
                                                     {/* Producer */}
@@ -815,7 +819,7 @@ const Step2Tracks = ({
                                                         <input
                                                             type="text"
                                                             className="form-control mb-2"
-                                                            placeholder="Name"
+                                                            placeholder="Enter full name"
                                                             value={tempTrack.producer || ''}
                                                             onChange={e => setTempTrack(prev => ({ ...prev, producer: e.target.value }))}
                                                         />
@@ -823,14 +827,17 @@ const Step2Tracks = ({
 
                                                     {/* Lyricist */}
                                                     <div className="mb-3">
-                                                        <label className="form-label fw-bold">Lyricist</label>
+                                                        <label className={`form-label fw-bold ${!form.isInstrumental ? 'required' : ''}`}>Lyricist</label>
                                                         <input
                                                             type="text"
                                                             className="form-control mb-2"
-                                                            placeholder="Name"
+                                                            placeholder="Enter full name"
                                                             value={tempTrack.lyricist || ''}
                                                             onChange={e => setTempTrack(prev => ({ ...prev, lyricist: e.target.value }))}
                                                         />
+                                                        {trackIndex !== -1 && errors[`tracks[${trackIndex}].lyricist`] && (
+                                                            <div className="text-danger small mt-1">{errors[`tracks[${trackIndex}].lyricist`]}</div>
+                                                        )}
                                                     </div>
 
                                                 </div>

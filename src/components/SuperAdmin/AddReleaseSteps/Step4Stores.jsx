@@ -56,16 +56,18 @@ const Step4Stores = ({ form, update, errors, showError, stores }) => {
 
                         <div className="mt-4">
                             <label>Future and Upcoming Stores</label>
-                            <div className="btn-group castBtnSet">
+                            <div className="btn-group castBtnSet d-flex" style={{ maxWidth: '300px' }}>
                                 <button
-                                    className={`btn ${form.futureStores === 'Yes' ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    className={`btn flex-fill ${form.futureStores === 'Yes' ? 'bgPurple clWhite' : 'btn-outline-secondary'}`}
                                     onClick={() => update('futureStores', 'Yes')}
+                                    style={{ height: '40px' }}
                                 >
                                     Yes, send me updates
                                 </button>
                                 <button
-                                    className={`btn ${form.futureStores === 'No' ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    className={`btn flex-fill ${form.futureStores === 'No' ? 'bgPurple clWhite' : 'btn-outline-secondary'}`}
                                     onClick={() => update('futureStores', 'No')}
+                                    style={{ height: '40px' }}
                                 >
                                     No
                                 </button>

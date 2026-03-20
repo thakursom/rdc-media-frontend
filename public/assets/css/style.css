@@ -57,6 +57,10 @@
     color: var(--clPurple) !important;
 }
 
+.border-purple {
+    border-color: var(--bgPurple) !important;
+}
+
 .bgGreen {
     background: var(--bgGreen) !important;
 }

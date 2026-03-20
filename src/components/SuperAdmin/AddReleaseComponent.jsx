@@ -28,7 +28,7 @@ function AddReleaseComponent() {
         productionYear: currentYear,
         productionHolder: '',
         label: 0,
-        releaseArtists: [''],
+        releaseArtists: [],
         isFirstRelease: null,
         isVariousArtists: false,
         artworkFile: null,
@@ -56,6 +56,7 @@ function AddReleaseComponent() {
         pricing: '',
         selectedStores: [], // Array of store IDs
         futureStores: 'Yes',
+        countryRestrictionsList: [],
     });
 
     const [modalType, setModalType] = useState(null);
@@ -69,6 +70,7 @@ function AddReleaseComponent() {
     const [stores, setStores] = useState([]);
     const [editingTrackId, setEditingTrackId] = useState(null);
     const [tempTrack, setTempTrack] = useState(null);
+    const [countries, setCountries] = useState([]);
 
     const step1Schema = Yup.object({
         title: Yup.string().trim().required("Title is required"),
@@ -101,11 +103,17 @@ function AddReleaseComponent() {
     });
 
     const step2Schema = Yup.object({
-        // tracks: Yup.array().min(1, "At least one track is required").required("Tracks are required"),
-        // explicitConfirmation: Yup.boolean().oneOf(["Yes", "No"], "Please select an option"),
-        // ownRightsConfirmation: Yup.boolean().oneOf(["Yes", "No"], "Please select an option"),
-        // noOtherArtistName: Yup.boolean().oneOf(["Yes", "No"], "Please select an option"),
-        // noOtherAlbumTitle: Yup.boolean().oneOf(["Yes", "No"], "Please select an option")
+        tracks: Yup.array().of(
+            Yup.object().shape({
+                title: Yup.string().required("Track title is required"),
+                composer: Yup.string().trim().required("Composer is required"),
+                lyricist: Yup.string().trim().when('$isInstrumental', {
+                    is: false,
+                    then: (schema) => schema.required("Lyricist is required"),
+                    otherwise: (schema) => schema.nullable(),
+                })
+            })
+        ).min(1, "At least one track is required")
     });
 
     const step3Schema = Yup.object().shape({
@@ -170,7 +178,7 @@ function AddReleaseComponent() {
         }
 
         try {
-            await schema.validate(form, { abortEarly: false });
+            await schema.validate(form, { abortEarly: false, context: { isInstrumental: form.isInstrumental } });
             setValidationErrors({});
             if (step < 5) setStep(step + 1);
         } catch (err) {
@@ -222,12 +230,27 @@ function AddReleaseComponent() {
 
             // Fetch Languages
             const langRes = await apiRequest("/languages", "GET", null, true);
-            if (langRes.success) setLanguages(langRes?.data?.data || []);
+            if (langRes.success) {
+                const langs = langRes?.data?.data || [];
+                setLanguages(langs);
+                // Auto-select English if no language is already chosen
+                setForm(prev => {
+                    if (prev.language) return prev; // already set (e.g. edit mode)
+                    const english = langs.find(l => l.name.toLowerCase() === 'english');
+                    return english ? { ...prev, language: english._id } : prev;
+                });
+            }
 
             // Fetch Stores
             const storeRes = await apiRequest("/release-dsps", "GET", null, true);
             if (storeRes.success && storeRes.data && storeRes.data.data) {
                 setStores(storeRes.data.data);
+            }
+
+            // Fetch Countries
+            const countryRes = await apiRequest("/countries?limit=1000", "GET", null, true);
+            if (countryRes.success) {
+                setCountries(countryRes?.data?.data || []);
             }
 
         } catch (err) {
@@ -239,6 +262,21 @@ function AddReleaseComponent() {
     useEffect(() => {
         fetchData();
     }, [step]);
+
+    // Re-fetch artists when user returns to this tab (e.g. after adding artist in new tab)
+    useEffect(() => {
+        const refreshArtists = async () => {
+            try {
+                const artistRes = await apiRequest("/release-artists", "GET", null, true);
+                if (artistRes.success) setArtists(artistRes?.data?.artists || []);
+            } catch (err) {
+                // silently ignore
+            }
+        };
+
+        window.addEventListener('focus', refreshArtists);
+        return () => window.removeEventListener('focus', refreshArtists);
+    }, []);
 
     // Fetch single release data if id exists (Edit mode)
     useEffect(() => {
@@ -260,6 +298,7 @@ function AddReleaseComponent() {
                         releaseArtists: Array.isArray(release.display_artist) ? release.display_artist : [release.display_artist || ''],
                         isFirstRelease: release.is_first !== undefined ? !!release.is_first : (release.is_first_release !== undefined ? !!release.is_first_release : null),
                         isVariousArtists: !!(release.is_various !== undefined ? release.is_various : release.is_various_artists),
+                        isInstrumental: !!release.is_instrumental,
                         artworkPreview: release.artwork_path || null,
                         artworkFile: null,
                         primaryGenre: release.genre_id || '',
@@ -310,6 +349,7 @@ function AddReleaseComponent() {
                         priorityDistribution: !!(release.is_priority),
                         releaseTime: release.release_time || '00:00',
                         countryRestrictions: release.country_restrictions || 'No',
+                        countryRestrictionsList: Array.isArray(release.country_restrictions_list) ? release.country_restrictions_list : [],
                         previouslyReleased: release.previously_released || 'No',
                         chartRegistration: release.chart_registration || [],
                         pricing: release.pricing || '',
@@ -347,7 +387,24 @@ function AddReleaseComponent() {
         fetchSubGenres();
     }, [form.primaryGenre]);
 
-    const handleArtworkUpload = (file) => {
+    // Helper: check file magic bytes to confirm it is a real JPEG or PNG
+    const checkImageMagicBytes = (file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            const bytes = new Uint8Array(e.target.result);
+            // JPEG: FF D8 FF
+            const isJpeg = bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF;
+            // PNG: 89 50 4E 47 0D 0A 1A 0A
+            const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47
+                && bytes[4] === 0x0D && bytes[5] === 0x0A && bytes[6] === 0x1A && bytes[7] === 0x0A;
+            resolve(isJpeg || isPng);
+        };
+        reader.onerror = () => resolve(false);
+        // Read only the first 8 bytes
+        reader.readAsArrayBuffer(file.slice(0, 8));
+    });
+
+    const handleArtworkUpload = async (file) => {
         if (!file) return;
 
         setValidationErrors(prev => {
@@ -356,11 +413,20 @@ function AddReleaseComponent() {
             return next;
         });
 
-        if (!file.type.match(/image\/jpe?g/)) {
-            toast.error("Only JPG or JPEG files allowed");
+        // 1. Magic-byte check (catches renamed files)
+        const isRealImage = await checkImageMagicBytes(file);
+        if (!isRealImage) {
+            toast.error("Invalid file: only real JPEG or PNG images are accepted.");
             return;
         }
 
+        // 2. MIME type check
+        if (!file.type.match(/image\/jpe?g/) && !file.type.match(/image\/png/)) {
+            toast.error("Only JPG, JPEG, or PNG image files are allowed");
+            return;
+        }
+
+        // 3. File size check
         if (file.size > 10 * 1024 * 1024) {
             toast.error("File must be smaller than 10MB");
             return;
@@ -380,6 +446,25 @@ function AddReleaseComponent() {
         img.src = previewUrl;
     };
 
+
+
+    // Helper: verify audio magic bytes — MP3 or WAV only
+    const checkAudioMagicBytes = (file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            const b = new Uint8Array(e.target.result);
+            // MP3 with ID3 tag: 49 44 33 ("ID3")
+            const isMP3_ID3 = b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33;
+            // MP3 raw frame sync: FF FB | FF F3 | FF F2
+            const isMP3_Raw = b[0] === 0xFF && (b[1] === 0xFB || b[1] === 0xF3 || b[1] === 0xF2);
+            // WAV: "RIFF" at 0-3 and "WAVE" at 8-11
+            const isWAV = b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46
+                && b[8] === 0x57 && b[9] === 0x41 && b[10] === 0x56 && b[11] === 0x45;
+            resolve(isMP3_ID3 || isMP3_Raw || isWAV);
+        };
+        reader.onerror = () => resolve(false);
+        reader.readAsArrayBuffer(file.slice(0, 12));
+    });
 
     const handleTrackUpload = async (files) => {
         if (!files || files.length === 0) return;
@@ -401,6 +486,14 @@ function AddReleaseComponent() {
 
         for (const file of fileArray) {
 
+            // 1. Magic-byte check (catches renamed non-audio files)
+            const isRealAudio = await checkAudioMagicBytes(file);
+            if (!isRealAudio) {
+                errors.push(`${file.name}: invalid file — only real MP3 or WAV audio is accepted.`);
+                continue;
+            }
+
+            // 2. MIME type check
             const isValidFormat = file.type === 'audio/wav' || file.type === 'audio/mpeg';
             if (!isValidFormat) {
                 errors.push(`${file.name}: only .wav or .mp3 allowed (.wav preferred)`);
@@ -414,9 +507,11 @@ function AddReleaseComponent() {
 
 
             const duration = await getDuration(file);
+            const trackId = `track-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            const releaseArtists = (form.releaseArtists || []).filter(a => a?.trim());
 
             const newTrack = {
-                id: `track-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                id: trackId,
                 file,
                 name: file.name,
                 size: file.size,
@@ -424,16 +519,16 @@ function AddReleaseComponent() {
                 duration,
                 status: "uploading",
                 progress: 0,
-                title: file.name.replace(/\.[^/.]+$/, ""),
+                title: form.title || file.name.replace(/\.[^/.]+$/, ""),
                 version: "",
-                artists: [],
+                artists: [...releaseArtists], // copy release artists
                 isrc: "",
                 explicit: false,
                 previewStart: 0,
-                copyrightYear: "",
-                copyrightHolder: "",
-                productionYear: "",
-                productionHolder: "",
+                copyrightYear: currentYear,
+                copyrightHolder: form.copyrightHolder || "",
+                productionYear: currentYear,
+                productionHolder: form.productionHolder || "",
             };
 
             setForm(prev => ({ ...prev, tracks: [...prev.tracks, newTrack] }));
@@ -447,14 +542,14 @@ function AddReleaseComponent() {
                     setForm(prev => ({
                         ...prev,
                         tracks: prev.tracks.map(t =>
-                            t.id === newTrack.id ? { ...t, status: "ready", progress: 100 } : t
+                            t.id === trackId ? { ...t, status: "ready", progress: 100 } : t
                         )
                     }));
                 } else {
                     setForm(prev => ({
                         ...prev,
                         tracks: prev.tracks.map(t =>
-                            t.id === newTrack.id ? { ...t, progress: Math.min(100, progress) } : t
+                            t.id === trackId ? { ...t, progress: Math.min(100, progress) } : t
                         )
                     }));
                 }
@@ -573,6 +668,9 @@ function AddReleaseComponent() {
                 p_line: form.productionHolder?.trim() || "",
                 label_id: form.label,
                 display_artist: form.releaseArtists,
+                country_restrictions: form.countryRestrictions,
+                country_restrictions_list: form.countryRestrictionsList,
+                is_instrumental: form.isInstrumental ? 1 : 0,
                 is_first: form.isFirstRelease,
                 is_various: form.isVariousArtists,
                 genre_id: form.primaryGenre,
@@ -596,56 +694,7 @@ function AddReleaseComponent() {
 
             if (result.success) {
                 toast.success(id ? "Release updated successfully!" : "Release created successfully!");
-
-                if (!id) {
-                    setStep(1);
-                    setForm({
-                        title: '',
-                        copyrightYear: '',
-                        copyrightHolder: '',
-                        productionYear: '',
-                        productionHolder: '',
-                        label: '',
-                        releaseArtists: [''],
-                        isFirstRelease: null,
-                        isVariousArtists: false,
-                        artworkFile: null,
-                        artworkPreview: null,
-                        primaryGenre: '',
-                        secondaryGenre: '',
-                        language: '',
-                        upcMode: 'Auto',
-                        isrcMode: 'Auto',
-                        upc: '',
-                        isrc: '',
-                        tracks: [],
-                        copyrightDocs: null,
-                        explicitConfirmation: false,
-                        ownRightsConfirmation: false,
-                        noOtherArtistName: false,
-                        noOtherAlbumTitle: false,
-                        hasCopyrightDocs: false,
-                        releaseDate: '',
-                        priorityDistribution: false,
-                        releaseTime: '',
-                        countryRestrictions: '',
-                        previouslyReleased: '',
-                        chartRegistration: [],
-                        pricing: '',
-                        selectedStores: [],
-                        futureStores: '',
-                    });
-
-                    if (form.artworkPreview) {
-                        URL.revokeObjectURL(form.artworkPreview);
-                    }
-                } else {
-                    // If editing, navigate back to from or default
-                    if (from) {
-                        navigate(from);
-                    }
-                }
-
+                navigate("/review");
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 toast.error(result?.data?.message || `Failed to ${id ? 'update' : 'create'} release`);
@@ -790,6 +839,7 @@ function AddReleaseComponent() {
                             setModalInput={setModalInput}
                             showError={showError}
                             handleArtworkUpload={handleArtworkUpload}
+                            isEdit={!!id}
                         />
                         {/* Navigation */}
                         <div className="d-flex justify-content-between mt-5 px-5">
@@ -834,6 +884,7 @@ function AddReleaseComponent() {
                             form={form}
                             update={update}
                             showError={showError}
+                            countries={countries}
                         />
                         <div className="d-flex justify-content-between mt-5 px-5">
                             <button className="mainBtn bgGray clWhite" onClick={back}>
@@ -877,6 +928,7 @@ function AddReleaseComponent() {
                             subGenres={subGenres}
                             languages={languages}
                             stores={stores}
+                            countries={countries}
                         />
                     </>
                 )}

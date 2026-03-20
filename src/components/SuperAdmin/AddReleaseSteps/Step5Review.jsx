@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores }) => {
+    console.log("form", form);
     // Helper to find name by ID
     const getLanguageName = (id) => {
         const lang = languages?.find(l => l._id == id);
@@ -87,6 +88,15 @@ const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores 
                                     <tr>
                                         <th>Stores</th>
                                         <td>{getStoreNames(form.selectedStores)}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Country Restrictions</th>
+                                        <td>
+                                            {form.countryRestrictions === 'Yes'
+                                                ? `${form.countryRestrictionsList?.length || 0} countries restricted: ${form.countryRestrictionsList?.join(', ') || 'None selected'}`
+                                                : 'No restrictions'
+                                            }
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
