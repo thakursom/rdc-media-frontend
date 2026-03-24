@@ -7,7 +7,7 @@ const LabelSearchSelect = ({ labels = [], value, onChange }) => {
     const wrapperRef = useRef(null);
     const inputRef = useRef(null);
 
-    const selectedLabel = labels.find(l => l._id === value);
+    const selectedLabel = labels.find(l => l._id == value);
 
     // Only show dropdown when user has typed something
     const showDropdown = focused && inputVal.trim() !== '';
@@ -92,13 +92,13 @@ const LabelSearchSelect = ({ labels = [], value, onChange }) => {
                                 className="px-3 py-2"
                                 style={{
                                     cursor: 'pointer',
-                                    background: label._id === value ? '#f0e6ff' : 'transparent',
-                                    fontWeight: label._id === value ? 600 : 400,
+                                    background: label._id == value ? '#f0e6ff' : 'transparent',
+                                    fontWeight: label._id == value ? 600 : 400,
                                     fontSize: '0.9rem',
                                 }}
                                 onMouseDown={() => handleSelect(label)}
                                 onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
-                                onMouseLeave={e => e.currentTarget.style.background = label._id === value ? '#f0e6ff' : 'transparent'}
+                                onMouseLeave={e => e.currentTarget.style.background = label._id == value ? '#f0e6ff' : 'transparent'}
                             >
                                 {label.name}
                             </div>
@@ -218,10 +218,10 @@ const GenreSearchSelect = ({ genres = [], value, onChange }) => {
     const [focused, setFocused] = useState(false);
     const wrapperRef = useRef(null);
 
-    const selectedGenre = genres.find(g => g._id === value);
+    const selectedGenre = genres.find(g => g._id == value);
     const showDropdown = focused && inputVal.trim() !== '';
     const filtered = showDropdown
-        ? genres.filter(g => g.title.toLowerCase().includes(inputVal.toLowerCase()))
+        ? genres.filter(g => g.title?.toLowerCase().includes(inputVal.toLowerCase()))
         : [];
 
     useEffect(() => {
@@ -277,7 +277,7 @@ const GenreSearchSelect = ({ genres = [], value, onChange }) => {
                                 style={{ cursor: 'pointer', background: g._id === value ? '#f0e6ff' : 'transparent', fontWeight: g._id === value ? 600 : 400, fontSize: '0.9rem' }}
                                 onMouseDown={() => handleSelect(g)}
                                 onMouseEnter={e => e.currentTarget.style.background = '#f8f9fa'}
-                                onMouseLeave={e => e.currentTarget.style.background = g._id === value ? '#f0e6ff' : 'transparent'}
+                                onMouseLeave={e => e.currentTarget.style.background = g._id == value ? '#f0e6ff' : 'transparent'}
                             >
                                 {g.title}
                             </div>

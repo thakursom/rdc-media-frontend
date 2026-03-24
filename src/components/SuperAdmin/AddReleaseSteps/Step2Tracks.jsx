@@ -705,13 +705,13 @@ const Step2Tracks = ({
                                                     <label className="form-label fw-bold">Do you want to add lyrics?</label>
                                                     <div className="btn-group castBtnSet">
                                                         <button
-                                                            className={`btn ${tempTrack.addLyrics ? 'btn-primary ' : 'btn-outline-primary'}`}
+                                                            className={`btn ${tempTrack.addLyrics ? 'bgPurple clWhite' : 'btn-outline-secondary'}`}
                                                             onClick={() => setTempTrack(prev => ({ ...prev, addLyrics: true }))}
                                                         >
                                                             Yes
                                                         </button>
                                                         <button
-                                                            className={`btn ${!tempTrack.addLyrics ? 'btn-primary ' : 'btn-outline-primary'}`}
+                                                            className={`btn ${!tempTrack.addLyrics ? 'bgPurple clWhite' : 'btn-outline-secondary'}`}
                                                             onClick={() => setTempTrack(prev => ({ ...prev, addLyrics: false, lyrics: '', lyricsFile: null }))}
                                                         >
                                                             No
@@ -769,6 +769,7 @@ const Step2Tracks = ({
                                                             type="radio"
                                                             name="explicit"
                                                             id="explicitYes"
+                                                            style={{ accentColor: 'var(--bgPurple)' }}
                                                             checked={tempTrack.explicit}
                                                             onChange={() => setTempTrack(prev => ({ ...prev, explicit: true }))}
                                                         />
@@ -782,6 +783,7 @@ const Step2Tracks = ({
                                                             type="radio"
                                                             name="explicit"
                                                             id="explicitNo"
+                                                            style={{ accentColor: 'var(--bgPurple)' }}
                                                             checked={!tempTrack.explicit}
                                                             onChange={() => setTempTrack(prev => ({ ...prev, explicit: false }))}
                                                         />
@@ -883,6 +885,7 @@ const Step2Tracks = ({
                                             id="explicitConfirmation"
                                             checked={form.explicitConfirmation}
                                             onChange={() => update('explicitConfirmation', !form.explicitConfirmation)}
+                                            disabled={form.tracks.length === 0}
                                         />
                                         <label className="form-check-label" htmlFor="explicitConfirmation">
                                             I marked my release as explicit if it contains words or obscenities
@@ -898,6 +901,7 @@ const Step2Tracks = ({
                                             id="ownRightsConfirmation"
                                             checked={form.ownRightsConfirmation}
                                             onChange={() => update('ownRightsConfirmation', !form.ownRightsConfirmation)}
+                                            disabled={form.tracks.length === 0}
                                         />
                                         <label className="form-check-label" htmlFor="ownRightsConfirmation">
                                             I am authorized to distribute this music to stores and territories I select
@@ -913,6 +917,7 @@ const Step2Tracks = ({
                                             id="noOtherArtistName"
                                             checked={form.noOtherArtistName}
                                             onChange={() => update('noOtherArtistName', !form.noOtherArtistName)}
+                                            disabled={form.tracks.length === 0}
                                         />
                                         <label className="form-check-label" htmlFor="noOtherArtistName">
                                             I confirm that I am not using another artist's name
@@ -928,6 +933,7 @@ const Step2Tracks = ({
                                             id="noOtherAlbumTitle"
                                             checked={form.noOtherAlbumTitle}
                                             onChange={() => update('noOtherAlbumTitle', !form.noOtherAlbumTitle)}
+                                            disabled={form.tracks.length === 0}
                                         />
                                         <label className="form-check-label" htmlFor="noOtherAlbumTitle">
                                             I confirm that I am not using another album title

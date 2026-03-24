@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { apiRequest } from "../../services/api";
 import { toast } from "react-toastify";
@@ -53,6 +53,8 @@ function AddReleaseComponent() {
         countryRestrictions: 'No',
         previouslyReleased: 'No',
         chartRegistration: [],
+        catalogueNo: '',
+        parentalWarning: '0',
         pricing: '',
         selectedStores: [], // Array of store IDs
         futureStores: 'Yes',
@@ -71,6 +73,8 @@ function AddReleaseComponent() {
     const [editingTrackId, setEditingTrackId] = useState(null);
     const [tempTrack, setTempTrack] = useState(null);
     const [countries, setCountries] = useState([]);
+    const [releaseStatus, setReleaseStatus] = useState(null);
+    const initialFormRef = useRef(null); // snapshot of form when edit data was loaded
 
     const step1Schema = Yup.object({
         title: Yup.string().trim().required("Title is required"),
@@ -105,15 +109,23 @@ function AddReleaseComponent() {
     const step2Schema = Yup.object({
         tracks: Yup.array().of(
             Yup.object().shape({
-                title: Yup.string().required("Track title is required"),
-                composer: Yup.string().trim().required("Composer is required"),
-                lyricist: Yup.string().trim().when('$isInstrumental', {
-                    is: false,
+                title: Yup.string().when(['file', 'audio_path'], {
+                    is: (f, ap) => !!(f || ap),
+                    then: (s) => s.required("Track title is required"),
+                    otherwise: (s) => s.nullable()
+                }),
+                composer: Yup.string().trim().when(['file', 'audio_path'], {
+                    is: (f, ap) => !!(f || ap),
+                    then: (s) => s.required("Composer is required"),
+                    otherwise: (s) => s.nullable()
+                }),
+                lyricist: Yup.string().trim().when(['$isInstrumental', 'file', 'audio_path'], {
+                    is: (isInst, f, ap) => (!isInst && (f || ap)),
                     then: (schema) => schema.required("Lyricist is required"),
                     otherwise: (schema) => schema.nullable(),
                 })
             })
-        ).min(1, "At least one track is required")
+        ).nullable()
     });
 
     const step3Schema = Yup.object().shape({
@@ -213,8 +225,6 @@ function AddReleaseComponent() {
     ];
 
     const fetchData = async () => {
-        if (step !== 1 && step !== 5) return;
-
         try {
             // Fetch Artists
             const artistRes = await apiRequest("/release-artists", "GET", null, true);
@@ -287,23 +297,23 @@ function AddReleaseComponent() {
                 const response = await apiRequest(`/releases/${id}`, "GET", null, true);
                 if (response.success && response.data?.data) {
                     const release = response.data.data;
-                    setForm({
+                    const loadedForm = {
                         title: release.title || '',
                         releaseType: release.release_type || 1,
                         copyrightYear: release.c_line_year || currentYear,
                         copyrightHolder: release.c_line || '',
                         productionYear: release.p_line_year || currentYear,
                         productionHolder: release.p_line || '',
-                        label: release.label_id || 0,
+                        label: release.label_id?._id || release.label_id || 0,
                         releaseArtists: Array.isArray(release.display_artist) ? release.display_artist : [release.display_artist || ''],
                         isFirstRelease: release.is_first !== undefined ? !!release.is_first : (release.is_first_release !== undefined ? !!release.is_first_release : null),
                         isVariousArtists: !!(release.is_various !== undefined ? release.is_various : release.is_various_artists),
                         isInstrumental: !!release.is_instrumental,
                         artworkPreview: release.artwork_path || null,
                         artworkFile: null,
-                        primaryGenre: release.genre_id || '',
-                        secondaryGenre: release.subgenre_id || '',
-                        language: release.language_id || '',
+                        primaryGenre: release.genre_id?._id || release.genre_id || '',
+                        secondaryGenre: release.subgenre_id?._id || release.subgenre_id || '',
+                        language: release.language_id?._id || release.language_id || '',
                         upcMode: release.upc_number ? 'Manual' : 'Auto',
                         upc: release.upc_number || '',
                         isrcMode: release.isrc ? 'Manual' : 'Auto',
@@ -340,10 +350,11 @@ function AddReleaseComponent() {
                             };
                         }),
                         copyrightDocs: null,
-                        explicitConfirmation: true,
-                        ownRightsConfirmation: true,
-                        noOtherArtistName: true,
-                        noOtherAlbumTitle: true,
+                        // Confirmation flags (hydrated from first track, default to false if not found)
+                        explicitConfirmation: release.tracks?.[0]?.explicitConfirmation !== undefined ? !!Number(release.tracks[0].explicitConfirmation) : false,
+                        ownRightsConfirmation: release.tracks?.[0]?.ownRightsConfirmation !== undefined ? !!Number(release.tracks[0].ownRightsConfirmation) : false,
+                        noOtherArtistName: release.tracks?.[0]?.noOtherArtistName !== undefined ? !!Number(release.tracks[0].noOtherArtistName) : false,
+                        noOtherAlbumTitle: release.tracks?.[0]?.noOtherAlbumTitle !== undefined ? !!Number(release.tracks[0].noOtherAlbumTitle) : false,
                         hasCopyrightDocs: !!release.copyright_docs,
                         releaseDate: release.release_date ? new Date(release.release_date).toISOString().split('T')[0] : '',
                         priorityDistribution: !!(release.is_priority),
@@ -352,10 +363,15 @@ function AddReleaseComponent() {
                         countryRestrictionsList: Array.isArray(release.country_restrictions_list) ? release.country_restrictions_list : [],
                         previouslyReleased: release.previously_released || 'No',
                         chartRegistration: release.chart_registration || [],
+                        catalogueNo: release.catalogue_number || '',
+                        parentalWarning: release.parental_warning_type || '0',
                         pricing: release.pricing || '',
                         selectedStores: Array.isArray(release.store_ids) ? release.store_ids : [],
                         futureStores: release.future_stores || 'Yes',
-                    });
+                    };
+                    setForm(loadedForm);
+                    setReleaseStatus(release.status);
+                    initialFormRef.current = JSON.stringify(loadedForm); // snapshot for dirty check
                 }
             } catch (err) {
                 console.error("Failed to fetch release data:", err);
@@ -564,7 +580,18 @@ function AddReleaseComponent() {
 
     const removeTrack = (index) => {
         const updatedTracks = form.tracks.filter((_, i) => i !== index);
-        update('tracks', updatedTracks);
+        
+        let newForm = { ...form, tracks: updatedTracks };
+        
+        // If no tracks left, reset confirmation flags
+        if (updatedTracks.length === 0) {
+            newForm.explicitConfirmation = false;
+            newForm.ownRightsConfirmation = false;
+            newForm.noOtherArtistName = false;
+            newForm.noOtherAlbumTitle = false;
+        }
+        
+        setForm(newForm);
     };
 
     const handleCopyrightUpload = (file) => {
@@ -613,6 +640,26 @@ function AddReleaseComponent() {
                 return;
             }
 
+            // If editing: skip API call if nothing changed
+            if (id && initialFormRef.current) {
+                // Skip the "no changes" check if it's a Saved (0) or Rejected (3) release
+                if (releaseStatus !== 0 && releaseStatus !== 3) {
+                    const currentSnapshot = JSON.stringify({
+                        ...form,
+                        artworkFile: undefined,
+                        artworkPreview: undefined,
+                        tracks: form.tracks.map(t => ({ ...t, file: undefined, lyricsFile: undefined }))
+                    });
+                    const initialSnapshot = JSON.stringify(JSON.parse(initialFormRef.current));
+                    const hasNewFiles = form.artworkFile || form.tracks.some(t => t.file || t.lyricsFile);
+                    if (currentSnapshot === initialSnapshot && !hasNewFiles) {
+                        toast.info("No changes detected. Nothing to update.");
+                        navigate(from || '/review');
+                        return;
+                    }
+                }
+            }
+
             const formData = new FormData();
 
             if (form.artworkFile) {
@@ -632,11 +679,15 @@ function AddReleaseComponent() {
                     isrc_number: track.isrcMode === 'Auto' ? null : (track.isrc?.trim() || null),
                     isrcMode: track.isrcMode || 'Auto',
                     explicit: track.explicit || false,
+                    explicitConfirmation: !!form.explicitConfirmation,
+                    ownRightsConfirmation: !!form.ownRightsConfirmation,
+                    noOtherArtistName: !!form.noOtherArtistName,
+                    noOtherAlbumTitle: !!form.noOtherAlbumTitle,
                     preview_start: track.previewStart || 0,
-                    c_line_year: track.copyrightYear || "",
-                    c_line: track.copyrightHolder?.trim() || "",
-                    p_line_year: track.productionYear || "",
-                    p_line: track.productionHolder?.trim() || "",
+                    c_line_year: track.copyrightYear || form.copyrightYear || "",
+                    c_line: track.copyrightHolder?.trim() || form.copyrightHolder?.trim() || "",
+                    p_line_year: track.productionYear || form.productionYear || "",
+                    p_line: track.productionHolder?.trim() || form.productionHolder?.trim() || "",
                     composer: track.composer?.trim() || "",
                     producer: track.producer?.trim() || "",
                     lyricist: track.lyricist?.trim() || "",
@@ -660,27 +711,47 @@ function AddReleaseComponent() {
             });
 
             const releaseData = {
-                ...form,
+                // Release details
+                title: form.title,
+                releaseType: form.releaseType,
                 release_type: form.releaseType,
-                c_line_year: form.copyrightYear,
-                c_line: form.copyrightHolder?.trim() || "",
-                p_line_year: form.productionYear,
-                p_line: form.productionHolder?.trim() || "",
-                label_id: form.label,
-                display_artist: form.releaseArtists,
-                country_restrictions: form.countryRestrictions,
-                country_restrictions_list: form.countryRestrictionsList,
-                is_instrumental: form.isInstrumental ? 1 : 0,
-                is_first: form.isFirstRelease,
-                is_various: form.isVariousArtists,
-                genre_id: form.primaryGenre,
-                subgenre_id: form.secondaryGenre,
-                language_id: form.language,
-                upc_number: form.upcMode === 'Auto' ? null : (form.upc?.trim() || null),
+                releaseDate: form.releaseDate,
+                releaseTime: form.releaseTime,
+                // Artists / Label
+                releaseArtists: form.releaseArtists,
+                label: form.label,
+                // Genres / Language
+                primaryGenre: form.primaryGenre,
+                secondaryGenre: form.secondaryGenre,
+                language: form.language,
+                // Copyright / Production
+                copyrightYear: form.copyrightYear,
+                copyrightHolder: form.copyrightHolder?.trim() || "",
+                productionYear: form.productionYear,
+                productionHolder: form.productionHolder?.trim() || "",
+                // UPC / ISRC
+                upcMode: form.upcMode,
+                upc: form.upcMode === 'Auto' ? null : (form.upc?.trim() || null),
+                isrcMode: form.isrcMode,
                 isrc: form.isrcMode === 'Auto' ? null : (form.isrc?.trim() || null),
-                artworkFile: undefined,
-                artworkPreview: undefined,
-                copyrightDocs: undefined,
+                // Flags
+                isFirstRelease: form.isFirstRelease,
+                isVariousArtists: form.isVariousArtists,
+                is_instrumental: form.isInstrumental ? 1 : 0,
+                // Country restrictions
+                countryRestrictions: form.countryRestrictions,
+                countryRestrictionsList: form.countryRestrictionsList,
+                // Stores / misc
+                selectedStores: form.selectedStores,
+                futureStores: form.futureStores,
+                previouslyReleased: form.previouslyReleased,
+                chartRegistration: form.chartRegistration,
+                catalogueNo: form.catalogueNo,
+                parentalWarning: form.parentalWarning,
+                pricing: form.pricing,
+                description: form.description,
+                priorityDistribution: form.priorityDistribution,
+                // Tracks
                 tracks: tracksWithFlags,
                 create_type: tracksWithFlags.length > 0 ? "Pending" : "Saved"
             };
@@ -797,9 +868,36 @@ function AddReleaseComponent() {
             uploadingTracks.length
         )
         : 0;
+    const getSnapshot = (f) => {
+        if (!f) return '';
+        const snapshot = { ...f };
+        // Remove transient/file fields
+        delete snapshot.artworkFile;
+        delete snapshot.artworkPreview;
+        delete snapshot.copyrightDocs;
+        if (snapshot.tracks) {
+            snapshot.tracks = snapshot.tracks.map(t => {
+                const sTrack = { ...t };
+                delete sTrack.file;
+                delete sTrack.lyricsFile;
+                delete sTrack.status;
+                delete sTrack.progress;
+                return sTrack;
+            });
+        }
+        return JSON.stringify(snapshot);
+    };
 
+    const isDirty = (() => {
+        if (!id || !initialFormRef.current) return true;
+        // If it's a Saved (0) or Rejected (3) release, always allow submission to complete it
+        if (releaseStatus === 0 || releaseStatus === 3) return true;
 
-
+        const currentSnapshot = getSnapshot(form);
+        const initialSnapshot = getSnapshot(JSON.parse(initialFormRef.current));
+        const hasNewFiles = !!(form.artworkFile || form.tracks.some(t => t.file || t.lyricsFile));
+        return currentSnapshot !== initialSnapshot || hasNewFiles;
+    })();
 
     return (
         <section className="right-sidebar" id="sidebarRight">
@@ -927,8 +1025,11 @@ function AddReleaseComponent() {
                             genres={genres}
                             subGenres={subGenres}
                             languages={languages}
+                            labels={labels}
                             stores={stores}
                             countries={countries}
+                            isDirty={isDirty}
+                            isEdit={!!id}
                         />
                     </>
                 )}

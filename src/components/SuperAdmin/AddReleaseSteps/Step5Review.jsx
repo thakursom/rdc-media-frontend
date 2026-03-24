@@ -1,29 +1,34 @@
 import React from 'react';
 
-const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores }) => {
+const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, labels, stores, countries, isDirty, isEdit }) => {
     console.log("form", form);
     // Helper to find name by ID
     const getLanguageName = (id) => {
-        const lang = languages?.find(l => l._id == id);
+        const lang = languages?.find(l => String(l._id).trim() == String(id).trim());
         return lang ? lang.name : id || '(not set)';
     };
 
     const getStoreNames = (selectedIds) => {
         if (!selectedIds || selectedIds.length === 0) return 'None selected';
         return selectedIds.map(id => {
-            const store = stores?.find(s => s._id === id);
+            const store = stores?.find(s => String(s._id).trim() == String(id).trim());
             return store ? store.name : id;
         }).join(', ');
     };
 
     const getGenreName = (id) => {
-        const g = genres?.find(g => g._id == id);
+        const g = genres?.find(g => String(g._id).trim() == String(id).trim());
         return g ? g.title : id || '(not set)';
     };
 
     const getSubGenreName = (id) => {
-        const sg = subGenres?.find(s => s._id == id);
+        const sg = subGenres?.find(s => String(s._id).trim() == String(id).trim());
         return sg ? sg.title : id || '-';
+    };
+
+    const getLabelName = (id) => {
+        const l = labels?.find(l => String(l._id).trim() == String(id).trim());
+        return l ? l.name : id || '(not set)';
     };
 
     return (
@@ -76,6 +81,10 @@ const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores 
                                     <tr>
                                         <th>Language</th>
                                         <td>{getLanguageName(form.language)}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Label</th>
+                                        <td>{getLabelName(form.label)}</td>
                                     </tr>
                                     <tr>
                                         <th>Primary Artist</th>
@@ -147,8 +156,14 @@ const Step5Review = ({ form, handleSubmit, genres, subGenres, languages, stores 
                     </div>
 
                     <div className="d-flex justify-content-end mt-5">
-                        <button className="mainBtn bgPurple clWhite" onClick={handleSubmit}>
-                            Complete Release
+                        <button
+                            className={`mainBtn ${(!isDirty && isEdit) ? 'bgGray' : 'bgPurple'} clWhite`}
+                            onClick={handleSubmit}
+                            disabled={!isDirty && isEdit}
+                            style={{ cursor: (!isDirty && isEdit) ? 'not-allowed' : 'pointer' }}
+                            title={(!isDirty && isEdit) ? "No changes detected" : ""}
+                        >
+                            {isEdit ? 'Update Release' : 'Complete Release'}
                         </button>
                     </div>
                 </div>
