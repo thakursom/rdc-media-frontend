@@ -17,6 +17,7 @@ function ReviewSingleReleaseComponent() {
     const [expandedTracks, setExpandedTracks] = useState([]);
 
     const [rejectData, setRejectData] = useState({ type: '', reason: '', file: null });
+    const [rejectErrors, setRejectErrors] = useState({});
     const [approveComment, setApproveComment] = useState('');
 
     // Promote (Track Event Assignment) State
@@ -83,10 +84,18 @@ function ReviewSingleReleaseComponent() {
     };
 
     const handleReject = async () => {
+        let errors = {};
+        if (!rejectData.type) {
+            errors.type = "Please select a rejection type";
+        }
         if (!rejectData.reason) {
-            toast.error("Please provide a reason for rejection");
+            errors.reason = "Please provide a reason for rejection";
+        }
+        if (Object.keys(errors).length > 0) {
+            setRejectErrors(errors);
             return;
         }
+        setRejectErrors({});
         setUpdating(true);
         try {
             const formData = new FormData();
@@ -406,12 +415,15 @@ function ReviewSingleReleaseComponent() {
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
-                                <label className="form-label text-dark" style={{ fontSize: '14px' }}>Rejection Type</label>
+                                <label className="form-label text-dark" style={{ fontSize: '14px' }}>Rejection Type <span className="text-danger">*</span></label>
                                 <select
                                     className="form-select"
                                     style={{ border: '1px solid #ddd', boxShadow: 'none' }}
                                     value={rejectData.type}
-                                    onChange={(e) => setRejectData({ ...rejectData, type: e.target.value })}
+                                    onChange={(e) => {
+                                        setRejectData({ ...rejectData, type: e.target.value });
+                                        if (rejectErrors.type) setRejectErrors({ ...rejectErrors, type: null });
+                                    }}
                                 >
                                     <option value="">Select a reason</option>
                                     <option value="Metadata Issue">Metadata Issue</option>
@@ -420,17 +432,22 @@ function ReviewSingleReleaseComponent() {
                                     <option value="Copyright Issue">Copyright Issue</option>
                                     <option value="Other">Other</option>
                                 </select>
+                                {rejectErrors.type && <div className="text-danger mt-1" style={{ fontSize: '13px' }}>{rejectErrors.type}</div>}
                             </div>
                             <div className="mb-3">
-                                <label className="form-label text-dark" style={{ fontSize: '14px' }}>Please provide the reason for rejection</label>
+                                <label className="form-label text-dark" style={{ fontSize: '14px' }}>Please provide the reason for rejection <span className="text-danger">*</span></label>
                                 <textarea
                                     className="form-control"
                                     rows="4"
                                     placeholder="Enter reason here..."
                                     style={{ border: '1px solid #ddd', resize: 'none', boxShadow: 'none' }}
                                     value={rejectData.reason}
-                                    onChange={(e) => setRejectData({ ...rejectData, reason: e.target.value })}
+                                    onChange={(e) => {
+                                        setRejectData({ ...rejectData, reason: e.target.value });
+                                        if (rejectErrors.reason) setRejectErrors({ ...rejectErrors, reason: null });
+                                    }}
                                 ></textarea>
+                                {rejectErrors.reason && <div className="text-danger mt-1" style={{ fontSize: '13px' }}>{rejectErrors.reason}</div>}
                             </div>
                             <div className="mb-4">
                                 <label className="form-label text-dark" style={{ fontSize: '14px' }}>Attach File (Image, PDF, or CSV)</label>

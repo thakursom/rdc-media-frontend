@@ -12,8 +12,8 @@ function AddNewsletterComponent() {
     const { id } = useParams();
     const isEdit = !!id;
     const [loading, setLoading] = useState(isEdit);
-    const [isUploading, setIsUploading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
     const editor = useRef(null);
@@ -39,16 +39,27 @@ function AddNewsletterComponent() {
         },
         validationSchema,
         onSubmit: async (values) => {
-            if (isUploading) {
-                toast.error("Please wait for the image to finish uploading.");
-                return;
-            }
-
             const endpoint = isEdit ? `/update-newsletter/${id}` : "/create-newsletter";
             const method = isEdit ? "PUT" : "POST";
 
+            const formData = new FormData();
+            formData.append('titleArtist', values.titleArtist);
+            formData.append('shortDescription', values.shortDescription);
+            formData.append('externalLink', values.externalLink || '');
+            formData.append('status', values.status);
+            formData.append('email', values.email || '');
+            
+            // If a new file was selected, append it
+            if (selectedFile) {
+                formData.append('newsletter_image', selectedFile);
+            } else {
+                // Keep existing image info for edits if no new file
+                formData.append('image', values.image);
+                formData.append('image_url', values.image_url);
+            }
+
             try {
-                const response = await apiRequest(endpoint, method, values, true);
+                const response = await apiRequest(endpoint, method, formData, true);
                 if (response.success) {
                     toast.success(`Newsletter ${isEdit ? 'updated' : 'created'} successfully!`);
                     navigate('/view-newsletter');
@@ -142,52 +153,23 @@ function AddNewsletterComponent() {
         const file = e.target.files[0];
         if (!file) return;
 
-        if (!file.type.startsWith('image/')) {
-            toast.error("Please select a valid image file (JPG, PNG, etc.)");
+        const allowedTypes = ['image/jpeg', 'image/jpg'];
+        const allowedExtensions = ['.jpg', '.jpeg'];
+        const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+        if (!allowedTypes.includes(file.type) || !allowedExtensions.includes(fileExtension)) {
+            toast.error("Only valid JPG and JPEG images are allowed.");
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
         const localUrl = URL.createObjectURL(file);
         setPreviewUrl(localUrl);
-        setIsUploading(true);
-
-        try {
-            const uploadData = new FormData();
-            uploadData.append('artist_image', file);
-
-            const response = await apiRequest("/upload-image", "POST", uploadData, true);
-
-            if (response.success && response.data && response.data.data) {
-                const { filename, url } = response.data.data;
-                formik.setFieldValue('image', filename);
-                formik.setFieldValue('image_url', url);
-
-                let fullImageUrl = url;
-                if (fullImageUrl && !fullImageUrl.startsWith('http')) {
-                    fullImageUrl = `${ROOT_URL}${fullImageUrl.startsWith('/') ? '' : '/'}${fullImageUrl}`;
-                }
-                setPreviewUrl(fullImageUrl);
-                toast.success("Image uploaded successfully");
-            } else {
-                setPreviewUrl(null);
-                formik.setFieldValue('image', '');
-                formik.setFieldValue('image_url', '');
-                if (fileInputRef.current) fileInputRef.current.value = '';
-                toast.error(response?.data?.message || "Image upload failed.");
-            }
-        } catch (error) {
-            console.error("Image upload error:", error);
-            setPreviewUrl(null);
-            formik.setFieldValue('image', '');
-            formik.setFieldValue('image_url', '');
-            if (fileInputRef.current) fileInputRef.current.value = '';
-            toast.error("An error occurred while uploading the image.");
-        } finally {
-            setIsUploading(false);
-        }
+        setSelectedFile(file);
+        formik.setFieldValue('image', file.name); // Just for validation/UI feedback
     };
 
-    const hasImage = !isUploading && (previewUrl || formik.values.image_url);
+    const hasImage = previewUrl || formik.values.image_url;
 
     if (loading) {
         return <Loader message="Loading newsletter details..." variant="success" />;
@@ -232,16 +214,9 @@ function AddNewsletterComponent() {
                                 ref={fileInputRef}
                                 style={{ display: 'none' }}
                                 onChange={handleFileChange}
-                                accept="image/*"
+                                accept="image/jpeg, image/jpg"
                             />
-                            {isUploading ? (
-                                <>
-                                    <div className="file-icon">
-                                        <i className="fa-solid fa-spinner fa-spin" />
-                                    </div>
-                                    <h5>Uploading Image...</h5>
-                                </>
-                            ) : hasImage ? (
+                            {hasImage ? (
                                 <div className="image-preview" style={{ width: '100%', height: '200px' }}>
                                     <img
                                         src={previewUrl || formik.values.image_url}
@@ -381,7 +356,7 @@ function AddNewsletterComponent() {
                                 type="submit"
                                 className="mainBtn bgPurple clWhite"
                                 id="newsLetterSubmit"
-                                disabled={formik.isSubmitting || isUploading}
+                                disabled={formik.isSubmitting}
                             >
                                 {formik.isSubmitting ? 'Saving...' : (isEdit ? 'Update Newsletter' : 'Save Newsletter')}
                             </button>

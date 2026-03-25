@@ -124,9 +124,32 @@ const Step2Tracks = ({
         audio.src = url;
     });
 
+    const checkAudioMagicBytes = (file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            const b = new Uint8Array(e.target.result);
+            // MP3 with ID3 tag: 49 44 33 ("ID3")
+            const isMP3_ID3 = b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33;
+            // MP3 raw frame sync: FF FB | FF F3 | FF F2
+            const isMP3_Raw = b[0] === 0xFF && (b[1] === 0xFB || b[1] === 0xF3 || b[1] === 0xF2);
+            // WAV: "RIFF" at 0-3 and "WAVE" at 8-11
+            const isWAV = b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46
+                && b[8] === 0x57 && b[9] === 0x41 && b[10] === 0x56 && b[11] === 0x45;
+            resolve(isMP3_ID3 || isMP3_Raw || isWAV);
+        };
+        reader.onerror = () => resolve(false);
+        reader.readAsArrayBuffer(file.slice(0, 12));
+    });
+
     const handleAudioReplace = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+
+        const isRealAudio = await checkAudioMagicBytes(file);
+        if (!isRealAudio) {
+            toast.error("Invalid file. Only genuine audio files (WAV, MP3) are allowed.");
+            return;
+        }
 
         if (file.type !== 'audio/wav' && file.type !== 'audio/mpeg') {
             toast.error("Only .wav or .mp3 files allowed");
@@ -153,9 +176,44 @@ const Step2Tracks = ({
         toast.success("Audio file replaced");
     };
 
-    const handleLyricsUpload = (e) => {
+    const checkTextContent = (file) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            const content = e.target.result;
+            if (content.indexOf('\x00') !== -1) return resolve(false);
+            try {
+                const parsed = JSON.parse(content);
+                if (typeof parsed === 'object' && parsed !== null) return resolve(false);
+            } catch (err) { }
+            resolve(content);
+        };
+        reader.onerror = () => resolve(false);
+        reader.readAsText(file);
+    });
+
+    const handleLyricsUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+
+        const allowedExtensions = ['.txt'];
+        const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            toast.error("Invalid file. Only .txt files are allowed.");
+            return;
+        }
+
+        let extractedText = "";
+
+        // Strict text validation and extraction for .txt extensions
+        if (fileExtension === '.txt') {
+            const safeTextContent = await checkTextContent(file);
+            if (safeTextContent === false || safeTextContent === null) {
+                toast.error("Invalid file. Only genuine plain text (.txt) files are allowed. Disguised files are rejected.");
+                return;
+            }
+            extractedText = safeTextContent;
+        }
 
         // simple validation
         if (file.size > 5 * 1024 * 1024) {
@@ -166,8 +224,12 @@ const Step2Tracks = ({
         setTempTrack(prev => ({
             ...prev,
             lyricsFile: file,
-            lyricsFileName: file.name
+            lyricsFileName: file.name,
+            lyrics: extractedText ? extractedText : prev.lyrics
         }));
+        if (extractedText) {
+            toast.success("Lyrics text extracted successfully");
+        }
     };
 
     const handlePreviewPlay = () => {
@@ -254,7 +316,7 @@ const Step2Tracks = ({
                                     type="file"
                                     id="trackUpload"
                                     multiple
-                                    accept="audio/*"
+                                    accept=".wav,.mp3,audio/wav,audio/mpeg"
                                     style={{ display: 'none' }}
                                     onChange={e => {
                                         handleTrackUpload(e.target.files);
@@ -386,6 +448,7 @@ const Step2Tracks = ({
                                                                                 ...trackToEdit,
                                                                                 artists: initialTrackArtists,
                                                                                 newArtistInput: '',
+                                                                                addLyrics: !!(trackToEdit.lyrics || trackToEdit.lyrics_text || trackToEdit.lyricsFile),
                                                                             };
 
                                                                             setTempTrack(prefilled);
@@ -442,7 +505,7 @@ const Step2Tracks = ({
                                                             type="file"
                                                             id="replaceAudioInput"
                                                             style={{ display: 'none' }}
-                                                            accept="audio/*"
+                                                            accept=".wav,.mp3,audio/wav,audio/mpeg"
                                                             onChange={e => {
                                                                 handleAudioReplace(e);
                                                                 e.target.value = null;
@@ -737,14 +800,14 @@ const Step2Tracks = ({
                                                                 ></textarea>
                                                             </div>
                                                             <div className="form-group form-text">
-                                                                <label className="form-check-label mb-3" htmlFor="explicitNo">
-                                                                    Or upload a document with lyrics
+                                                                <label className="form-check-label mb-3 fw-bold" htmlFor="explicitNo" title="Only plain .txt files are supported.">
+                                                                    Or upload a document with lyrics <i className="fas fa-info-circle text-muted small ms-1"></i>
                                                                 </label>
                                                                 <div className="fileSelectBox">
                                                                     <input
                                                                         type="file"
                                                                         name="explicit"
-                                                                        accept=".txt,.doc,.docx,.pdf"
+                                                                        accept=".txt,text/plain"
                                                                         onChange={e => {
                                                                             handleLyricsUpload(e);
                                                                             e.target.value = null;

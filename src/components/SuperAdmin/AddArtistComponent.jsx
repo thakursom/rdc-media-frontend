@@ -12,8 +12,8 @@ function AddArtistComponent() {
     const isEdit = !!id;
 
     const [loading, setLoading] = useState(isEdit);
-    const [isUploading, setIsUploading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -62,16 +62,28 @@ function AddArtistComponent() {
         },
         validationSchema,
         onSubmit: async (values) => {
-            if (isUploading) {
-                toast.error("Please wait for the image to finish uploading.");
-                return;
-            }
-
             const endpoint = isEdit ? `/update-artist/${id}` : "/create-artist";
             const method = isEdit ? "PUT" : "POST";
 
+            const formData = new FormData();
+            // Append all string/number values
+            Object.keys(values).forEach(key => {
+                if (key !== 'artist_image' && key !== 'artist_image_url') {
+                    formData.append(key, values[key]);
+                }
+            });
+
+            // Handle the file
+            if (selectedFile) {
+                formData.append('artist_image', selectedFile);
+            } else {
+                // Keep existing for edits
+                formData.append('artist_image', values.artist_image);
+                formData.append('artist_image_url', values.artist_image_url);
+            }
+
             try {
-                const response = await apiRequest(endpoint, method, values, true);
+                const response = await apiRequest(endpoint, method, formData, true);
                 if (response.success) {
                     toast.success(`Artist ${isEdit ? 'updated' : 'created'} successfully!`);
                     navigate('/view-artist');
@@ -195,56 +207,27 @@ function AddArtistComponent() {
         const file = e.target.files[0];
         if (!file) return;
 
-        if (!file.type.startsWith('image/')) {
-            toast.error("Please select a valid image file (JPG, PNG, etc.)");
+        const allowedTypes = ['image/jpeg', 'image/jpg'];
+        const allowedExtensions = ['.jpg', '.jpeg'];
+        const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+        if (!allowedTypes.includes(file.type) || !allowedExtensions.includes(fileExtension)) {
+            toast.error("Only valid JPG and JPEG images are allowed.");
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
         const localUrl = URL.createObjectURL(file);
         setPreviewUrl(localUrl);
-        setIsUploading(true);
-
-        try {
-            const uploadData = new FormData();
-            uploadData.append('artist_image', file);
-
-            const response = await apiRequest("/upload-image", "POST", uploadData, true);
-
-            if (response.success && response.data && response.data.data) {
-                const { filename, url } = response.data.data;
-                formik.setFieldValue('artist_image', filename);
-                formik.setFieldValue('artist_image_url', url);
-
-                let fullImageUrl = url;
-                if (fullImageUrl && !fullImageUrl.startsWith('http')) {
-                    fullImageUrl = `${ROOT_URL}${fullImageUrl.startsWith('/') ? '' : '/'}${fullImageUrl}`;
-                }
-                setPreviewUrl(fullImageUrl);
-                toast.success("Image uploaded successfully");
-            } else {
-                setPreviewUrl(null);
-                formik.setFieldValue('artist_image', '');
-                formik.setFieldValue('artist_image_url', '');
-                if (fileInputRef.current) fileInputRef.current.value = '';
-                toast.error(response?.data?.message || "Image upload failed.");
-            }
-        } catch (error) {
-            console.error("Image upload error:", error);
-            setPreviewUrl(null);
-            formik.setFieldValue('artist_image', '');
-            formik.setFieldValue('artist_image_url', '');
-            if (fileInputRef.current) fileInputRef.current.value = '';
-            toast.error("An error occurred while uploading the image.");
-        } finally {
-            setIsUploading(false);
-        }
+        setSelectedFile(file);
+        formik.setFieldValue('artist_image', file.name); // Feedback for validation
     };
 
     if (loading) {
         return <Loader message="Loading artist details..." variant="success" />;
     }
 
-    const hasImage = !isUploading && (previewUrl || formik.values.artist_image_url);
+    const hasImage = previewUrl || formik.values.artist_image_url;
 
     return (
         <>
@@ -257,7 +240,7 @@ function AddArtistComponent() {
                     {/* Image Upload Box */}
                     <div className="artist-file-sec">
                         <div
-                            className={`choose-artist-mainbox ${isUploading ? 'uploading' : ''} ${isDragging ? 'dragging' : ''}`}
+                            className={`choose-artist-mainbox ${isDragging ? 'dragging' : ''}`}
                             onClick={handleImageClick}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
@@ -281,16 +264,9 @@ function AddArtistComponent() {
                                 ref={fileInputRef}
                                 style={{ display: 'none' }}
                                 onChange={handleFileChange}
-                                accept="image/*"
+                                accept="image/jpeg, image/jpg"
                             />
-                            {isUploading ? (
-                                <>
-                                    <div className="file-icon">
-                                        <i className="fa-solid fa-spinner fa-spin" />
-                                    </div>
-                                    <h5>Uploading Image...</h5>
-                                </>
-                            ) : hasImage ? (
+                            {hasImage ? (
                                 <div className="image-preview" style={{ width: '100%', height: '200px' }}>
                                     <img
                                         src={previewUrl || formik.values.artist_image_url}
@@ -710,7 +686,7 @@ function AddArtistComponent() {
                                 <button
                                     type="submit"
                                     className="mainBtn bgPurple clWhite "
-                                    disabled={formik.isSubmitting || isUploading}
+                                    disabled={formik.isSubmitting}
                                 >
                                     {formik.isSubmitting ? 'Saving...' : (isEdit ? 'Update Artist' : 'Save Artist')}
                                 </button>

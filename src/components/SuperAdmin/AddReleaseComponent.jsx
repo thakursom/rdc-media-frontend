@@ -408,12 +408,8 @@ function AddReleaseComponent() {
         const reader = new FileReader();
         reader.onloadend = (e) => {
             const bytes = new Uint8Array(e.target.result);
-            // JPEG: FF D8 FF
             const isJpeg = bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF;
-            // PNG: 89 50 4E 47 0D 0A 1A 0A
-            const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47
-                && bytes[4] === 0x0D && bytes[5] === 0x0A && bytes[6] === 0x1A && bytes[7] === 0x0A;
-            resolve(isJpeg || isPng);
+            resolve(isJpeg);
         };
         reader.onerror = () => resolve(false);
         // Read only the first 8 bytes
@@ -432,13 +428,13 @@ function AddReleaseComponent() {
         // 1. Magic-byte check (catches renamed files)
         const isRealImage = await checkImageMagicBytes(file);
         if (!isRealImage) {
-            toast.error("Invalid file: only real JPEG or PNG images are accepted.");
+            toast.error("Invalid file: only real JPEG images are accepted.");
             return;
         }
 
         // 2. MIME type check
-        if (!file.type.match(/image\/jpe?g/) && !file.type.match(/image\/png/)) {
-            toast.error("Only JPG, JPEG, or PNG image files are allowed");
+        if (!file.type.match(/image\/jpe?g/)) {
+            toast.error("Only JPG or JPEG image files are allowed");
             return;
         }
 
@@ -580,9 +576,9 @@ function AddReleaseComponent() {
 
     const removeTrack = (index) => {
         const updatedTracks = form.tracks.filter((_, i) => i !== index);
-        
+
         let newForm = { ...form, tracks: updatedTracks };
-        
+
         // If no tracks left, reset confirmation flags
         if (updatedTracks.length === 0) {
             newForm.explicitConfirmation = false;
@@ -590,7 +586,7 @@ function AddReleaseComponent() {
             newForm.noOtherArtistName = false;
             newForm.noOtherAlbumTitle = false;
         }
-        
+
         setForm(newForm);
     };
 
@@ -606,8 +602,7 @@ function AddReleaseComponent() {
             'application/pdf',
             'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'image/jpeg',
-            'image/png'
+            'image/jpeg'
         ];
 
         if (!allowedTypes.includes(file.type)) {
@@ -692,7 +687,6 @@ function AddReleaseComponent() {
                     producer: track.producer?.trim() || "",
                     lyricist: track.lyricist?.trim() || "",
                     lyrics_text: track.lyrics?.trim() || "",
-
                     hasNewAudioFile: false,
                     hasNewLyricsFile: false
                 };
@@ -711,37 +705,29 @@ function AddReleaseComponent() {
             });
 
             const releaseData = {
-                // Release details
                 title: form.title,
                 releaseType: form.releaseType,
                 release_type: form.releaseType,
                 releaseDate: form.releaseDate,
                 releaseTime: form.releaseTime,
-                // Artists / Label
                 releaseArtists: form.releaseArtists,
                 label: form.label,
-                // Genres / Language
                 primaryGenre: form.primaryGenre,
                 secondaryGenre: form.secondaryGenre,
                 language: form.language,
-                // Copyright / Production
                 copyrightYear: form.copyrightYear,
                 copyrightHolder: form.copyrightHolder?.trim() || "",
                 productionYear: form.productionYear,
                 productionHolder: form.productionHolder?.trim() || "",
-                // UPC / ISRC
                 upcMode: form.upcMode,
                 upc: form.upcMode === 'Auto' ? null : (form.upc?.trim() || null),
                 isrcMode: form.isrcMode,
                 isrc: form.isrcMode === 'Auto' ? null : (form.isrc?.trim() || null),
-                // Flags
                 isFirstRelease: form.isFirstRelease,
                 isVariousArtists: form.isVariousArtists,
                 is_instrumental: form.isInstrumental ? 1 : 0,
-                // Country restrictions
                 countryRestrictions: form.countryRestrictions,
                 countryRestrictionsList: form.countryRestrictionsList,
-                // Stores / misc
                 selectedStores: form.selectedStores,
                 futureStores: form.futureStores,
                 previouslyReleased: form.previouslyReleased,
@@ -751,7 +737,6 @@ function AddReleaseComponent() {
                 pricing: form.pricing,
                 description: form.description,
                 priorityDistribution: form.priorityDistribution,
-                // Tracks
                 tracks: tracksWithFlags,
                 create_type: tracksWithFlags.length > 0 ? "Pending" : "Saved"
             };

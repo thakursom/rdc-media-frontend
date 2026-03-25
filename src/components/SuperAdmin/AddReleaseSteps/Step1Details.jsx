@@ -608,7 +608,7 @@ const Step1Details = ({
                                     <input
                                         type="file"
                                         id="artworkUpload"
-                                        accept="image/jpeg,image/jpg,image/png"
+                                        accept="image/jpeg,image/jpg"
                                         style={{ display: 'none' }}
                                         onChange={(e) => {
                                             const file = e.target.files[0];
