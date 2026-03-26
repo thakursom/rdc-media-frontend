@@ -186,7 +186,7 @@ function AddNewsletterComponent() {
                 <div className="add-newsLetter-mainbox">
                     <div className="artist-file-sec mb-4">
                         <div
-                            className={`choose-artist-mainbox ${isUploading ? 'uploading' : ''} ${isDragging ? 'dragging' : ''}`}
+                            className={`choose-artist-mainbox ${isDragging ? 'dragging' : ''}`}
                             onClick={handleImageClick}
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}

@@ -247,8 +247,6 @@ function ReviewComponent() {
                                         {releases.length > 0 ? (
                                             releases.map((release) => {
                                                 const id = release?._id;
-                                                console.log("id", id);
-
                                                 return (
                                                     <tr key={release._id} style={{ fontSize: '14px' }}>
                                                         <td className="text-center">

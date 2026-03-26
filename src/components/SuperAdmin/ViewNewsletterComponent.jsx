@@ -30,7 +30,6 @@ function ViewNewsletterComponent() {
         try {
             const endpoint = `/newsletters?page=${page}&limit=${currentLimit}${search ? `&search=${search}` : ""}`;
             const response = await apiRequest(endpoint, "GET", null, true);
-            console.log(response);
             if (response.success && response.data && response.data.data && response.data.data.newsletters) {
                 setNewsletters(response.data.data.newsletters);
                 if (response.data.data.pagination) {
